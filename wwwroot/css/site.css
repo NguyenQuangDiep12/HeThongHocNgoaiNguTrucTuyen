@@ -1,0 +1,142 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #111827;
+    background-color: #ffffff;
+}
+
+
+/* HEADER */
+
+.app-header {
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1450px;
+    margin: 0;
+    padding: 0 40px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.app-logo {
+    width: 75px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.search-box {
+    width: 365px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    background-color: #f8fafc;
+}
+
+    .search-box input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+    }
+
+.user-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #dbe2ea;
+    border-radius: 50%;
+}
+
+
+/* LAYOUT */
+
+.app-layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 24px;
+    width: 100%;
+    max-width: 1450px;
+    margin: 24px 0 0 48px;
+    padding: 0 24px 24px 0;
+    min-height: calc(100vh - 100px);
+}
+
+
+/* SIDEBAR */
+
+#sidebar {
+    padding-right: 24px;
+    border-right: 1px solid #e5e7eb;
+}
+
+.sidebar-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    margin-bottom: 10px;
+    border: 1px solid #dfe4ea;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #111827;
+    font-size: 15px;
+}
+
+    .sidebar-button i {
+        width: 18px;
+        text-align: center;
+        color: #0ba5a4;
+    }
+
+    .sidebar-button.active {
+        color: white;
+        background-color: #5745e8;
+        border-color: #5745e8;
+    }
+
+        .sidebar-button.active i {
+            color: white;
+        }
+
+
+/* CONTENT */
+
+#main-content {
+    width: 100%;
+    min-width: 0;
+}

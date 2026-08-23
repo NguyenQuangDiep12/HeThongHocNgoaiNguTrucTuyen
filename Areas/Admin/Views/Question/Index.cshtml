@@ -1,0 +1,293 @@
+﻿<section class="page-section">
+
+    <div class="question-topbar">
+
+        <div class="question-meta">
+
+            <strong>Bài kiểm tra đang chọn:</strong>
+
+            <select class="select-control accent">
+                <option>
+                    Bài kiểm tra A1 - Chủ đề 1
+                </option>
+            </select>
+
+            <span>
+                Bài học:
+                <strong>A1. Quản lý ngôn ngữ / chủ đề</strong>
+            </span>
+
+            <span>
+                Số câu hỏi:
+                <strong>20</strong>
+            </span>
+
+            <span>
+                Điểm đạt:
+                <strong>70%</strong>
+            </span>
+
+            <span>
+                Thời gian:
+                <strong>30 phút</strong>
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="content-grid question-grid">
+
+        <div class="content-card">
+
+            <div class="section-head">
+
+                <div>
+                    <span class="page-tag purple">
+                        PAGE 2
+                    </span>
+
+                    <h2 class="inline-title">
+                        Danh sách câu hỏi
+                    </h2>
+                </div>
+
+                <select class="select-control">
+                    <option>
+                        Loại câu hỏi: Tất cả
+                    </option>
+                    <option>Trắc nghiệm</option>
+                    <option>Điền từ</option>
+                    <option>Nghe hiểu</option>
+                </select>
+
+            </div>
+
+            <div class="search-control search-full">
+                <span>⌕</span>
+                <input type="text"
+                       placeholder="Tìm kiếm câu hỏi..." />
+            </div>
+
+            <table class="data-table compact">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nội dung câu hỏi</th>
+                        <th>Loại câu hỏi</th>
+                        <th>Điểm</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr class="selected-row">
+                        <td>1</td>
+                        <td>
+                            Chọn từ đúng để điền vào chỗ trống...
+                        </td>
+                        <td>Trắc nghiệm</td>
+                        <td>1</td>
+                        <td>
+                            ✎　<span class="icon-danger">♜</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>2</td>
+                        <td>Từ nào sau đây là danh từ?</td>
+                        <td>Trắc nghiệm</td>
+                        <td>1</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>3</td>
+                        <td>
+                            Điền dạng đúng của động từ trong ngoặc...
+                        </td>
+                        <td>Điền từ</td>
+                        <td>1</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>4</td>
+                        <td>Nghe và chọn đáp án đúng...</td>
+                        <td>Nghe hiểu</td>
+                        <td>2</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+
+                    <tr>
+                        <td>5</td>
+                        <td>
+                            Sắp xếp các từ sau thành câu đúng...
+                        </td>
+                        <td>Sắp xếp câu</td>
+                        <td>2</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>
+                            Sắp xếp các từ sau thành câu đúng...
+                        </td>
+                        <td>Sắp xếp câu</td>
+                        <td>2</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>
+                            Sắp xếp các từ sau thành câu đúng...
+                        </td>
+                        <td>Sắp xếp câu</td>
+                        <td>2</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>
+                            Sắp xếp các từ sau thành câu đúng...
+                        </td>
+                        <td>Sắp xếp câu</td>
+                        <td>2</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>
+                            Sắp xếp các từ sau thành câu đúng...
+                        </td>
+                        <td>Sắp xếp câu</td>
+                        <td>2</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>
+                            Sắp xếp các từ sau thành câu đúng...
+                        </td>
+                        <td>Sắp xếp câu</td>
+                        <td>2</td>
+                        <td>✎　<span class="icon-danger">♜</span></td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <div class="table-note">
+                Hiển thị 1 - 10 câu mỗi trang
+            </div>
+            @await Html.PartialAsync("~/Areas/Admin/Views/Shared/_Pagination.cshtml", 1)
+        </div>
+
+        <div class="content-card question-editor">
+
+            <h2>Thông tin câu hỏi chi tiết</h2>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label>Loại câu hỏi</label>
+
+                    <select class="form-control">
+                        <option>Trắc nghiệm</option>
+                        <option>Điền từ</option>
+                        <option>Nghe hiểu</option>
+                    </select>
+                </div>
+
+                <div class="form-group score-group">
+                    <label>Điểm</label>
+                    <input class="form-control" value="1" />
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Nội dung câu hỏi *
+                </label>
+
+                <textarea class="form-control textarea"> Chọn từ đúng để điền vào chỗ trống: "She ____ to the market yesterday."</textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    URL Audio (phát âm)
+                </label>
+
+                <input class="form-control"
+                       placeholder="https://sound-source-url/audio.mp3" />
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    URL Hình ảnh (tùy chọn)
+                </label>
+
+                <input class="form-control"
+                       placeholder="https://img-source-url/preview.png" />
+
+            </div>
+
+            <div class="answers-head">
+                <label>Các lựa chọn đáp án</label>
+                <span>Đáp án đúng</span>
+            </div>
+
+            <div class="answer-row">
+                <span class="answer-letter">A</span>
+                <input class="form-control" value="go" />
+                <input type="radio" name="answer" />
+            </div>
+
+            <div class="answer-row">
+                <span class="answer-letter">B</span>
+                <input class="form-control" value="went" />
+                <input type="radio"
+                       name="answer"
+                       checked />
+            </div>
+
+            <div class="answer-row">
+                <span class="answer-letter">C</span>
+                <input class="form-control" value="gone" />
+                <input type="radio" name="answer" />
+            </div>
+
+            <div class="answer-row">
+                <span class="answer-letter">D</span>
+                <input class="form-control" value="goes" />
+                <input type="radio" name="answer" />
+            </div>
+
+            <a class="add-answer" href="#">
+                + Thêm lựa chọn đáp án
+            </a>
+
+            <div class="editor-footer">
+
+                <button class="btn-light">
+                    Hủy thay đổi
+                </button>
+
+                <button class="btn btn-purple">
+                    Lưu câu hỏi
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

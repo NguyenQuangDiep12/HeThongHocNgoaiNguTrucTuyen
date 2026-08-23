@@ -1,0 +1,134 @@
+﻿<section class="page-section">
+
+    <div class="content-card">
+
+        <div class="section-head">
+
+            <div>
+                <span class="page-tag">PAGE 1</span>
+                <h2 class="inline-title">
+                    Danh sách bài kiểm tra hiện tại
+                </h2>
+            </div>
+
+            <a class="btn btn-purple"
+               asp-area="Admin"
+               asp-controller="Test"
+               asp-action="Create">
+                + Thêm bài kiểm tra
+            </a>
+
+        </div>
+
+        <div class="toolbar toolbar-left">
+
+            <div class="search-control wide">
+                <span>⌕</span>
+                <input type="text"
+                       placeholder="Tìm kiếm tên bài kiểm tra..." />
+            </div>
+
+            <select class="select-control">
+                <option>Chọn bài học</option>
+            </select>
+
+            <select class="select-control">
+                <option>Trạng thái: Tất cả</option>
+            </select>
+
+            <button class="btn-light">
+                ⟳ Làm mới
+            </button>
+
+        </div>
+
+        <table class="data-table compact">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tên bài kiểm tra</th>
+                    <th>Bài học</th>
+                    <th>Số câu hỏi</th>
+                    <th>Điểm đạt</th>
+                    <th>Thời gian</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>1</td>
+                    <td><strong>Bài kiểm tra A1 - Chủ đề 1</strong></td>
+                    <td>A1. Quản lý ngôn ngữ</td>
+                    <td>20</td>
+                    <td>70%</td>
+                    <td>30 phút</td>
+                    <td>
+                        <span class="status-badge status-active">
+                            Đang hoạt động
+                        </span>
+                    </td>
+                    <td>20/03/2026</td>
+                    <td>✎　<span class="icon-danger">♜</span></td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td><strong>Bài kiểm tra A2 - Từ vựng</strong></td>
+                    <td>A2. Quản lý bài học</td>
+                    <td>25</td>
+                    <td>70%</td>
+                    <td>30 phút</td>
+                    <td>
+                        <span class="status-badge status-active">
+                            Đang hoạt động
+                        </span>
+                    </td>
+                    <td>18/03/2026</td>
+                    <td>✎　<span class="icon-danger">♜</span></td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td><strong>Bài kiểm tra A3 - Ngữ pháp</strong></td>
+                    <td>A3. Quản lý bài kiểm tra</td>
+                    <td>30</td>
+                    <td>70%</td>
+                    <td>35 phút</td>
+                    <td>
+                        <span class="status-badge status-inactive">
+                            Ngừng hoạt động
+                        </span>
+                    </td>
+                    <td>15/03/2026</td>
+                    <td>✎　<span class="icon-danger">♜</span></td>
+                </tr>
+
+                <tr>
+                    <td>4</td>
+                    <td><strong>Bài kiểm tra tổng hợp</strong></td>
+                    <td>A1. Quản lý ngôn ngữ</td>
+                    <td>40</td>
+                    <td>70%</td>
+                    <td>45 phút</td>
+                    <td>
+                        <span class="status-badge status-active">
+                            Đang hoạt động
+                        </span>
+                    </td>
+                    <td>10/03/2026</td>
+                    <td>✎　<span class="icon-danger">♜</span></td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        @await Html.PartialAsync(
+        "~/Areas/Admin/Views/Shared/_Pagination.cshtml", 1)
+
+    </div>
+</section>

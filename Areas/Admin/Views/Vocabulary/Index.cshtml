@@ -1,0 +1,89 @@
+﻿<section class="page-section">
+
+    <div class="content-card">
+
+        <div class="section-head">
+
+            <div>
+                <h2>Từ vựng - Lesson 1</h2>
+                <p class="muted">
+                    Lesson 1: Chào hỏi cơ bản
+                </p>
+            </div>
+
+            <div class="toolbar">
+
+                <div class="search-control">
+                    <span>⌕</span>
+                    <input type="text"
+                           placeholder="Tìm kiếm từ vựng..." />
+                </div>
+
+                <a class="btn btn-dark"
+                   asp-area="Admin"
+                   asp-controller="Vocabulary"
+                   asp-action="Create">
+                    + Thêm
+                </a>
+
+            </div>
+        </div>
+
+        <table class="data-table">
+
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Từ vựng</th>
+                    <th>Nghĩa</th>
+                    <th>Phiên âm</th>
+                    <th>Ví dụ</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>1</td>
+                    <td><strong>hello</strong></td>
+                    <td>xin chào</td>
+                    <td>/həˈləʊ/</td>
+                    <td>Hello, nice to meet you.</td>
+                    <td>
+                        <a class="btn-small" href="#">Sửa</a>
+                        <button class="btn-small danger">Xóa</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td><strong>good morning</strong></td>
+                    <td>chào buổi sáng</td>
+                    <td>/ɡʊd ˈmɔːnɪŋ/</td>
+                    <td>Good morning, teacher.</td>
+                    <td>
+                        <a class="btn-small" href="#">Sửa</a>
+                        <button class="btn-small danger">Xóa</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td><strong>how are you?</strong></td>
+                    <td>bạn khỏe không?</td>
+                    <td>/haʊ ɑː juː/</td>
+                    <td>How are you today?</td>
+                    <td>
+                        <a class="btn-small" href="#">Sửa</a>
+                        <button class="btn-small danger">Xóa</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        @await Html.PartialAsync(
+        "~/Areas/Admin/Views/Shared/_Pagination.cshtml", 1)
+    </div>
+</section>

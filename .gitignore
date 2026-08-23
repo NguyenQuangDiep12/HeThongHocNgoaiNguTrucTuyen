@@ -1,0 +1,9 @@
+.vs
+/obj
+/bin
+
+appsettings.Development.json
+appsettings.json
+
+.vscode
+HTMX.md

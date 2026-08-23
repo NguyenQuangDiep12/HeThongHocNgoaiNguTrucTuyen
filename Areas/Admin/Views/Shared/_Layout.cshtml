@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Quản trị nội dung học</title>
+
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+    <div class="admin-shell">
+
+        <aside class="admin-sidebar">
+            <div class="admin-profile">
+
+                <div class="admin-avatar">
+                    <span>♙</span>
+                </div>
+
+                <div class="admin-name">
+                    Admin
+                </div>
+
+            </div>
+
+            <nav class="admin-nav">
+
+                <a class="admin-nav-item"
+                   asp-area="Admin"
+                   asp-controller="Language"
+                   asp-action="Index">
+                    Quản lý ngôn ngữ
+                </a>
+
+                <a class="admin-nav-item"
+                   asp-area="Admin"
+                   asp-controller="Topic"
+                   asp-action="Index">
+                    Quản lý chủ đề
+                </a>
+
+                <a class="admin-nav-item"
+                   asp-area="Admin"
+                   asp-controller="Lesson"
+                   asp-action="Index">
+                    Quản lý bài học
+                </a>
+
+                <a class="admin-nav-item"
+                   asp-area="Admin"
+                   asp-controller="Vocabulary"
+                   asp-action="Index">
+                    Quản lý từ vựng
+                </a>
+
+                <a class="admin-nav-item"
+                   asp-area="Admin"
+                   asp-controller="Test"
+                   asp-action="Index">
+                    Quản lý bài kiểm tra
+                </a>
+
+                <a class="admin-nav-item"
+                   asp-area="Admin"
+                   asp-controller="Question"
+                   asp-action="Index">
+                    Quản lý câu hỏi / đáp án
+                </a>
+
+            </nav>
+        </aside>
+
+        <div class="admin-main">
+
+            <header class="admin-header">
+
+                <div class="admin-header-title">
+                    <span class="menu-icon">☰</span>
+                    <span>@ViewData["Title"]</span>
+                </div>
+
+                <div class="admin-user">
+                    <span class="admin-user-dot"></span>
+                    <span>Admin</span>
+                    <span>⌄</span>
+                </div>
+
+            </header>
+
+            <main id="admin-main-content" class="admin-content">
+                @RenderBody()
+            </main>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"></script>
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

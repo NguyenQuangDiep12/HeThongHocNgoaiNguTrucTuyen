@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - Hệ thống học ngoại ngữ
+    </title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" 
+    integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" 
+    crossorigin="anonymous">
+    </script>
+    <!--Vi tri chen css cua view con required: false; neu file con khong khai bao section thi bo vi tri do trong cha-->
+    @RenderSection("Styles", required: false)
+</head>
+
+<body>
+
+    <header class="app-header">
+        <div class="header-left">
+            <a asp-controller="Home" asp-action="Index">
+                <img src="~/image/Logo.png" class="app-logo" alt="Logo" />
+            </a>
+            <h1> Hệ thống học ngoại ngữ trực tuyến </h1>
+
+        </div>
+
+        <div class="header-right">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm bài học..." />
+            </div>
+            <div class="user-icon">
+                <i class="fa-regular fa-user"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <aside id="sidebar"
+            hx-boost="true"
+            hx-target="#main-content"
+            hx-select="#main-content"
+            hx-swap="outerHTML show:none"
+            hx-push-url="true"
+        >
+            <a class="sidebar-button active" asp-controller="Home" asp-action="Index">
+                <i class="fa-solid fa-house"></i>
+                <span>Trang chủ</span>
+            </a>
+            <a class="sidebar-button" asp-controller="Topic" asp-action="Index">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Danh sách chủ đề</span>
+            </a>
+
+            <a class="sidebar-button" asp-controller="Lesson" asp-action="Index">
+                <i class="fa-solid fa-book-open"></i>
+                <span>Bài học của tôi</span>
+            </a>
+
+            <a class="sidebar-button" asp-controller="Test" asp-action="Index">
+                <i class="fa-solid fa-list"></i>
+                <span>Bài kiểm tra của tôi</span>
+            </a>
+        </aside>
+
+        <main id="main-content">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Vi tri chen file Javascript cho view con -->
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

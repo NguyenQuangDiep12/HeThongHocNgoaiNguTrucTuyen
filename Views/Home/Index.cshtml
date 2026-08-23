@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Trang chu";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true"/>
+}
+
+<div class="home-page">
+
+    <!-- XIN CHAO -->
+    <section class="welcome-section">
+        <h2>Xin chào, Người học!</h2>
+        <p>Hãy tiếp tục quá trình học ngoại ngữ của bạn</p>
+    </section>
+    <!-- THONG KE -->
+    <section class="statistics">
+        <!-- SO CHU DE -->
+        <div class="stat-card">
+            <div class="stat-title">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <span>Số chủ đề đã học</span>
+            </div>
+            <div class="stat-number">12</div>
+        </div>
+        <!-- SO BAI KIEM TRA -->
+        <div class="stat-card">
+            <div class="stat-title">
+                <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
+                <span>Số bài kiểm tra đã làm</span>
+            </div>
+            <div class="stat-number">8</div>
+        </div>
+        <!-- TIEN DO -->
+        <div class="stat-card">
+            <div class="stat-title">
+                <div class="stat-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                <span>Tiến độ học tập</span>
+            </div>
+            <div class="progress-header">
+                <span>63%</span>
+                <span class="progress-text">Hoàn thành</span>
+            </div>
+            <progress class="learning-progress" value="63" max="100"></progress>
+        </div>
+    </section>
+    <!-- TIEP TUC HOC -->
+    <section class="home-section">
+        <h3>Tiếp tục học</h3>
+        <div class="continue-card">
+            <a href="#" class="continue-image">
+                <i class="fa-regular fa-image"></i>
+            </a>
+            <div class="continue-content">
+                <h4>Chủ đề học bài</h4>
+                <p>Bài học: Đặt phòng khách sạn</p>
+                <progress class="lesson-progress" value="65" max="100"></progress>
+            </div>
+            <div class="continue-percent">65%</div>
+        </div>
+    </section>
+    <!-- GOI Y -->
+    <section class="home-section">
+        <h3>Gợi ý chủ đề dành cho bạn</h3>
+        <div class="topic-list">
+            <!-- CARD 1 -->
+            <div class="topic-card">
+                <div class="topic-image"><i class="fa-regular fa-image"></i></div>
+                <h4>Ẩm thực</h4>
+                <p>Cấp độ: Trung cấp</p>
+                <a href="#" class="topic-detail-button">Xem chi tiết</a>
+            </div>
+            <!-- CARD 2 -->
+            <div class="topic-card">
+                <div class="topic-image"><i class="fa-regular fa-image"></i></div>
+                <h4>Du lịch</h4>
+                <p>Cấp độ: Cơ bản</p>
+                <a href="#" class="topic-detail-button">Xem chi tiết</a>
+            </div>
+            <!-- CARD 3 -->
+            <div class="topic-card">
+                <div class="topic-image"><i class="fa-regular fa-image"></i></div>
+                <h4>Công việc</h4>
+                <p>Cấp độ: Trung cấp</p>
+                <a href="#" class="topic-detail-button">Xem chi tiết</a>
+            </div>
+            <!-- CARD 4 -->
+            <div class="topic-card">
+                <div class="topic-image"><i class="fa-regular fa-image"></i></div>
+                <h4>Giao tiếp</h4>
+                <p>Cấp độ: Cơ bản</p>
+                <a href="#" class="topic-detail-button">Xem chi tiết</a>
+            </div>
+        </div>
+    </section>
+</div>

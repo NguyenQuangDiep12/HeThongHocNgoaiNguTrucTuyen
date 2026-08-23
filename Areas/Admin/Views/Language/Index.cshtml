@@ -1,0 +1,128 @@
+﻿<section class="page-section">
+
+    <div class="content-card">
+
+        <div class="section-head">
+
+            <h2>Danh sách ngôn ngữ</h2>
+
+            <div class="toolbar">
+
+                <div class="search-control">
+                    <span>⌕</span>
+                    <input type="text"
+                           placeholder="Tìm kiếm ngôn ngữ..." />
+                </div>
+
+                <select class="select-control">
+                    <option>Trạng thái: Tất cả</option>
+                    <option>Hoạt động</option>
+                    <option>Ngừng hoạt động</option>
+                </select>
+
+                <a class="btn btn-dark"
+                   asp-area="Admin"
+                   asp-controller="Language"
+                   asp-action="Create">
+                    + Thêm mới
+                </a>
+
+            </div>
+        </div>
+
+        <div class="table-wrap">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên ngôn ngữ</th>
+                        <th>Mã ngôn ngữ</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>1</td>
+                        <td>Tiếng Anh</td>
+                        <td>en</td>
+                        <td>
+                            <span class="status-badge status-active">
+                                Hoạt động
+                            </span>
+                        </td>
+                        <td class="action-cell">
+                            <a class="btn-small"
+                               asp-area="Admin"
+                               asp-controller="Language"
+                               asp-action="Edit"
+                               asp-route-id="1">
+                                Sửa
+                            </a>
+
+                            <button class="btn-small danger">
+                                Xóa
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>2</td>
+                        <td>Tiếng Nhật</td>
+                        <td>ja</td>
+                        <td>
+                            <span class="status-badge status-active">
+                                Hoạt động
+                            </span>
+                        </td>
+                        <td class="action-cell">
+                            <a class="btn-small"
+                               asp-area="Admin"
+                               asp-controller="Language"
+                               asp-action="Edit"
+                               asp-route-id="2">
+                                Sửa
+                            </a>
+
+                            <button class="btn-small danger">
+                                Xóa
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>3</td>
+                        <td>Tiếng Hàn</td>
+                        <td>ko</td>
+                        <td>
+                            <span class="status-badge status-active">
+                                Hoạt động
+                            </span>
+                        </td>
+                        <td class="action-cell">
+                            <a class="btn-small"
+                               asp-area="Admin"
+                               asp-controller="Language"
+                               asp-action="Edit"
+                               asp-route-id="3">
+                                Sửa
+                            </a>
+
+                            <button class="btn-small danger">
+                                Xóa
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+        @await Html.PartialAsync("~/Areas/Admin/Views/Shared/_Pagination.cshtml", 1)
+    </div>
+</section>
