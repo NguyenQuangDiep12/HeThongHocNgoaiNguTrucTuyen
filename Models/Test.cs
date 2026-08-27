@@ -5,7 +5,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Models
 {
     public class Test
     {
-        [Key]
         public int TestId { get; set; }
 
         public string Title { get; set; } = string.Empty;

@@ -1,0 +1,47 @@
+﻿@using System.Security.Claims
+
+<div class="user-menu">
+    <button type="button"
+            class="user-icon"
+            id="userMenuButton">
+        <i class="fa-regular fa-user"></i>
+    </button>
+
+    <div class="user-dropdown" id="userDropdown">
+
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="user-info">
+                <!--Context tuong ung voi HttpContext dai dien cho request response cua he thong-->
+                <span id="user-info-name">@Context.User.FindFirst(ClaimTypes.Name).Value</span>
+            </div>
+
+            <form class="form-logout"
+                  asp-controller="Auth"
+                  asp-action="Logout"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit">
+                    Đăng xuất
+                </button>
+
+            </form>
+        }
+        else
+        {
+            <a asp-controller="Auth"
+               asp-action="Login">
+                Đăng nhập
+            </a>
+
+            <a asp-controller="Auth"
+               asp-action="Register">
+                Đăng ký
+            </a>
+        }
+
+    </div>
+
+</div>

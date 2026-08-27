@@ -140,3 +140,65 @@ body {
     width: 100%;
     min-width: 0;
 }
+
+
+/**
+ Phan dang ky dang nhap
+*/
+
+.user-menu {
+    position: relative;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 160px;
+
+    background: white;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: 0.2s;
+}
+
+.user-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    padding: 8px, 12px;
+    border: 1px solid #333;
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+    .user-dropdown a:hover {
+        background: #f2f2f2;
+    }
+
+/* Phan dang xuat Chua dong "Ten nguoi dung" va nut Dang xuat*/
+.user-info {
+    padding: 8px 6px;
+}
+
+    .user-info span {
+        font-size: 16px;
+    }
+
+.form-logout {
+    width: inherit;
+}
+
+    .form-logout button {
+        width: inherit;
+        background-color: #5745e8;
+        padding: 8px 6px;
+        color: white;
+    }

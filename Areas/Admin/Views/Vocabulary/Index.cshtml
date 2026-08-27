@@ -1,4 +1,20 @@
-﻿<section class="page-section">
+﻿
+
+@section Styles{
+    <style>
+        .muted {
+            margin: 4px 0 0;
+            color: #667085;
+            font-size: 11px;
+        }
+
+        .vocabulary-actions {
+            white-space: nowrap;
+        }
+    </style>
+}
+
+<section class="page-section">
 
     <div class="content-card">
 
@@ -83,7 +99,6 @@
             </tbody>
         </table>
 
-        @await Html.PartialAsync(
-        "~/Areas/Admin/Views/Shared/_Pagination.cshtml", 1)
+        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
     </div>
 </section>

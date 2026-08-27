@@ -4,7 +4,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Models
 {
     public class TestResult
     {
-        [Key]
         public int TestResultId { get; set; }
 
         public int UserId { get; set; }

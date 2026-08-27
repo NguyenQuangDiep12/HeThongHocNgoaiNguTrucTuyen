@@ -1,4 +1,6 @@
-﻿@{
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.LoginRequest
+
+@{
     Layout = null; // vo hieu hoa khung layout chung
 }
 
@@ -17,7 +19,6 @@
             <!-- Header Logo & Name -->
             <div class="brand-header">
                 <div class="logo-box">
-                    <!-- Bạn thay bằng đường dẫn ảnh logo thật -->
                     <img src="~/image/Logo.png" alt="English Pathway Logo">
                 </div>
                 <h2 class="brand-title">Hệ thống học ngoại ngữ trực tuyến</h2>
@@ -29,27 +30,30 @@
                 <p class="auth-subtitle">Đăng nhập để sử dụng hệ thống</p>
             </div>
 
+            <div asp-validation-summary="ModelOnly" class="error-alert"></div>
+
             <!-- Form Đăng Nhập -->
-            <form id="loginForm" class="auth-form" novalidate>
+            <form asp-controller="Auth" asp-action="Login" method="post" id="loginForm" class="auth-form">
+                
+                <!-- Cookie duoc tao ra de tranh form duoc gui tu mot trang khac den he thong ,duoi cookie .AspNetCore.Antiforgery.MaChuoiBam-->
+                <!-- Chong tan cong CSRF -->
+                @Html.AntiForgeryToken()
+
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" placeholder="Nhập email của bạn..." required>
+                    <input type="email" id="email" asp-for="Email" placeholder="Nhập email của bạn...">
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Mật khẩu:</label>
-                    <input type="password" id="password" name="password" placeholder="Nhập mật khẩu của bạn..." required>
+                    <input type="password" id="password" asp-for="Password" placeholder="Nhập mật khẩu của bạn...">
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
                 <div class="form-remember">
-                    <input type="checkbox" id="remember" name="remember">
+                    <input type="checkbox" id="remember" asp-for="RememberMe">
                     <label for="remember">Ghi nhớ đăng nhập</label>
-                </div>
-
-                <!-- Alert Box Thông Báo Lỗi -->
-                <div id="errorMessage" class="error-alert hidden">
-                    <span class="error-icon"><i class="fa-solid fa-circle-exclamation"></i></span>
-                    <span class="error-text">Hiển thị thông báo nếu có lỗi</span>
                 </div>
 
                 <!-- Submit Button -->

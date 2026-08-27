@@ -1,4 +1,19 @@
-﻿<section class="page-section">
+﻿
+@section Styles {
+    <style>
+        /* Language page */
+
+        .table-wrap {
+        width: 100%;
+        }
+
+        .action-cell {
+        white-space: nowrap;
+        }
+    </style>
+}
+
+<section class="page-section">
 
     <div class="content-card">
 
@@ -13,12 +28,6 @@
                     <input type="text"
                            placeholder="Tìm kiếm ngôn ngữ..." />
                 </div>
-
-                <select class="select-control">
-                    <option>Trạng thái: Tất cả</option>
-                    <option>Hoạt động</option>
-                    <option>Ngừng hoạt động</option>
-                </select>
 
                 <a class="btn btn-dark"
                    asp-area="Admin"
@@ -39,7 +48,6 @@
                         <th>STT</th>
                         <th>Tên ngôn ngữ</th>
                         <th>Mã ngôn ngữ</th>
-                        <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -50,11 +58,6 @@
                         <td>1</td>
                         <td>Tiếng Anh</td>
                         <td>en</td>
-                        <td>
-                            <span class="status-badge status-active">
-                                Hoạt động
-                            </span>
-                        </td>
                         <td class="action-cell">
                             <a class="btn-small"
                                asp-area="Admin"
@@ -74,11 +77,6 @@
                         <td>2</td>
                         <td>Tiếng Nhật</td>
                         <td>ja</td>
-                        <td>
-                            <span class="status-badge status-active">
-                                Hoạt động
-                            </span>
-                        </td>
                         <td class="action-cell">
                             <a class="btn-small"
                                asp-area="Admin"
@@ -98,11 +96,6 @@
                         <td>3</td>
                         <td>Tiếng Hàn</td>
                         <td>ko</td>
-                        <td>
-                            <span class="status-badge status-active">
-                                Hoạt động
-                            </span>
-                        </td>
                         <td class="action-cell">
                             <a class="btn-small"
                                asp-area="Admin"
@@ -123,6 +116,6 @@
 
         </div>
 
-        @await Html.PartialAsync("~/Areas/Admin/Views/Shared/_Pagination.cshtml", 1)
+        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml"/>
     </div>
 </section>

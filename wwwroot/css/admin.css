@@ -191,6 +191,8 @@ textarea {
     height: 32px;
     border-radius: 5px;
     padding: 0 11px;
+    display: flex;
+    align-items: center;
 }
 
 .btn-dark {
@@ -229,24 +231,6 @@ textarea {
         border-bottom: 1px solid #e7e9ed;
         text-align: left;
     }
-
-.status-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 14px;
-    font-size: 10px;
-    font-weight: 600;
-}
-
-.status-active {
-    background: #dff5e9;
-    color: #16845b;
-}
-
-.status-inactive {
-    background: #e9edf2;
-    color: #667085;
-}
 
 .btn-small {
     display: inline-block;
@@ -289,86 +273,4 @@ textarea {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
-}
-
-.content-grid.question-grid {
-    display: grid;
-    grid-template-columns: 1.15fr .85fr;
-    gap: 16px;
-}
-
-.question-topbar {
-    margin: -18px -18px 18px;
-    background: #fff;
-    border-bottom: 1px solid #e2e5ea;
-    padding: 10px 18px;
-}
-
-.question-meta {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    font-size: 11px;
-    color: #667085;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 80px;
-    gap: 10px;
-}
-
-.form-group {
-    margin-bottom: 11px;
-}
-
-    .form-group label,
-    .answers-head label {
-        display: block;
-        font-size: 11px;
-        font-weight: 600;
-        color: #4b5565;
-        margin-bottom: 5px;
-    }
-
-.form-control {
-    width: 100%;
-    height: 32px;
-    border: 1px solid #d9dee7;
-    border-radius: 5px;
-    padding: 0 9px;
-    outline: 0;
-}
-
-.textarea {
-    height: 65px;
-    padding: 7px;
-    resize: vertical;
-}
-
-.answer-row {
-    display: grid;
-    grid-template-columns: 28px 1fr 22px;
-    gap: 6px;
-    align-items: center;
-    margin: 7px 0;
-}
-
-.answer-letter {
-    background: #f1f2f4;
-    border-radius: 4px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.editor-footer {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px solid #e5e7eb;
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
 }

@@ -5,7 +5,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Models
 {
     public class LearningProgress
     {
-        [Key]
         public int ProgressId { get; set; }
 
         public int UserId { get; set; }

@@ -1,5 +1,9 @@
 ﻿using HeThongHocNgoaiNguTrucTuyen.Data;
+using HeThongHocNgoaiNguTrucTuyen.Services;
+using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeThongHocNgoaiNguTrucTuyen
@@ -21,20 +25,39 @@ namespace HeThongHocNgoaiNguTrucTuyen
             });
             #endregion
 
-            #region Cau hinh xac thuc cookie va session
-            // Tai lieu trang https://www.red-gate.com/simple-talk/development/dotnet-development/using-auth-cookies-in-asp-net-core/
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(
-                    options =>
-                    {
-                        options.Cookie.HttpOnly = true;
-                        options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
-                        options.Cookie.SameSite = SameSiteMode.Lax;
-                    }
-                );
-            builder.Services.AddSession(
-                )
+
+            #region Cau hinh Cookie Authentication
+            builder.Services.AddAuthentication("cookie")
+                .AddCookie("cookie", options =>
+                {
+                    options.Cookie.Name = "ELearning.Auth.Cookie";
+                    options.LoginPath = "/Auth/Login";
+                    options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                    options.SlidingExpiration = true;
+                    options.AccessDeniedPath = "/Auth/Forbidden";
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
+                    
+                });
+
+            // Session
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            });
             #endregion
+
+
+
+            #region DI
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            #endregion
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -45,11 +68,13 @@ namespace HeThongHocNgoaiNguTrucTuyen
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

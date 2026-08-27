@@ -12,9 +12,6 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js" 
-    integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V" 
-    crossorigin="anonymous">
     </script>
     <!--Vi tri chen css cua view con required: false; neu file con khong khai bao section thi bo vi tri do trong cha-->
     @RenderSection("Styles", required: false)
@@ -37,19 +34,13 @@
                 <input type="text" placeholder="Tìm kiếm bài học..." />
             </div>
             <div class="user-icon">
-                <i class="fa-regular fa-user"></i>
+                <partial name="_UserMenu" />
             </div>
         </div>
     </header>
 
     <div class="app-layout">
-        <aside id="sidebar"
-            hx-boost="true"
-            hx-target="#main-content"
-            hx-select="#main-content"
-            hx-swap="outerHTML show:none"
-            hx-push-url="true"
-        >
+        <aside id="sidebar">
             <a class="sidebar-button active" asp-controller="Home" asp-action="Index">
                 <i class="fa-solid fa-house"></i>
                 <span>Trang chủ</span>
@@ -75,7 +66,6 @@
         </main>
     </div>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     <!-- Vi tri chen file Javascript cho view con -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>

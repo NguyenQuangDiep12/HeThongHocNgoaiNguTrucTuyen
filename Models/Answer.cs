@@ -4,7 +4,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Models
 {
     public class Answer
     {
-        [Key]
         public int AnswerId { get; set; }
 
         public int QuestionId { get; set; }

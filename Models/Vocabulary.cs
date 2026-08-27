@@ -4,7 +4,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Models
 {
     public class Vocabulary
     {
-        [Key]
         public int VocabularyId { get; set; }
 
         public int LessonId { get; set; }

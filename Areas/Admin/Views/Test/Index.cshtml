@@ -1,4 +1,24 @@
-﻿<section class="page-section">
+﻿
+@section Styles{
+    <style>
+        /* Test page */
+
+        .toolbar-left {
+            justify-content: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .search-control.wide {
+            min-width: 260px;
+        }
+
+        .data-table.compact {
+            font-size: 12px;
+        }
+    </style>
+}
+
+<section class="page-section">
 
     <div class="content-card">
 
@@ -28,18 +48,6 @@
                        placeholder="Tìm kiếm tên bài kiểm tra..." />
             </div>
 
-            <select class="select-control">
-                <option>Chọn bài học</option>
-            </select>
-
-            <select class="select-control">
-                <option>Trạng thái: Tất cả</option>
-            </select>
-
-            <button class="btn-light">
-                ⟳ Làm mới
-            </button>
-
         </div>
 
         <table class="data-table compact">
@@ -52,7 +60,6 @@
                     <th>Số câu hỏi</th>
                     <th>Điểm đạt</th>
                     <th>Thời gian</th>
-                    <th>Trạng thái</th>
                     <th>Ngày tạo</th>
                     <th>Thao tác</th>
                 </tr>
@@ -67,11 +74,6 @@
                     <td>20</td>
                     <td>70%</td>
                     <td>30 phút</td>
-                    <td>
-                        <span class="status-badge status-active">
-                            Đang hoạt động
-                        </span>
-                    </td>
                     <td>20/03/2026</td>
                     <td>✎　<span class="icon-danger">♜</span></td>
                 </tr>
@@ -83,11 +85,6 @@
                     <td>25</td>
                     <td>70%</td>
                     <td>30 phút</td>
-                    <td>
-                        <span class="status-badge status-active">
-                            Đang hoạt động
-                        </span>
-                    </td>
                     <td>18/03/2026</td>
                     <td>✎　<span class="icon-danger">♜</span></td>
                 </tr>
@@ -99,11 +96,6 @@
                     <td>30</td>
                     <td>70%</td>
                     <td>35 phút</td>
-                    <td>
-                        <span class="status-badge status-inactive">
-                            Ngừng hoạt động
-                        </span>
-                    </td>
                     <td>15/03/2026</td>
                     <td>✎　<span class="icon-danger">♜</span></td>
                 </tr>
@@ -115,11 +107,6 @@
                     <td>40</td>
                     <td>70%</td>
                     <td>45 phút</td>
-                    <td>
-                        <span class="status-badge status-active">
-                            Đang hoạt động
-                        </span>
-                    </td>
                     <td>10/03/2026</td>
                     <td>✎　<span class="icon-danger">♜</span></td>
                 </tr>
@@ -127,8 +114,7 @@
             </tbody>
         </table>
 
-        @await Html.PartialAsync(
-        "~/Areas/Admin/Views/Shared/_Pagination.cshtml", 1)
+        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
 
     </div>
 </section>

@@ -4,7 +4,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Models
 {
     public class Topic
     {
-        [Key]
         public int TopicId { get; set; }
 
         public int LanguageId { get; set; }

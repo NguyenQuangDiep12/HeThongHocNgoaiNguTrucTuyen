@@ -1,4 +1,16 @@
-﻿<section class="page-section">
+﻿
+
+@section Styles{
+    <style>
+        /* Topic page */
+
+        .topic-actions {
+            white-space: nowrap;
+        }
+    </style>
+}
+
+<section class="page-section">
 
     <div class="content-card">
 
@@ -45,7 +57,6 @@
                     <th>Tên chủ đề</th>
                     <th>Ngôn ngữ</th>
                     <th>Cấp độ</th>
-                    <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -58,11 +69,6 @@
                     <td>Tiếng Anh</td>
                     <td>A1</td>
                     <td>
-                        <span class="status-badge status-active">
-                            Hoạt động
-                        </span>
-                    </td>
-                    <td>
                         <a class="btn-small" href="#">Sửa</a>
                         <button class="btn-small danger">Xóa</button>
                     </td>
@@ -73,11 +79,6 @@
                     <td>Gia đình</td>
                     <td>Tiếng Nhật</td>
                     <td>N5</td>
-                    <td>
-                        <span class="status-badge status-active">
-                            Hoạt động
-                        </span>
-                    </td>
                     <td>
                         <a class="btn-small" href="#">Sửa</a>
                         <button class="btn-small danger">Xóa</button>
@@ -90,11 +91,6 @@
                     <td>Tiếng Hàn</td>
                     <td>Sơ cấp</td>
                     <td>
-                        <span class="status-badge status-active">
-                            Hoạt động
-                        </span>
-                    </td>
-                    <td>
                         <a class="btn-small" href="#">Sửa</a>
                         <button class="btn-small danger">Xóa</button>
                     </td>
@@ -103,10 +99,7 @@
             </tbody>
         </table>
 
-        @await Html.PartialAsync(
-        "~/Areas/Admin/Views/Shared/_Pagination.cshtml",
-                1
-                )
+        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
 
     </div>
 </section>
