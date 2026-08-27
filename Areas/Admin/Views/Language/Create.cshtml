@@ -1,0 +1,38 @@
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.LanguageRequest
+
+
+<div>
+    <div class="language-modal-header">
+        <h2>Tạo ngôn ngữ</h2>
+        <button type="button" class="language-modal-close" data-modal-close>&times;</button>
+
+    </div>
+    <form id="language-form"
+          asp-area="Admin"
+          asp-controller="Language"
+          asp-action="Create"
+          method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly">
+        </div>
+        <div class="language-form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" />
+            <span asp-validation-for="Name"></span>
+        </div>
+        <div class="language-form-group">
+            <label asp-for="Code"></label>
+            <input asp-for="Code" />
+            <span asp-validation-for="Code"></span>
+        </div>
+        <div class="language-form-group">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" />
+            <span asp-validation-for="Description"></span>
+        </div>
+        <div class="language-modal-footer">
+            <button type="button" class="language-btn-cancel" data-modal-close>Hủy</button>
+            <button type="submit" class="btn btn-dark">Tạo</button>
+        </div>
+    </form>
+</div>

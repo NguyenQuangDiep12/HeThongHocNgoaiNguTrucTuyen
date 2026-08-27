@@ -1,121 +1,266 @@
-﻿
+﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LanguageInfoResponse>
+
 @section Styles {
     <style>
-        /* Language page */
 
-        .table-wrap {
-        width: 100%;
+        /* =========================
+                   MODAL OVERLAY
+                ========================= */
+
+        #language-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.45);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .action-cell {
-        white-space: nowrap;
+            #language-modal-overlay.show {
+                display: flex;
+            }
+
+
+        /* =========================
+                   MODAL
+                ========================= */
+
+        #language-modal {
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
+
+
+        /* =========================
+                   MODAL HEADER
+                ========================= */
+
+        .language-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .language-modal-header h2 {
+                margin: 0;
+            }
+
+        .language-modal-close {
+            border: none;
+            background: transparent;
+            font-size: 30px;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+
+        /* =========================
+                   FORM
+                ========================= */
+
+        #language-form {
+            padding: 20px;
+        }
+
+        .language-form-group {
+            margin-bottom: 16px;
+        }
+
+            .language-form-group label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 600;
+            }
+
+            .language-form-group input {
+                width: 100%;
+                padding: 10px;
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+            }
+
+
+        /* =========================
+                   FOOTER
+                ========================= */
+
+        .language-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .language-btn-cancel {
+            padding: 8px 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #fff;
+            cursor: pointer;
+        }
+
     </style>
 }
+
 
 <section class="page-section">
 
     <div class="content-card">
-
         <div class="section-head">
-
             <h2>Danh sách ngôn ngữ</h2>
-
             <div class="toolbar">
-
                 <div class="search-control">
                     <span>⌕</span>
-                    <input type="text"
-                           placeholder="Tìm kiếm ngôn ngữ..." />
+                    <input type="text" placeholder="Tìm kiếm ngôn ngữ..." />
                 </div>
-
-                <a class="btn btn-dark"
+                <a id="create-button"
+                   class="btn btn-dark"
                    asp-area="Admin"
                    asp-controller="Language"
                    asp-action="Create">
                     + Thêm mới
                 </a>
-
             </div>
         </div>
-
         <div class="table-wrap">
-
             <table class="data-table">
-
                 <thead>
                     <tr>
                         <th>STT</th>
                         <th>Tên ngôn ngữ</th>
                         <th>Mã ngôn ngữ</th>
+                        <th>Mô tả</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
-
                 <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        var index = 1;
 
-                    <tr>
-                        <td>1</td>
-                        <td>Tiếng Anh</td>
-                        <td>en</td>
-                        <td class="action-cell">
-                            <a class="btn-small"
-                               asp-area="Admin"
-                               asp-controller="Language"
-                               asp-action="Edit"
-                               asp-route-id="1">
-                                Sửa
-                            </a>
+                        foreach (var language in Model)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td>@language.Name</td>
+                                <td>@language.Code</td>
+                                <td>@language.Description</td>
+                                <td class="action-cell">
+                                    <a class="btn-small edit-button"
+                                       asp-area="Admin"
+                                       asp-controller="Language"
+                                       asp-action="Edit"
+                                       asp-route-id="@language.LanguageId">
+                                        Sửa
+                                    </a>
+                                    <form asp-area="Admin"
+                                          asp-controller="Language"
+                                          asp-action="Delete"
+                                          asp-route-id="@language.LanguageId"
+                                          method="post"
+                                          style="display: inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn-small danger"
+                                                onclick="return confirm('Bạn có chắc muốn xóa ngôn ngữ này không?');">
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
 
-                            <button class="btn-small danger">
-                                Xóa
-                            </button>
-                        </td>
-                    </tr>
+                            <td colspan="5">
+                                Không có dữ liệu.
+                            </td>
 
-                    <tr>
-                        <td>2</td>
-                        <td>Tiếng Nhật</td>
-                        <td>ja</td>
-                        <td class="action-cell">
-                            <a class="btn-small"
-                               asp-area="Admin"
-                               asp-controller="Language"
-                               asp-action="Edit"
-                               asp-route-id="2">
-                                Sửa
-                            </a>
-
-                            <button class="btn-small danger">
-                                Xóa
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>Tiếng Hàn</td>
-                        <td>ko</td>
-                        <td class="action-cell">
-                            <a class="btn-small"
-                               asp-area="Admin"
-                               asp-controller="Language"
-                               asp-action="Edit"
-                               asp-route-id="3">
-                                Sửa
-                            </a>
-
-                            <button class="btn-small danger">
-                                Xóa
-                            </button>
-                        </td>
-                    </tr>
-
+                        </tr>
+                    }
                 </tbody>
             </table>
-
         </div>
-
-        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml"/>
+        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
     </div>
 </section>
+<div id="language-modal-overlay">
+
+    <div id="language-modal">
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const overlay = document.getElementById("language-modal-overlay");
+            const modal = document.getElementById("language-modal");
+            async function openModal(url) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw new Error("Không thể tải nội dung modal.");
+                    }
+                    const html = await response.text();
+                    modal.innerHTML = html;
+                    overlay.classList.add("show");
+                    document.body.style.overflow = "hidden";
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            function closeModal() {
+                overlay.classList.remove("show");
+                modal.innerHTML = "";
+                document.body.style.overflow = "";
+            }
+            const createButton = document.getElementById("create-button");
+            if (createButton) {
+            createButton.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    openModal(this.href);
+                });
+            }
+            document.addEventListener("click", function (e) {
+                const editButton = e.target.closest(".edit-button");
+                if (!editButton) {
+                    return;
+                }
+                e.preventDefault();
+                openModal(editButton.href);
+            });
+            document.addEventListener("click", function (e) {
+                const closeButton = e.target.closest("[data-modal-close]");
+                if (closeButton) {
+                    closeModal();
+                }
+            });
+            overlay.addEventListener("click", function (e) {
+                if (e.target === overlay) {
+                    closeModal();
+                }
+            });
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape" && overlay.classList.contains("show")) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+
+}

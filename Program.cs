@@ -56,6 +56,7 @@ namespace HeThongHocNgoaiNguTrucTuyen
 
             #region DI
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ILanguageService, LanguageService>();
             #endregion
 
             var app = builder.Build();

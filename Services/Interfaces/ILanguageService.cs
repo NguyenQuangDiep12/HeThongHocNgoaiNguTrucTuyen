@@ -5,9 +5,10 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services.Interfaces
 {
     public interface ILanguageService
     {
-        Task<List<LanguageInfoResponse>> GetLanguagesAsync(int pageSize, int pageNumber, string name,CancellationToken ct);
-        Task<bool> CreateLanguagesAsync(LanguageRequest request, CancellationToken ct);
-        Task<LanguageInfoResponse> UpdateLanguagesAsync(int id, LanguageRequest request, CancellationToken ct);
+        Task<List<LanguageInfoResponse>> GetLanguagesAsync(int pageSize, int pageNumber, string? name,CancellationToken ct);
+        Task<LanguageInfoResponse> GetLanguageByIdAsync(int Id, CancellationToken ct);
+        Task CreateLanguagesAsync(LanguageRequest request, CancellationToken ct);
+        Task<bool> UpdateLanguagesAsync(int id, LanguageRequest request, CancellationToken ct);
         Task<bool> DeleteLanguagesAsync(int id, CancellationToken ct);
     }
 }
