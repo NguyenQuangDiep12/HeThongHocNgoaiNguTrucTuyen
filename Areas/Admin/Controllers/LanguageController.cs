@@ -21,13 +21,19 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
         {
             var response = await _languageService.GetLanguagesAsync(pageSize, pageNumber, name ?? string.Empty, ct);
 
+            int languageCount = await _languageService.CountLanguagesAsync(name, ct);
+
+            ViewBag.PageNumber = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.Name = name ?? string.Empty;
+            ViewBag.TotalPages = (int)Math.Ceiling((decimal)languageCount / (decimal)pageSize);
+
             return View(response);
         }
-
         [HttpGet]
         public IActionResult Create()
         {
-            return PartialView();
+            return View();
         }
 
         [HttpPost]
@@ -36,14 +42,12 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return PartialView(request);
+                return View(request);
             }
 
             await _languageService.CreateLanguagesAsync(request, ct);
-
             return RedirectToAction(nameof(Index));
         }
-
         [HttpGet]
         public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
@@ -55,12 +59,9 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-
             ViewBag.LanguageId = id;
-
-            return PartialView(response);
+            return View(response);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, LanguageRequest request, CancellationToken ct)
@@ -68,31 +69,25 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.LanguageId = id;
-                return PartialView(request);
+                return View(request);
             }
-
             var language = await _languageService.UpdateLanguagesAsync(id, request, ct);
-
             if (!language)
             {
                 TempData["NotFound"] = "Ngon ngu khong ton tai";
                 return RedirectToAction(nameof(Index));
             }
-
             return RedirectToAction(nameof(Index));
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
             var response = await _languageService.DeleteLanguagesAsync(id, ct);
-
             if (!response)
             {
                 TempData["NotFound"] = "Khong tim thay ngon ngu can xoa";
             }
-
             return RedirectToAction(nameof(Index));
         }
     }

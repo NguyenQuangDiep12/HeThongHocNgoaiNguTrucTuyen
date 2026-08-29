@@ -1,0 +1,71 @@
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LessonInfoResponse
+
+@section Styles {
+    <style>
+        .lesson-detail {
+            padding: 10px 0;
+        }
+        .lesson-detail-row {
+            margin-bottom: 20px;
+        }
+        .lesson-detail-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .lesson-content-preview {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fff;
+            line-height: 1.7;
+        }
+        .lesson-detail-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+}
+<section class="page-section">
+    <div class="content-card">
+        <div class="section-head"><h2>Chi tiết bài học</h2></div>
+        <div class="lesson-detail">
+            <div class="lesson-detail-row">
+                <span class="lesson-detail-label">Tiêu đề bài học</span>
+                <div>@Model.Title</div>
+            </div>
+            <div class="lesson-detail-row">
+                <span class="lesson-detail-label">Ngôn ngữ</span>
+                <div>@Model.LanguageName</div>
+            </div>
+            <div class="lesson-detail-row">
+                <span class="lesson-detail-label">Chủ đề</span>
+                <div>@Model.TopicName</div>
+            </div>
+            <div class="lesson-detail-row">
+                <span class="lesson-detail-label">Mô tả</span>
+                <div>@Html.Raw(Model.Description)</div>
+            </div>
+            <div class="lesson-detail-row">
+                <span class="lesson-detail-label">Nội dung bài học</span>
+                <div class="lesson-content-preview">@Html.Raw(Model.Content)</div>
+            </div>
+            <div class="lesson-detail-actions">
+                <a class="btn btn-dark"
+                   asp-area="Admin"
+                   asp-controller="Lesson"
+                   asp-action="Edit"
+                   asp-route-id="@Model.LessonId">
+                    Sửa bài học
+                </a>
+                <a class="btn"
+                   asp-area="Admin"
+                   asp-controller="Lesson"
+                   asp-action="Index">
+                    Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,100 +1,230 @@
-﻿
-@section Styles {
-    <style>
-        /* Lesson page */
+﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LessonInfoResponse>
 
+@using System.Text.RegularExpressions
+
+@functions {
+    public string GetPreview(string? content, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return "";
+        }
+        var text = Regex.Replace(content, "<.*?>", string.Empty);
+        text = Regex.Replace(text, @"\s+", " ").Trim();
+        if (text.Length > maxLength)
+        {
+            return text.Substring(0, maxLength) + "...";
+        }
+        return text;
+    }
+}
+@{
+    int pageNumber = ViewBag.PageNumber ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int totalPages = ViewBag.TotalPages ?? 1;
+}
+@section Styles {
+
+    <style>
         .data-table.compact {
             font-size: 12px;
         }
-
         .select-control.small {
-            min-width: 100px;
+            min-width: 150px;
+        }
+        .lesson-title {
+            font-weight: 600;
+            color: #344054;
+        }
+        .lesson-description {
+            max-width: 180px;
+            color: #667085;
+            line-height: 1.5;
+        }
+        .lesson-content-preview {
+            max-width: 300px;
+            color: #475467;
+            line-height: 1.5;
+        }
+        .lesson-content-empty {
+            color: #98a2b3;
+            font-style: italic;
+        }
+        .action-cell {
+            white-space: nowrap;
         }
     </style>
 }
 <section class="page-section">
-
-    <div>
-
-        <div class="content-card">
-
-            <div class="section-head">
-
-                <h2>Danh sách bài học</h2>
-
-                <div class="toolbar">
-
-                    <select class="select-control small">
-                        <option>Anh</option>
-                    </select>
-
-                    <select class="select-control small">
-                        <option>Chào hỏi</option>
-                    </select>
-
-                    <a class="btn btn-dark"
-                       asp-area="Admin"
-                       asp-controller="Lesson"
-                       asp-action="Create">
-                        + Thêm
-                    </a>
-
+<div class="content-card">
+    <div class="section-head">
+        <h2>Danh sách bài học</h2>
+        <div class="toolbar">
+            <form asp-area="Admin"
+                    asp-controller="Lesson"
+                    asp-action="Index"
+                    method="get">
+                <div class="search-control">
+                    <span>⌕</span>
+                    <input type="text" name="title" value="@ViewBag.Title" placeholder="Tìm kiếm bài học..." />
+                    <input type="hidden" name="pageSize" value="@pageSize" />
+                    <input type="hidden" name="pageNumber" value="1" />
+                    <button type="submit" class="btn-small"> Tìm kiếm </button>
                 </div>
-            </div>
-
-            <table class="data-table compact">
-
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Tiêu đề bài học</th>
-                        <th>Ngôn ngữ</th>
-                        <th>Chủ đề</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    <tr>
-                        <td>1</td>
-                        <td>Lesson 1: Chào hỏi cơ bản</td>
-                        <td>Tiếng Anh</td>
-                        <td>Chào hỏi</td>
-                        <td>
-                            <a class="btn-small" href="#">Sửa</a>
-                            <button class="btn-small danger">Xóa</button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td>Lesson 2: Giới thiệu bản thân</td>
-                        <td>Tiếng Anh</td>
-                        <td>Chào hỏi</td>
-                        <td>
-                            <a class="btn-small" href="#">Sửa</a>
-                            <button class="btn-small danger">Xóa</button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td>Lesson 3: Các câu hỏi thông dụng</td>
-                        <td>Tiếng Anh</td>
-                        <td>Chào hỏi</td>
-                        <td>
-                            <a class="btn-small" href="#">Sửa</a>
-                            <button class="btn-small danger">Xóa</button>
-                        </td>
-                    </tr>
-
-                </tbody>
-            </table>
-
-            <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
-
+            </form>
+            <a class="btn btn-dark"
+                asp-area="Admin"
+                asp-controller="Lesson"
+                asp-action="Create">
+                + Thêm bài học
+            </a>
         </div>
     </div>
+    <div class="table-wrap">
+        <table class="data-table compact">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tiêu đề bài học</th>
+                    <th>Ngôn ngữ</th>
+                    <th>Chủ đề</th>
+                    <th>Mô tả</th>
+                    <th>Nội dung</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
 
+            @if (Model != null && Model.Any())
+            {
+                var index = (pageNumber - 1) * pageSize + 1;
+                foreach (var lesson in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td><div class="lesson-title">@lesson.Title</div></td>
+                        <td>@lesson.LanguageName</td>
+                        <td>@lesson.TopicName</td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(lesson.Description))
+                            {
+                                <div class="lesson-description"> @GetPreview(lesson.Description, 60) </div>
+                            }else{
+                                <span class="lesson-content-empty">Chưa có mô tả</span>
+                            }
+                        </td>
+                        <td>
+
+                            @if (!string.IsNullOrWhiteSpace(lesson.Content))
+                            {
+                                <div class="lesson-content-preview">@GetPreview(lesson.Content,100)</div>
+                            }
+                            else
+                            {
+                                <span class="lesson-content-empty">Chưa có nội dung</span>
+                            }
+                        </td>
+                        <td class="action-cell">
+                            <a class="btn-small"
+                                asp-area="Admin"
+                                asp-controller="Lesson"
+                                asp-action="Details"
+                                asp-route-id="@lesson.LessonId">
+                                Xem
+                            </a>
+                            <a class="btn-small"
+                                asp-area="Admin"
+                                asp-controller="Lesson"
+                                asp-action="Edit"
+                                asp-route-id="@lesson.LessonId">
+                                Sửa
+                            </a>
+                            <a class="btn-small"
+                                asp-area="Admin"
+                                asp-controller="Vocabulary"
+                                asp-action="Index"
+                                asp-route-lessonId="@lesson.LessonId">
+                                Từ vựng
+                            </a>
+                            <form asp-area="Admin"
+                                    asp-controller="Lesson"
+                                    asp-action="Delete"
+                                    asp-route-id="@lesson.LessonId"
+                                    method="post"
+                                    style="display:inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn-small danger" onclick="return confirm('Bạn có chắc muốn xóa bài học này không?')"> Xóa </button>
+                            </form>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr><td colspan="7">Không có dữ liệu bài học.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+    @if (totalPages > 1)
+    {
+        <div class="pagination">
+            @if (pageNumber > 1)
+            {
+                <a asp-area="Admin"
+                    asp-controller="Lesson"
+                    asp-action="Index"
+                    asp-route-pageNumber="@(pageNumber - 1)"
+                    asp-route-pageSize="@pageSize"
+                    asp-route-title="@ViewBag.Title"
+                    asp-route-topicId="@ViewBag.TopicId"
+                    class="pagination-btn">
+                    &lt;
+                </a>
+            }
+            else
+            {
+                <span class="pagination-btn disabled">&lt;</span>
+            }
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                if (i == pageNumber)
+                {
+                    <span class="pagination-btn disabled">@i</span>
+                }
+                else
+                {
+                    <a asp-area="Admin"
+                        asp-controller="Lesson"
+                        asp-action="Index"
+                        asp-route-pageNumber="@i"
+                        asp-route-pageSize="@pageSize"
+                        asp-route-title="@ViewBag.Title"
+                        asp-route-topicId="@ViewBag.TopicId"
+                        class="pagination-btn">
+                        @i
+                    </a>
+                }
+            }
+            @if (pageNumber < totalPages)
+            {
+                <a asp-area="Admin"
+                    asp-controller="Lesson"
+                    asp-action="Index"
+                    asp-route-pageNumber="@(pageNumber + 1)"
+                    asp-route-pageSize="@pageSize"
+                    asp-route-title="@ViewBag.Title"
+                    asp-route-topicId="@ViewBag.TopicId"
+                    class="pagination-btn">
+                    &gt;
+                </a>
+            }
+            else
+            {
+                <span class="pagination-btn disabled">&gt;</span>
+            }
+        </div>
+    }
+    </div>
 </section>

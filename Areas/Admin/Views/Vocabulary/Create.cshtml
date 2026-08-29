@@ -1,0 +1,75 @@
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.VocabularyRequest
+@{
+    var lessons = ViewBag.Lessons as List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LessonInfoResponse>;
+}
+<section class="page-section">
+    <div class="content-card">
+        <div class="section-head"><h2>Thêm từ vựng</h2></div>
+        <form asp-area="Admin"
+              asp-controller="Vocabulary"
+              asp-action="Create"
+              method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label asp-for="LessonId">Bài học</label>
+                <select asp-for="LessonId" class="form-control">
+                    <option value="0"> -- Chọn bài học -- </option>
+                    @if (lessons != null)
+                    {
+                        foreach (var lesson in lessons)
+                        {
+                            <option value="@lesson.LessonId">@lesson.Title</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="LessonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Word">Từ vựng</label>
+                <input asp-for="Word" class="form-control" placeholder="Ví dụ: hello" />
+                <span asp-validation-for="Word" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Meaning">Nghĩa</label>
+                <input asp-for="Meaning" class="form-control" placeholder="Ví dụ: xin chào" />
+                <span asp-validation-for="Meaning" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phoenic">Phiên âm</label>
+                <input asp-for="Phoenic" class="form-control" placeholder="/həˈləʊ/" />
+                <span asp-validation-for="Phoenic" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Example">Ví dụ</label>
+                <textarea asp-for="Example" class="form-control" id="editor" rows="4" placeholder="Ví dụ: Hello, nice to meet you."></textarea>
+                <span asp-validation-for="Example" class="text-danger"></span>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-dark">Lưu</button>
+                <a asp-area="Admin"
+                   asp-controller="Vocabulary"
+                   asp-action="Index"
+                   asp-route-lessonId="@Model.LessonId"
+                   class="btn">
+                    Quay lại
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script>
+            document.querySelectorAll('.ckeditor').forEach(element => {
+
+            ClassicEditor.create(element, {
+                    toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+        });
+    </script>
+}

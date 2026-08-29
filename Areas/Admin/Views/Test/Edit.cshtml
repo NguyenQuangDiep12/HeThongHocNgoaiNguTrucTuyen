@@ -1,0 +1,188 @@
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.TestRequest
+
+@using HeThongHocNgoaiNguTrucTuyen.Models.Enums
+
+<section class="page-section">
+
+    <div class="content-card">
+
+        <div class="section-head">
+
+            <h2>Cập nhật bài kiểm tra</h2>
+
+            <a asp-area="Admin"
+               asp-controller="Test"
+               asp-action="Index"
+               class="btn btn-light">
+
+                ← Quay lại
+
+            </a>
+
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="Test"
+              asp-action="Edit"
+              asp-route-id="@ViewBag.TestId"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger">
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="Title">
+                    Tên bài kiểm tra
+                </label>
+
+                <input asp-for="Title" />
+
+                <span asp-validation-for="Title"></span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="TestMode">
+                    Loại bài kiểm tra
+                </label>
+
+                <select asp-for="TestMode"
+                        id="TestMode">
+
+                    <option value="@TestMode.PART">
+                        Part Test
+                    </option>
+
+                    <option value="@TestMode.FULL">
+                        Full Test
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group"
+                 id="part-container">
+
+                <label asp-for="PartNumber">
+                    Chọn Part
+                </label>
+
+                <select asp-for="PartNumber">
+
+                    <option value="">
+                        -- Chọn Part --
+                    </option>
+
+                    @for (int i = 1; i <= 7; i++)
+                    {
+                        <option value="@i">
+                            Part @i
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="PartNumber"></span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="DurationMinutes">
+                    Thời gian làm bài (phút)
+                </label>
+
+                <input asp-for="DurationMinutes"
+                       type="number"
+                       min="1" />
+
+                <span asp-validation-for="DurationMinutes"></span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="Description">
+                    Mô tả
+                </label>
+
+                <textarea asp-for="Description"
+                          rows="5"></textarea>
+
+                <span asp-validation-for="Description"></span>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a asp-area="Admin"
+                   asp-controller="Test"
+                   asp-action="Index"
+                   class="btn btn-light">
+
+                    Quay lại
+
+                </a>
+
+                <button type="submit"
+                        class="btn btn-dark">
+
+                    Lưu thay đổi
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+@section Scripts
+{
+    <script>
+
+        const testMode =
+            document.getElementById("TestMode");
+
+        const partContainer =
+            document.getElementById("part-container");
+
+        const partSelect =
+            document.querySelector(
+                '[name="PartNumber"]'
+            );
+
+        function updatePartVisibility() {
+
+            if (testMode.value === "1") {
+
+                partContainer.style.display =
+                    "none";
+
+                partSelect.value = "";
+
+            }
+            else {
+
+                partContainer.style.display =
+                    "block";
+            }
+        }
+
+        testMode.addEventListener(
+            "change",
+            updatePartVisibility
+        );
+
+        updatePartVisibility();
+
+    </script>
+}

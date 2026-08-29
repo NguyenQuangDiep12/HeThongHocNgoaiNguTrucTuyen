@@ -1,105 +1,169 @@
-﻿
+﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.TopicInfoResponse>
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
 
-@section Styles{
-    <style>
-        /* Topic page */
-
-        .topic-actions {
-            white-space: nowrap;
-        }
-    </style>
+@{
+    int pageNumber = ViewBag.PageNumber ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string currentName = Context.Request.Query["Name"].ToString();
+    string currentLanguageId = Context.Request.Query["LanguageId"].ToString();
+    string currentLevel = Context.Request.Query["Level"].ToString();
+    var languages = ViewBag.Languages as List<LanguageInfoResponse> ?? new List<LanguageInfoResponse>();
+    var levels = ViewBag.Levels as List<string> ?? new List<string>();
 }
-
 <section class="page-section">
-
     <div class="content-card">
-
         <div class="section-head">
-
             <h2>Danh sách chủ đề</h2>
-
             <div class="toolbar">
-
-                <div class="search-control">
-                    <span>⌕</span>
-                    <input type="text"
-                           placeholder="Tìm kiếm chủ đề..." />
-                </div>
-
-                <select class="select-control">
-                    <option>Ngôn ngữ: Tất cả</option>
-                    <option>Tiếng Anh</option>
-                    <option>Tiếng Nhật</option>
-                </select>
-
-                <select class="select-control">
-                    <option>Cấp độ: Tất cả</option>
-                    <option>A1</option>
-                    <option>A2</option>
-                    <option>B1</option>
-                </select>
-
-                <a class="btn btn-dark"
-                   asp-area="Admin"
+                <form asp-area="Admin"
+                      asp-controller="Topic"
+                      asp-action="Index"
+                      method="get"
+                      class="topic-filter-form">
+                    <div class="search-control">
+                        <input type="text" name="Name" value="@currentName" placeholder="Tìm kiếm chủ đề..." />
+                    </div>
+                    <select class="select-control" name="LanguageId">
+                        <option value="0">
+                            Ngôn ngữ: Tất cả
+                        </option>
+                        @foreach (var language in languages)
+                        {
+                            <option value="@language.LanguageId" selected="@(currentLanguageId == language.LanguageId.ToString())">
+                                @language.Name
+                            </option>
+                        }
+                    </select>
+                    <select class="select-control" name="Level">
+                        <option value="">
+                            Cấp độ: Tất cả
+                        </option>
+                        @foreach (var level in levels)
+                        {
+                            <option value="@level" selected="@(currentLevel == level)">
+                                @level
+                            </option>
+                        }
+                    </select>
+                    <input type="hidden" name="pageSize" value="@pageSize" />
+                    <input type="hidden" name="pageNumber" value="1" />
+                    <button type="submit" class="btn">Lọc</button>
+                </form>
+                <a asp-area="Admin"
                    asp-controller="Topic"
-                   asp-action="Create">
+                   asp-action="Create"
+                   class="btn btn-dark">
                     + Thêm mới
                 </a>
-
             </div>
         </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên chủ đề</th>
+                        <th>Ngôn ngữ</th>
+                        <th>Cấp độ</th>
+                        <th>Mô tả</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        var index = (pageNumber - 1) * pageSize + 1;
+                        foreach (var topic in Model)
+                        {
+                            <tr>
+                            <td>@index</td>
+                            <td>@topic.Name</td>
+                            <td>@topic.LanguageName</td>
+                            <td>@topic.Level</td>
+                            <td>@topic.Description</td>
+                                <td class="action-cell">
+                                    <a asp-area="Admin"
+                                       asp-controller="Topic"
+                                       asp-action="Edit"
+                                       asp-route-id="@topic.TopicId"
+                                       class="btn-small">
+                                        Sửa
 
-        <table class="data-table">
-
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Tên chủ đề</th>
-                    <th>Ngôn ngữ</th>
-                    <th>Cấp độ</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                <tr>
-                    <td>1</td>
-                    <td>Chào hỏi</td>
-                    <td>Tiếng Anh</td>
-                    <td>A1</td>
-                    <td>
-                        <a class="btn-small" href="#">Sửa</a>
-                        <button class="btn-small danger">Xóa</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>Gia đình</td>
-                    <td>Tiếng Nhật</td>
-                    <td>N5</td>
-                    <td>
-                        <a class="btn-small" href="#">Sửa</a>
-                        <button class="btn-small danger">Xóa</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>3</td>
-                    <td>Du lịch</td>
-                    <td>Tiếng Hàn</td>
-                    <td>Sơ cấp</td>
-                    <td>
-                        <a class="btn-small" href="#">Sửa</a>
-                        <button class="btn-small danger">Xóa</button>
-                    </td>
-                </tr>
-
-            </tbody>
-        </table>
-
-        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
-
+                                    </a>
+                                    <form asp-area="Admin"
+                                          asp-controller="Topic"
+                                          asp-action="Delete"
+                                          asp-route-id="@topic.TopicId"
+                                          method="post"
+                                          style="display: inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                                class="btn-small danger"
+                                                onclick="return confirm('Bạn có chắc muốn xóa chủ đề này không?');">
+                                            Xóa
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6">Không có dữ liệu.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (totalPages > 1)
+        {
+            <div class="pagination">
+                @if (pageNumber > 1)
+                {
+                    <a asp-area="Admin"
+                       asp-controller="Topic"
+                       asp-action="Index"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@(pageNumber - 1)"
+                       asp-route-Name="@currentName"
+                       asp-route-LanguageId="@currentLanguageId"
+                       asp-route-Level="@currentLevel"
+                       class="pagination-btn">
+                        &lt;
+                    </a>
+                }
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <a asp-area="Admin"
+                       asp-controller="Topic"
+                       asp-action="Index"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@i"
+                       asp-route-Name="@currentName"
+                       asp-route-LanguageId="@currentLanguageId"
+                       asp-route-Level="@currentLevel"
+                       class="pagination-btn @(i == pageNumber ? "active" : "")">
+                        @i
+                    </a>
+                }
+                @if (pageNumber < totalPages)
+                {
+                    <a asp-area="Admin"
+                       asp-controller="Topic"
+                       asp-action="Index"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@(pageNumber + 1)"
+                       asp-route-Name="@currentName"
+                       asp-route-LanguageId="@currentLanguageId"
+                       asp-route-Level="@currentLevel"
+                       class="pagination-btn">
+                        &gt;
+                    </a>
+                }
+            </div>
+        }
     </div>
 </section>

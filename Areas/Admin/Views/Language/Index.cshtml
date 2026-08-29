@@ -1,140 +1,67 @@
 ﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LanguageInfoResponse>
 
-@section Styles {
-    <style>
-
-        /* =========================
-                   MODAL OVERLAY
-                ========================= */
-
-        #language-modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.45);
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-            #language-modal-overlay.show {
-                display: flex;
-            }
-
-
-        /* =========================
-                   MODAL
-                ========================= */
-
-        #language-modal {
-            width: 100%;
-            max-width: 550px;
-            max-height: 90vh;
-            overflow-y: auto;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-
-        /* =========================
-                   MODAL HEADER
-                ========================= */
-
-        .language-modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-
-            .language-modal-header h2 {
-                margin: 0;
-            }
-
-        .language-modal-close {
-            border: none;
-            background: transparent;
-            font-size: 30px;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-
-        /* =========================
-                   FORM
-                ========================= */
-
-        #language-form {
-            padding: 20px;
-        }
-
-        .language-form-group {
-            margin-bottom: 16px;
-        }
-
-            .language-form-group label {
-                display: block;
-                margin-bottom: 6px;
-                font-weight: 600;
-            }
-
-            .language-form-group input {
-                width: 100%;
-                padding: 10px;
-                box-sizing: border-box;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-            }
-
-
-        /* =========================
-                   FOOTER
-                ========================= */
-
-        .language-modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .language-btn-cancel {
-            padding: 8px 16px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            background: #fff;
-            cursor: pointer;
-        }
-
-    </style>
+@{
+    int pageNumber = ViewBag.PageNumber ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string name = ViewBag.Name ?? string.Empty;
 }
-
 
 <section class="page-section">
 
     <div class="content-card">
+
         <div class="section-head">
+
             <h2>Danh sách ngôn ngữ</h2>
+
             <div class="toolbar">
-                <div class="search-control">
-                    <span>⌕</span>
-                    <input type="text" placeholder="Tìm kiếm ngôn ngữ..." />
-                </div>
-                <a id="create-button"
-                   class="btn btn-dark"
-                   asp-area="Admin"
+
+                <form asp-area="Admin"
+                      asp-controller="Language"
+                      asp-action="Index"
+                      method="get">
+
+                    <div class="search-control">
+
+                        <input type="text"
+                               name="name"
+                               value="@name"
+                               placeholder="Tìm kiếm ngôn ngữ..." />
+
+                        <input type="hidden"
+                               name="pageSize"
+                               value="@pageSize" />
+
+                        <button type="submit"
+                                class="btn">
+                            Tìm kiếm
+                        </button>
+
+                    </div>
+
+                </form>
+
+                <a asp-area="Admin"
                    asp-controller="Language"
-                   asp-action="Create">
+                   asp-action="Create"
+                   class="btn btn-dark">
+
                     + Thêm mới
+
                 </a>
+
             </div>
+
         </div>
+
+
         <div class="table-wrap">
+
             <table class="data-table">
+
                 <thead>
+
                     <tr>
                         <th>STT</th>
                         <th>Tên ngôn ngữ</th>
@@ -142,42 +69,71 @@
                         <th>Mô tả</th>
                         <th>Hành động</th>
                     </tr>
+
                 </thead>
+
                 <tbody>
+
                     @if (Model != null && Model.Any())
                     {
-                        var index = 1;
+                        var index = (pageNumber - 1) * pageSize + 1;
 
                         foreach (var language in Model)
                         {
                             <tr>
-                                <td>@index</td>
-                                <td>@language.Name</td>
-                                <td>@language.Code</td>
-                                <td>@language.Description</td>
+
+                                <td>
+                                    @index
+                                </td>
+
+                                <td>
+                                    @language.Name
+                                </td>
+
+                                <td>
+                                    @language.Code
+                                </td>
+
+                                <td>
+                                    @language.Description
+                                </td>
+
                                 <td class="action-cell">
-                                    <a class="btn-small edit-button"
-                                       asp-area="Admin"
+
+                                    <a asp-area="Admin"
                                        asp-controller="Language"
                                        asp-action="Edit"
-                                       asp-route-id="@language.LanguageId">
+                                       asp-route-id="@language.LanguageId"
+                                       class="btn-small">
+
                                         Sửa
+
                                     </a>
+
+
                                     <form asp-area="Admin"
                                           asp-controller="Language"
                                           asp-action="Delete"
                                           asp-route-id="@language.LanguageId"
                                           method="post"
                                           style="display: inline;">
+
                                         @Html.AntiForgeryToken()
+
                                         <button type="submit"
                                                 class="btn-small danger"
                                                 onclick="return confirm('Bạn có chắc muốn xóa ngôn ngữ này không?');">
+
                                             Xóa
+
                                         </button>
+
                                     </form>
+
                                 </td>
+
                             </tr>
+
                             index++;
                         }
                     }
@@ -191,76 +147,68 @@
 
                         </tr>
                     }
+
                 </tbody>
+
             </table>
+
         </div>
-        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
+
+
+        @if (totalPages > 1)
+        {
+            <div class="pagination">
+
+                @if (pageNumber > 1)
+                {
+                    <a asp-area="Admin"
+                       asp-controller="Language"
+                       asp-action="Index"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@(pageNumber - 1)"
+                       asp-route-name="@name"
+                       class="pagination-btn">
+
+                        &lt;
+
+                    </a>
+                }
+
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <a asp-area="Admin"
+                       asp-controller="Language"
+                       asp-action="Index"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@i"
+                       asp-route-name="@name"
+                       class="pagination-btn @(i == pageNumber ? "active" : "")">
+
+                        @i
+
+                    </a>
+                }
+
+
+                @if (pageNumber < totalPages)
+                {
+                    <a asp-area="Admin"
+                       asp-controller="Language"
+                       asp-action="Index"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@(pageNumber + 1)"
+                       asp-route-name="@name"
+                       class="pagination-btn">
+
+                        &gt;
+
+                    </a>
+                }
+
+            </div>
+        }
+
     </div>
+
 </section>
-<div id="language-modal-overlay">
-
-    <div id="language-modal">
-    </div>
-
-</div>
-
-@section Scripts {
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const overlay = document.getElementById("language-modal-overlay");
-            const modal = document.getElementById("language-modal");
-            async function openModal(url) {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error("Không thể tải nội dung modal.");
-                    }
-                    const html = await response.text();
-                    modal.innerHTML = html;
-                    overlay.classList.add("show");
-                    document.body.style.overflow = "hidden";
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-            function closeModal() {
-                overlay.classList.remove("show");
-                modal.innerHTML = "";
-                document.body.style.overflow = "";
-            }
-            const createButton = document.getElementById("create-button");
-            if (createButton) {
-            createButton.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    openModal(this.href);
-                });
-            }
-            document.addEventListener("click", function (e) {
-                const editButton = e.target.closest(".edit-button");
-                if (!editButton) {
-                    return;
-                }
-                e.preventDefault();
-                openModal(editButton.href);
-            });
-            document.addEventListener("click", function (e) {
-                const closeButton = e.target.closest("[data-modal-close]");
-                if (closeButton) {
-                    closeModal();
-                }
-            });
-            overlay.addEventListener("click", function (e) {
-                if (e.target === overlay) {
-                    closeModal();
-                }
-            });
-            document.addEventListener("keydown", function (e) {
-                if (e.key === "Escape" && overlay.classList.contains("show")) {
-                    closeModal();
-                }
-            });
-        });
-    </script>
-
-}

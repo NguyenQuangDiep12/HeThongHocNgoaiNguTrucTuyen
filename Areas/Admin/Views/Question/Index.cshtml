@@ -1,384 +1,277 @@
-﻿
-@section Styles{
-    <style>
-        .content-grid.question-grid {
-            display: grid;
-            grid-template-columns: 1.15fr .85fr;
-            gap: 16px;
-        }
+﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.QuestionInfoResponse>
 
-        .question-topbar {
-            margin: -18px -18px 18px;
-            background: #fff;
-            border-bottom: 1px solid #e2e5ea;
-            padding: 10px 18px;
-        }
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
 
-        .question-meta {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
-            font-size: 11px;
-            color: #667085;
-        }
+@{
+    var tests =
+        ViewBag.Tests as List<TestInfoResponse>
+        ?? new List<TestInfoResponse>();
 
-        .question-editor h2 {
-            margin: 0 0 14px;
-            font-size: 14px;
-        }
+    int pageNumber =
+        ViewBag.PageNumber ?? 1;
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 80px;
-            gap: 10px;
-        }
+    int pageSize =
+        ViewBag.PageSize ?? 10;
 
-        .form-group {
-            margin-bottom: 11px;
-        }
+    int totalPages =
+        ViewBag.TotalPages ?? 1;
 
-            .form-group label,
-            .answers-head label {
-                display: block;
-                font-size: 11px;
-                font-weight: 600;
-                color: #4b5565;
-                margin-bottom: 5px;
-            }
+    int filterTestId =
+        ViewBag.FilterTestId ?? 0;
 
-        .form-control {
-            width: 100%;
-            height: 32px;
-            border: 1px solid #d9dee7;
-            border-radius: 5px;
-            padding: 0 9px;
-            outline: 0;
-        }
-
-        .textarea {
-            height: 65px;
-            padding: 7px;
-            resize: vertical;
-        }
-
-        .answer-row {
-            display: grid;
-            grid-template-columns: 28px 1fr 22px;
-            gap: 6px;
-            align-items: center;
-            margin: 7px 0;
-        }
-
-        .answer-letter {
-            background: #f1f2f4;
-            border-radius: 4px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .editor-footer {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-        }
-    </style>
+    int? filterPartNumber =
+        ViewBag.FilterPartNumber;
 }
 
 <section class="page-section">
 
-    <div class="question-topbar">
+    <div class="content-card">
 
-        <div class="question-meta">
+        <div class="section-head">
 
-            <strong>Bài kiểm tra đang chọn:</strong>
+            <div>
+                <h2>Danh sách câu hỏi</h2>
+            </div>
 
-            <select class="select-control accent">
-                <option>
-                    Bài kiểm tra A1 - Chủ đề 1
-                </option>
-            </select>
+            <a class="btn btn-dark"
+               asp-area="Admin"
+               asp-controller="Question"
+               asp-action="Create">
 
-            <span>
-                Bài học:
-                <strong>A1. Quản lý ngôn ngữ / chủ đề</strong>
-            </span>
+                + Thêm câu hỏi
 
-            <span>
-                Số câu hỏi:
-                <strong>20</strong>
-            </span>
-
-            <span>
-                Điểm đạt:
-                <strong>70%</strong>
-            </span>
-
-            <span>
-                Thời gian:
-                <strong>30 phút</strong>
-            </span>
+            </a>
 
         </div>
 
-    </div>
+        <div class="toolbar">
 
-    <div class="content-grid question-grid">
+            <form asp-area="Admin"
+                  asp-controller="Question"
+                  asp-action="Index"
+                  method="get">
 
-        <div class="content-card">
+                <select name="TestId">
 
-            <div class="section-head">
-
-                <div>
-                    <span class="page-tag purple">
-                        PAGE 2
-                    </span>
-
-                    <h2 class="inline-title">
-                        Danh sách câu hỏi
-                    </h2>
-                </div>
-
-                <select class="select-control">
-                    <option>
-                        Loại câu hỏi: Tất cả
+                    <option value="0">
+                        -- Tất cả bài kiểm tra --
                     </option>
-                    <option>Trắc nghiệm</option>
-                    <option>Điền từ</option>
-                    <option>Nghe hiểu</option>
+
+                    @foreach (var test in tests)
+                    {
+                        <option value="@test.TestId"
+                                selected="@(filterTestId == test.TestId)">
+
+                            @test.Title
+
+                        </option>
+                    }
+
                 </select>
 
-            </div>
+                <select name="PartNumber">
 
-            <div class="search-control search-full">
-                <span>⌕</span>
-                <input type="text"
-                       placeholder="Tìm kiếm câu hỏi..." />
-            </div>
+                    <option value="">
+                        -- Tất cả Part --
+                    </option>
 
-            <table class="data-table compact">
+                    @for (int i = 1; i <= 7; i++)
+                    {
+                        <option value="@i"
+                                selected="@(filterPartNumber == i)">
+
+                            Part @i
+
+                        </option>
+                    }
+
+                </select>
+
+                <input type="hidden"
+                       name="pageSize"
+                       value="@pageSize" />
+
+                <button type="submit"
+                        class="btn btn-dark">
+
+                    Lọc
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="table-wrap">
+
+            <table class="data-table">
 
                 <thead>
+
                     <tr>
-                        <th>#</th>
-                        <th>Nội dung câu hỏi</th>
-                        <th>Loại câu hỏi</th>
-                        <th>Điểm</th>
+                        <th>STT</th>
+
+                        <th>Bài kiểm tra</th>
+
+                        <th>Part</th>
+
+                        <th>Nội dung</th>
+
+                        <th>Loại</th>
+
+                        <th>Thứ tự</th>
+
+                        <th>Số đáp án</th>
+
                         <th>Thao tác</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
 
-                    <tr class="selected-row">
-                        <td>1</td>
-                        <td>
-                            Chọn từ đúng để điền vào chỗ trống...
-                        </td>
-                        <td>Trắc nghiệm</td>
-                        <td>1</td>
-                        <td>
-                            ✎　<span class="icon-danger">♜</span>
-                        </td>
-                    </tr>
+                    @if (Model != null && Model.Any())
+                    {
+                        var index =
+                        (pageNumber - 1) * pageSize + 1;
 
-                    <tr>
-                        <td>2</td>
-                        <td>Từ nào sau đây là danh từ?</td>
-                        <td>Trắc nghiệm</td>
-                        <td>1</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
+                        foreach (var question in Model)
+                        {
+                            <tr>
 
-                    <tr>
-                        <td>3</td>
-                        <td>
-                            Điền dạng đúng của động từ trong ngoặc...
-                        </td>
-                        <td>Điền từ</td>
-                        <td>1</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
+                                <td>
+                                    @index
+                                </td>
 
-                    <tr>
-                        <td>4</td>
-                        <td>Nghe và chọn đáp án đúng...</td>
-                        <td>Nghe hiểu</td>
-                        <td>2</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
+                                <td>
+                                    @question.TestTitle
+                                </td>
 
-                    <tr>
-                        <td>5</td>
-                        <td>
-                            Sắp xếp các từ sau thành câu đúng...
+                                <td>
+                                    @(question.PartNumber.HasValue
+                                                                ? $"Part {question.PartNumber}"
+                                                                : "-")
                         </td>
-                        <td>Sắp xếp câu</td>
-                        <td>2</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>
-                            Sắp xếp các từ sau thành câu đúng...
-                        </td>
-                        <td>Sắp xếp câu</td>
-                        <td>2</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>
-                            Sắp xếp các từ sau thành câu đúng...
-                        </td>
-                        <td>Sắp xếp câu</td>
-                        <td>2</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>
-                            Sắp xếp các từ sau thành câu đúng...
-                        </td>
-                        <td>Sắp xếp câu</td>
-                        <td>2</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
-                    <tr>
-                        <td>9</td>
-                        <td>
-                            Sắp xếp các từ sau thành câu đúng...
-                        </td>
-                        <td>Sắp xếp câu</td>
-                        <td>2</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
-                    <tr>
-                        <td>10</td>
-                        <td>
-                            Sắp xếp các từ sau thành câu đúng...
-                        </td>
-                        <td>Sắp xếp câu</td>
-                        <td>2</td>
-                        <td>✎　<span class="icon-danger">♜</span></td>
-                    </tr>
+
+                                <td>
+                                    @question.Content
+                                </td>
+
+                                <td>
+                                    @question.QuestionTypeDisplay
+                                </td>
+
+                                <td>
+                                    @question.QuestionOrder
+                                </td>
+
+                                <td>
+                                    @question.AnswerCount
+                                </td>
+
+                                <td class="action-cell">
+
+                                    <a class="btn-small"
+                                       asp-area="Admin"
+                                       asp-controller="Question"
+                                       asp-action="Edit"
+                                       asp-route-id="@question.QuestionId">
+
+                                        Sửa
+
+                                    </a>
+
+                                    <form asp-area="Admin"
+                                          asp-controller="Question"
+                                          asp-action="Delete"
+                                          asp-route-id="@question.QuestionId"
+                                          method="post"
+                                          style="display:inline;">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn-small danger"
+                                                onclick="return confirm('Bạn có chắc muốn xóa câu hỏi này không?');">
+
+                                            Xóa
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                                        index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="8">
+                                Không có dữ liệu.
+                            </td>
+
+                        </tr>
+                    }
 
                 </tbody>
+
             </table>
-            <div class="table-note">
-                Hiển thị 1 - 10 câu mỗi trang
-            </div>
-            <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
-        </div>
-
-        <div class="content-card question-editor">
-
-            <h2>Thông tin câu hỏi chi tiết</h2>
-
-            <div class="form-row">
-
-                <div class="form-group">
-                    <label>Loại câu hỏi</label>
-
-                    <select class="form-control">
-                        <option>Trắc nghiệm</option>
-                        <option>Điền từ</option>
-                        <option>Nghe hiểu</option>
-                    </select>
-                </div>
-
-                <div class="form-group score-group">
-                    <label>Điểm</label>
-                    <input class="form-control" value="1" />
-                </div>
-
-            </div>
-
-            <div class="form-group">
-
-                <label>
-                    Nội dung câu hỏi *
-                </label>
-
-                <textarea class="form-control textarea"> Chọn từ đúng để điền vào chỗ trống: "She ____ to the market yesterday."</textarea>
-
-            </div>
-
-            <div class="form-group">
-
-                <label>
-                    URL Audio (phát âm)
-                </label>
-
-                <input class="form-control"
-                       placeholder="https://sound-source-url/audio.mp3" />
-
-            </div>
-
-            <div class="form-group">
-
-                <label>
-                    URL Hình ảnh (tùy chọn)
-                </label>
-
-                <input class="form-control"
-                       placeholder="https://img-source-url/preview.png" />
-
-            </div>
-
-            <div class="answers-head">
-                <label>Các lựa chọn đáp án</label>
-                <span>Đáp án đúng</span>
-            </div>
-
-            <div class="answer-row">
-                <span class="answer-letter">A</span>
-                <input class="form-control" value="go" />
-                <input type="radio" name="answer" />
-            </div>
-
-            <div class="answer-row">
-                <span class="answer-letter">B</span>
-                <input class="form-control" value="went" />
-                <input type="radio"
-                       name="answer"
-                       checked />
-            </div>
-
-            <div class="answer-row">
-                <span class="answer-letter">C</span>
-                <input class="form-control" value="gone" />
-                <input type="radio" name="answer" />
-            </div>
-
-            <div class="answer-row">
-                <span class="answer-letter">D</span>
-                <input class="form-control" value="goes" />
-                <input type="radio" name="answer" />
-            </div>
-
-            <a class="add-answer" href="#">
-                + Thêm lựa chọn đáp án
-            </a>
-
-            <div class="editor-footer">
-
-                <button class="btn-light">
-                    Hủy thay đổi
-                </button>
-
-                <button class="btn btn-purple">
-                    Lưu câu hỏi
-                </button>
-
-            </div>
 
         </div>
+
+        @if (totalPages > 1)
+        {
+            <div class="pagination">
+
+                <a asp-area="Admin"
+                   asp-controller="Question"
+                   asp-action="Index"
+                   asp-route-pageSize="@pageSize"
+                   asp-route-pageNumber="@(pageNumber - 1)"
+                   asp-route-TestId="@filterTestId"
+                   asp-route-PartNumber="@filterPartNumber"
+                   class="pagination-btn @(pageNumber == 1 ? "disabled" : "")">
+
+                    &lt;
+
+                </a>
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <a asp-area="Admin"
+                       asp-controller="Question"
+                       asp-action="Index"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@i"
+                       asp-route-TestId="@filterTestId"
+                       asp-route-PartNumber="@filterPartNumber"
+                       class="pagination-btn @(i == pageNumber ? "disabled" : "")">
+
+                        @i
+
+                    </a>
+                }
+
+                <a asp-area="Admin"
+                   asp-controller="Question"
+                   asp-action="Index"
+                   asp-route-pageSize="@pageSize"
+                   asp-route-pageNumber="@(pageNumber + 1)"
+                   asp-route-TestId="@filterTestId"
+                   asp-route-PartNumber="@filterPartNumber"
+                   class="pagination-btn @(pageNumber == totalPages ? "disabled" : "")">
+
+                    &gt;
+
+                </a>
+
+            </div>
+        }
 
     </div>
 

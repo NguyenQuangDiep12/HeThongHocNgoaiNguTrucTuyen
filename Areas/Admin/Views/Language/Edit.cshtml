@@ -1,41 +1,83 @@
 ﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LanguageInfoResponse
 
-<div>
-    <div class="language-modal-header">
-        <h2>
-            Sửa ngôn ngữ
-        </h2>
-        <button type="button" class="language-modal-close" data-modal-close>&times;</button>
+<section class="page-section">
+    <div class="content-card">
+
+        <div class="section-head">
+            <h2>Sửa ngôn ngữ</h2>
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="Language"
+              asp-action="Edit"
+              asp-route-id="@Model.LanguageId"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger">
+            </div>
+
+            <div class="form-group">
+                <label for="Name">
+                    Tên ngôn ngữ
+                </label>
+
+                <input id="Name"
+                       name="Name"
+                       value="@Model.Name"
+                       class="form-control" />
+
+                <span asp-validation-for="Name"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="Code">
+                    Mã ngôn ngữ
+                </label>
+
+                <input id="Code"
+                       name="Code"
+                       value="@Model.Code"
+                       class="form-control" />
+
+                <span asp-validation-for="Code"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label for="Description">
+                    Mô tả
+                </label>
+
+                <input id="Description"
+                       name="Description"
+                       value="@Model.Description"
+                       class="form-control" />
+
+                <span asp-validation-for="Description"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit"
+                        class="btn btn-dark">
+                    Lưu thay đổi
+                </button>
+                <a asp-area="Admin"
+                   asp-controller="Language"
+                   asp-action="Index"
+                   class="btn">
+                    Quay lại
+                </a>
+            </div>
+
+        </form>
+
     </div>
-    <form id="language-form"
-          asp-area="Admin"
-          asp-controller="Language"
-          asp-action="Edit"
-          asp-route-id="@Model.LanguageId"
-          method="post">
-        @Html.AntiForgeryToken()
-        <div asp-validation-summary="ModelOnly"></div>
-        <div class="language-form-group">
-            <label for="Name">Tên ngôn ngữ</label>
-            <input id="Name" name="Name" value="@Model.Name" />
-            <span asp-validation-for="Name">
-            </span>
-        </div>
-        <div class="language-form-group">
-            <label for="Code">Mã ngôn ngữ</label>
-            <input id="Code" name="Code" value="@Model.Code" />
-            <span asp-validation-for="Code"></span>
-        </div>
-        <div class="language-form-group">
-            <label for="Description">Mô tả</label>
-            <input id="Description" name="Description" value="@Model.Description" />
-            <span asp-validation-for="Description"></span>
-        </div>
-        <div class="language-modal-footer">
-            <button type="button" class="language-btn-cancel" data-modal-close>
-                Hủy
-            </button>
-            <button type="submit" class="btn btn-dark">Lưu thay đổi</button>
-        </div>
-    </form>
-</div>
+</section>

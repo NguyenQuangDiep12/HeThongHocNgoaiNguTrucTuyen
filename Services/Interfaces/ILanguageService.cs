@@ -6,6 +6,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services.Interfaces
     public interface ILanguageService
     {
         Task<List<LanguageInfoResponse>> GetLanguagesAsync(int pageSize, int pageNumber, string? name,CancellationToken ct);
+        Task<int> CountLanguagesAsync(string? name, CancellationToken ct);
         Task<LanguageInfoResponse> GetLanguageByIdAsync(int Id, CancellationToken ct);
         Task CreateLanguagesAsync(LanguageRequest request, CancellationToken ct);
         Task<bool> UpdateLanguagesAsync(int id, LanguageRequest request, CancellationToken ct);

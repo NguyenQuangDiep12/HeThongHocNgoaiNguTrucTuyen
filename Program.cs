@@ -21,7 +21,9 @@ namespace HeThongHocNgoaiNguTrucTuyen
             #region Cau hinh database
             builder.Services.AddDbContext<ApplicationDbContext>(o =>
             {
-                o.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                o.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection")
+                    );
             });
             #endregion
 
@@ -57,6 +59,11 @@ namespace HeThongHocNgoaiNguTrucTuyen
             #region DI
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ILanguageService, LanguageService>();
+            builder.Services.AddScoped<ITopicService, TopicService>();
+            builder.Services.AddScoped<ILessonService, LessonService>();
+            builder.Services.AddScoped<IVocabularyService, VocabularyService>();
+            builder.Services.AddScoped<ITestService, TestService>();
+            builder.Services.AddScoped<IQuestionService, QuestionService>();
             #endregion
 
             var app = builder.Build();

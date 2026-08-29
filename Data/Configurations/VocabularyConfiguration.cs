@@ -30,7 +30,11 @@ namespace HeThongHocNgoaiNguTrucTuyen.Data.Configurations
             builder.Property(v => v.Meaning)
                 .IsRequired()
                 .HasMaxLength(255);
-
+            // Phonenic
+            builder.Property(v => v.Phoenic)
+                .IsRequired()
+                .HasColumnType("nvarchar")
+                .HasMaxLength(30);
             // Example
             builder.Property(v => v.Example)
                 .IsRequired(false)

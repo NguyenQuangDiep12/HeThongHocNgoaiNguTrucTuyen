@@ -20,7 +20,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
 
             if (!string.IsNullOrWhiteSpace(name))
             {
-                listLanguage = listLanguage.Where(l => l.Name == name);
+                listLanguage = listLanguage.Where(l => l.Name.Contains(name));
             }
 
             pageNumber = pageNumber <= 0 ? 1 : pageNumber;
@@ -37,6 +37,31 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
                     Description = l.Description,
                     LanguageId = l.LanguageId,
                 }).ToListAsync(ct);
+        }
+
+        public async Task<List<LanguageInfoResponse>> GetAllLanguagesAsync(CancellationToken ct)
+        {
+            return await _context.Languages
+                .AsNoTracking()
+                .OrderBy(l => l.Name)
+                .Select(l => new LanguageInfoResponse
+                {
+                    LanguageId = l.LanguageId,
+                    Name = l.Name,
+                    Code = l.Code,
+                    Description = l.Description
+                })
+                .ToListAsync(ct);
+        }
+        public async Task<int> CountLanguagesAsync(string? name, CancellationToken ct)
+        {
+            var query = _context.Languages.AsNoTracking();
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(l => l.Name.Contains(name));
+            }
+
+            return await query.CountAsync(ct);
         }
 
         public async Task<LanguageInfoResponse> GetLanguageByIdAsync(int Id, CancellationToken ct)

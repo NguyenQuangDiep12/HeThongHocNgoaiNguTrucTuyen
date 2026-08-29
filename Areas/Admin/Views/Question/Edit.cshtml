@@ -1,0 +1,245 @@
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.QuestionRequest
+
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+
+@{
+    var tests =
+        ViewBag.Tests as List<TestInfoResponse>
+        ?? new List<TestInfoResponse>();
+}
+
+<section class="page-section">
+
+    <div class="content-card">
+
+        <div class="section-head">
+
+            <h2>Cập nhật câu hỏi</h2>
+
+            <a asp-area="Admin"
+               asp-controller="Question"
+               asp-action="Index"
+               class="btn btn-light">
+
+                ← Quay lại
+
+            </a>
+
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="Question"
+              asp-action="Edit"
+              asp-route-id="@ViewBag.QuestionId"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger">
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="TestId">
+                    Bài kiểm tra
+                </label>
+
+                <select asp-for="TestId"
+                        id="TestId">
+
+                    <option value="0">
+                        -- Chọn bài kiểm tra --
+                    </option>
+
+                    @foreach (var test in tests)
+                    {
+                        <option value="@test.TestId"
+                                data-mode="@test.TestMode"
+                                data-part="@test.PartNumber">
+
+                            @test.Title
+
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="TestId">
+                </span>
+
+            </div>
+
+            <div class="form-group"
+                 id="part-group">
+
+                <label asp-for="PartNumber">
+                    Part
+                </label>
+
+                <select asp-for="PartNumber"
+                        id="PartNumber">
+
+                    <option value="">
+                        -- Chọn Part --
+                    </option>
+
+                    @for (int i = 1; i <= 7; i++)
+                    {
+                        <option value="@i">
+                            Part @i
+                        </option>
+                    }
+
+                </select>
+
+                <span asp-validation-for="PartNumber">
+                </span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="Content">
+                    Nội dung câu hỏi
+                </label>
+
+                <textarea asp-for="Content"
+                          rows="5">
+                </textarea>
+
+                <span asp-validation-for="Content">
+                </span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="QuestionOrder">
+                    Thứ tự câu hỏi
+                </label>
+
+                <input asp-for="QuestionOrder"
+                       type="number"
+                       min="1" />
+
+                <span asp-validation-for="QuestionOrder">
+                </span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="AudioUrl">
+                    Đường dẫn Audio
+                </label>
+
+                <input asp-for="AudioUrl" />
+
+                <span asp-validation-for="AudioUrl">
+                </span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="ImageUrl">
+                    Đường dẫn hình ảnh
+                </label>
+
+                <input asp-for="ImageUrl" />
+
+                <span asp-validation-for="ImageUrl">
+                </span>
+
+            </div>
+
+            <div class="form-group">
+
+                <label asp-for="GroupCode">
+                    Mã nhóm câu hỏi
+                </label>
+
+                <input asp-for="GroupCode" />
+
+                <span asp-validation-for="GroupCode">
+                </span>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a asp-area="Admin"
+                   asp-controller="Question"
+                   asp-action="Index"
+                   class="btn btn-light">
+
+                    Quay lại
+
+                </a>
+
+                <button type="submit"
+                        class="btn btn-dark">
+
+                    Lưu thay đổi
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+@section Scripts
+{
+    <script>
+
+        const testSelect =
+            document.getElementById("TestId");
+
+        const partGroup =
+            document.getElementById("part-group");
+
+        const partSelect =
+            document.getElementById("PartNumber");
+
+        function updatePartByTest() {
+
+            const option =
+                testSelect.options[
+                    testSelect.selectedIndex
+                ];
+
+            const mode =
+                option.getAttribute("data-mode");
+
+            const part =
+                option.getAttribute("data-part");
+
+            if (mode === "0") {
+
+                partSelect.value = part;
+
+                partSelect.disabled = true;
+
+                partGroup.style.display = "none";
+            }
+            else {
+
+                partSelect.disabled = false;
+
+                partGroup.style.display = "block";
+            }
+        }
+
+        testSelect.addEventListener(
+            "change",
+            updatePartByTest);
+
+        updatePartByTest();
+
+    </script>
+}

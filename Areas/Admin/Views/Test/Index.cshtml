@@ -1,21 +1,9 @@
-﻿
-@section Styles{
-    <style>
-        /* Test page */
+﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.TestInfoResponse>
 
-        .toolbar-left {
-            justify-content: flex-start;
-            margin-bottom: 14px;
-        }
-
-        .search-control.wide {
-            min-width: 260px;
-        }
-
-        .data-table.compact {
-            font-size: 12px;
-        }
-    </style>
+@{
+    int pageNumber = ViewBag.PageNumber ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int totalPages = ViewBag.TotalPages ?? 1;
 }
 
 <section class="page-section">
@@ -25,96 +13,248 @@
         <div class="section-head">
 
             <div>
-                <span class="page-tag">PAGE 1</span>
-                <h2 class="inline-title">
-                    Danh sách bài kiểm tra hiện tại
-                </h2>
+                <h2>Danh sách bài kiểm tra</h2>
             </div>
 
             <a class="btn btn-purple"
                asp-area="Admin"
                asp-controller="Test"
                asp-action="Create">
+
                 + Thêm bài kiểm tra
+
             </a>
 
         </div>
 
-        <div class="toolbar toolbar-left">
+        <div class="toolbar">
 
-            <div class="search-control wide">
-                <span>⌕</span>
-                <input type="text"
-                       placeholder="Tìm kiếm tên bài kiểm tra..." />
-            </div>
+            <form asp-area="Admin"
+                  asp-controller="Test"
+                  asp-action="Index"
+                  method="get">
+
+                <div class="search-control">
+
+                    <span>⌕</span>
+
+                    <input type="text"
+                           name="Title"
+                           value="@Context.Request.Query["Title"]"
+                           placeholder="Tìm kiếm tên bài kiểm tra..." />
+
+                </div>
+
+                <select name="PartNumber">
+
+                    <option value="">
+                        Tất cả Part
+                    </option>
+
+                    @for (int i = 1; i <= 7; i++)
+                    {
+                        <option value="@i">
+                            Part @i
+                        </option>
+                    }
+
+                </select>
+
+                <input type="hidden"
+                       name="pageSize"
+                       value="@pageSize" />
+
+                <button type="submit"
+                        class="btn btn-dark">
+
+                    Tìm kiếm
+
+                </button>
+
+            </form>
 
         </div>
 
-        <table class="data-table compact">
+        <div class="table-wrap">
 
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Tên bài kiểm tra</th>
-                    <th>Bài học</th>
-                    <th>Số câu hỏi</th>
-                    <th>Điểm đạt</th>
-                    <th>Thời gian</th>
-                    <th>Ngày tạo</th>
-                    <th>Thao tác</th>
-                </tr>
-            </thead>
+            <table class="data-table">
 
-            <tbody>
+                <thead>
 
-                <tr>
-                    <td>1</td>
-                    <td><strong>Bài kiểm tra A1 - Chủ đề 1</strong></td>
-                    <td>A1. Quản lý ngôn ngữ</td>
-                    <td>20</td>
-                    <td>70%</td>
-                    <td>30 phút</td>
-                    <td>20/03/2026</td>
-                    <td>✎　<span class="icon-danger">♜</span></td>
-                </tr>
+                    <tr>
 
-                <tr>
-                    <td>2</td>
-                    <td><strong>Bài kiểm tra A2 - Từ vựng</strong></td>
-                    <td>A2. Quản lý bài học</td>
-                    <td>25</td>
-                    <td>70%</td>
-                    <td>30 phút</td>
-                    <td>18/03/2026</td>
-                    <td>✎　<span class="icon-danger">♜</span></td>
-                </tr>
+                        <th>STT</th>
 
-                <tr>
-                    <td>3</td>
-                    <td><strong>Bài kiểm tra A3 - Ngữ pháp</strong></td>
-                    <td>A3. Quản lý bài kiểm tra</td>
-                    <td>30</td>
-                    <td>70%</td>
-                    <td>35 phút</td>
-                    <td>15/03/2026</td>
-                    <td>✎　<span class="icon-danger">♜</span></td>
-                </tr>
+                        <th>Tên bài kiểm tra</th>
 
-                <tr>
-                    <td>4</td>
-                    <td><strong>Bài kiểm tra tổng hợp</strong></td>
-                    <td>A1. Quản lý ngôn ngữ</td>
-                    <td>40</td>
-                    <td>70%</td>
-                    <td>45 phút</td>
-                    <td>10/03/2026</td>
-                    <td>✎　<span class="icon-danger">♜</span></td>
-                </tr>
+                        <th>Loại</th>
 
-            </tbody>
-        </table>
+                        <th>Part</th>
 
-        <partial name="~/Areas/Admin/Views/Shared/_Pagination.cshtml" />
+                        <th>Số câu hỏi</th>
+
+                        <th>Thời gian</th>
+
+                        <th>Thao tác</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        var index =
+                        (pageNumber - 1) * pageSize + 1;
+
+                        foreach (var test in Model)
+                        {
+                            <tr>
+
+                                <td>
+                                    @index
+                                </td>
+
+                                <td>
+                                    <strong>
+                                        @test.Title
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @test.TestModeDisplay
+                                </td>
+
+                                <td>
+
+                                    @if (test.TestMode == 0)
+                                    {
+                                        <span>
+                                            Part @test.PartNumber
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            Part 1 - 7
+                                        </span>
+                                    }
+
+                                </td>
+
+                                <td>
+                                    @test.QuestionCount
+                                </td>
+
+                                <td>
+                                    @test.DurationMinutes phút
+                                </td>
+
+                                <td class="action-cell">
+
+                                    <a class="btn-small"
+                                       asp-area="Admin"
+                                       asp-controller="Test"
+                                       asp-action="Edit"
+                                       asp-route-id="@test.TestId">
+
+                                        Sửa
+
+                                    </a>
+
+                                    <form asp-area="Admin"
+                                          asp-controller="Test"
+                                          asp-action="Delete"
+                                          asp-route-id="@test.TestId"
+                                          method="post"
+                                          style="display:inline;">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="btn-small danger"
+                                                onclick="return confirm('Bạn có chắc muốn xóa bài kiểm tra này không?');">
+
+                                            Xóa
+
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+
+                            <td colspan="7">
+                                Không có bài kiểm tra nào.
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        @if (totalPages > 1)
+        {
+            <div class="pagination">
+
+                @if (pageNumber > 1)
+                {
+                    <a asp-action="Index"
+                       asp-route-Title="@Context.Request.Query["Title"]"
+                       asp-route-PartNumber="@Context.Request.Query["PartNumber"]"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@(pageNumber - 1)"
+                       class="pagination-btn">
+
+                        &lt;
+
+                    </a>
+                }
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <a asp-action="Index"
+                       asp-route-Title="@Context.Request.Query["Title"]"
+                       asp-route-PartNumber="@Context.Request.Query["PartNumber"]"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@i"
+                       class="pagination-btn @(i == pageNumber ? "disabled" : "")">
+
+                        @i
+
+                    </a>
+                }
+
+                @if (pageNumber < totalPages)
+                {
+                    <a asp-action="Index"
+                       asp-route-Title="@Context.Request.Query["Title"]"
+                       asp-route-PartNumber="@Context.Request.Query["PartNumber"]"
+                       asp-route-pageSize="@pageSize"
+                       asp-route-pageNumber="@(pageNumber + 1)"
+                       class="pagination-btn">
+
+                        &gt;
+
+                    </a>
+                }
+
+            </div>
+        }
 
     </div>
+
 </section>
