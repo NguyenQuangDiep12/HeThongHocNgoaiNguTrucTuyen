@@ -61,7 +61,7 @@
                 <label asp-for="Description">
                     Mô tả
                 </label>
-                <textarea asp-for="Description" placeholder="Nhập mô tả chủ đề...">
+                <textarea class="ckeditor" asp-for="Description" placeholder="Nhập mô tả chủ đề...">
                 </textarea>
                 <span asp-validation-for="Description"> </span>
             </div>
@@ -86,3 +86,17 @@
         </form>
     </div>
 </section>
+@section Scripts {
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
+    <script>
+            document.querySelectorAll('.ckeditor').forEach(element => {
+
+            ClassicEditor.create(element, {
+            toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        });
+    </script>
+}

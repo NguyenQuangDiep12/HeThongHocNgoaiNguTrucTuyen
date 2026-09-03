@@ -13,18 +13,7 @@
     <div class="content-card">
 
         <div class="section-head">
-
             <h2>Cập nhật câu hỏi</h2>
-
-            <a asp-area="Admin"
-               asp-controller="Question"
-               asp-action="Index"
-               class="btn btn-light">
-
-                ← Quay lại
-
-            </a>
-
         </div>
 
         <form asp-area="Admin"
@@ -104,7 +93,7 @@
                     Nội dung câu hỏi
                 </label>
 
-                <textarea asp-for="Content"
+                <textarea class="ckeditor" asp-for="Content"
                           rows="5">
                 </textarea>
 
@@ -168,7 +157,11 @@
             </div>
 
             <div class="form-actions">
+                <button type="submit"
+                        class="btn btn-dark">
+                    Lưu thay đổi
 
+                </button>
                 <a asp-area="Admin"
                    asp-controller="Question"
                    asp-action="Index"
@@ -177,14 +170,6 @@
                     Quay lại
 
                 </a>
-
-                <button type="submit"
-                        class="btn btn-dark">
-
-                    Lưu thay đổi
-
-                </button>
-
             </div>
 
         </form>
@@ -195,51 +180,17 @@
 
 @section Scripts
 {
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
     <script>
+            document.querySelectorAll('.ckeditor').forEach(element => {
 
-        const testSelect =
-            document.getElementById("TestId");
+            ClassicEditor.create(element, {
+                    toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+                })
+                .catch(error => {
+                    console.error(error);
+                });
 
-        const partGroup =
-            document.getElementById("part-group");
-
-        const partSelect =
-            document.getElementById("PartNumber");
-
-        function updatePartByTest() {
-
-            const option =
-                testSelect.options[
-                    testSelect.selectedIndex
-                ];
-
-            const mode =
-                option.getAttribute("data-mode");
-
-            const part =
-                option.getAttribute("data-part");
-
-            if (mode === "0") {
-
-                partSelect.value = part;
-
-                partSelect.disabled = true;
-
-                partGroup.style.display = "none";
-            }
-            else {
-
-                partSelect.disabled = false;
-
-                partGroup.style.display = "block";
-            }
-        }
-
-        testSelect.addEventListener(
-            "change",
-            updatePartByTest);
-
-        updatePartByTest();
-
+        });
     </script>
 }

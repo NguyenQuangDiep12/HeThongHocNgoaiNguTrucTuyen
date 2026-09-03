@@ -53,17 +53,16 @@
     </div>
 </section>
 @section Scripts {
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
         document.querySelectorAll('.ckeditor').forEach(element => {
 
         ClassicEditor.create(element, {
-                toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
+        toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+        })
+        .catch(error => {
+            console.error(error);
+        });
     });
     </script>
 }

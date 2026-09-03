@@ -112,7 +112,7 @@
                     Mô tả
                 </label>
 
-                <textarea asp-for="Description"
+                <textarea class="ckeditor" asp-for="Description"
                           rows="5"></textarea>
 
                 <span asp-validation-for="Description"></span>
@@ -147,42 +147,17 @@
 
 @section Scripts
 {
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
     <script>
+            document.querySelectorAll('.ckeditor').forEach(element => {
 
-        const testMode =
-            document.getElementById("TestMode");
+            ClassicEditor.create(element, {
+                    toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+                })
+                .catch(error => {
+                    console.error(error);
+                });
 
-        const partContainer =
-            document.getElementById("part-container");
-
-        const partSelect =
-            document.querySelector(
-                '[name="PartNumber"]'
-            );
-
-        function updatePartVisibility() {
-
-            if (testMode.value === "1") {
-
-                partContainer.style.display =
-                    "none";
-
-                partSelect.value = "";
-
-            }
-            else {
-
-                partContainer.style.display =
-                    "block";
-            }
-        }
-
-        testMode.addEventListener(
-            "change",
-            updatePartVisibility
-        );
-
-        updatePartVisibility();
-
+        });
     </script>
 }
