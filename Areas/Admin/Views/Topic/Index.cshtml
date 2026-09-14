@@ -1,7 +1,24 @@
+@using System.Text.RegularExpressions
+@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.TopicInfoResponse>
 @using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
-@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Topic
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests
 
-@model List<TopicInfoResponse>
+@functions {
+    public string GetPreview(string? content, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return "";
+        }
+        var text = Regex.Replace(content, "<.*?>", string.Empty);
+        text = Regex.Replace(text, @"\s+", " ").Trim();
+        if(text.Length > 20)
+        {
+            return text.Substring(0, maxLength) + "...";
+        }
+        return text;
+    }
+}
 
 @{
     int languageId = ViewBag.LanguageId ?? 0;
@@ -10,6 +27,10 @@
     int pageSize = ViewBag.PageSize ?? 10;
     int totalPages = ViewBag.TotalPages ?? 1;
 
+    int selectedLanguageId = ViewBag.SelectedLanguageId ?? 0;
+    string selectedLevel = ViewBag.SelectedLevelId ?? "";
+
+    var languages = ViewBag.Languages as List<LanguageInfoResponse> ?? new List<LanguageInfoResponse>();
     var levels = ViewBag.Levels as List<string> ?? new List<string>();
     var filter = ViewBag.Filter as TopicFilterRequest ?? new TopicFilterRequest();
 }
@@ -18,8 +39,7 @@
     <div class="content-card">
         <div class="section-head">
             <div>
-                <a asp-area="Admin" asp-controller="Language" asp-action="Index" class="btn-small">← Quay lại danh sách ngôn ngữ</a>
-                <h2 style="margin-top: 8px;">Danh sách chủ đề - @languageName</h2>
+                <h2 style="margin-top: 8px;">Danh sách chủ đề</h2>
             </div>
             @if (TempData["NotFound"] != null)
             {
@@ -34,18 +54,41 @@
                       asp-action="Index"
                       method="get"
                       class="topic-filter-form">
-                    <input type="hidden" name="languageId" value="@languageId" />
-                    <input type="text" name="Name" value="@filter.Name" placeholder="Tìm kiếm tên chủ đề..." class="input-control" />
-                    <select class="select-control" name="Level">
-                        <option value="">-- Cấp độ: Tất cả --</option>
-                        @foreach (var level in levels)
+                    <div class="search-control" style="justify-content: space-between;">
+                        <input type="text" name="Name" placeholder="Tìm kiếm chủ đề..." />
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </div>
+                    <select class="select-control" id="languageSelect" name="LanguageId">
+                        <option value="0">Ngôn ngữ: Tất cả</option>
+                        @foreach (var language in languages)
                         {
-                            <option value="@level" selected="@(filter.Level == level)">@level</option>
+                            if(language.LanguageId == selectedLanguageId)
+                            {
+                                <option value="@language.LanguageId" selected>@language.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@language.LanguageId">@language.Name</option>
+                            }
                         }
+                    </select>
+                    <select class="select-control" name="Level" id="levelSelect" disabled="@(selectedLanguageId <= 0)">
+                            <option value="">-- Cấp độ: Tất cả --</option>
+                            @foreach (var level in levels)
+                            {
+                                if (level == selectedLevel)
+                                {
+                                    <option value="@level" selected>@level</option>
+                                }
+                                else
+                                {
+                                    <option value="@level">@level</option>
+                                }
+                            }
                     </select>
                     <input type="hidden" name="pageSize" value="@pageSize" />
                     <input type="hidden" name="pageNumber" value="1" />
-                    <button type="submit" class="btn">Lọc</button>
+                    <button type="submit" class="btn btn-light">Lọc</button>
                 </form>
                 <a asp-area="Admin"
                    asp-controller="Topic"
@@ -75,26 +118,26 @@
                         foreach (var topic in Model)
                         {
                             <tr>
-                                <td>@index</td>
-                                <td>@topic.Name</td>
-                                <td>@topic.LanguageName</td>
-                                <td>@topic.Level</td>
-                                <td>@Html.Raw(topic.Description)</td>
+                            <td>@index</td>
+                            <td>@topic.Name</td>
+                            <td>@topic.LanguageName</td>
+                            <td>@topic.Level</td>
+                                <td>@Html.Raw(GetPreview(topic.Description, 20))</td>
                                 <td class="action-cell">
-                                    <a asp-area="Admin"
-                                       asp-controller="Lesson"
-                                       asp-action="Index"
-                                       asp-route-topicId="@topic.TopicId"
-                                       class="btn-small">
-                                        Xem bài học
-                                    </a>
                                     <a asp-area="Admin"
                                        asp-controller="Topic"
                                        asp-action="Edit"
                                        asp-route-id="@topic.TopicId"
                                        asp-route-languageId="@languageId"
                                        class="btn-small">
-                                        Sửa
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </a>
+                                    <a asp-area="Admin"
+                                       asp-controller="Topic"
+                                       asp-action="Detail"
+                                       asp-route-id="@topic.TopicId"
+                                       class="btn-small">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
                                     <form asp-area="Admin"
                                           asp-controller="Topic"
@@ -106,8 +149,8 @@
                                         @Html.AntiForgeryToken()
                                         <button type="submit"
                                                 class="btn-small danger"
-                                                onclick="return confirm('Bạn có chắc chắn muốn xóa chủ đề này?');">
-                                            Xóa
+                                                onclick="return confirm('Bạn có chắc muốn xóa chủ đề này không?');">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -117,9 +160,7 @@
                     }
                     else
                     {
-                        <tr>
-                            <td colspan="6">Không có dữ liệu.</td>
-                        </tr>
+                        <tr><td colspan="6">Không có dữ liệu.</td></tr>
                     }
                 </tbody>
             </table>
@@ -134,9 +175,7 @@
                        asp-action="Index"
                        asp-route-languageId="@languageId"
                        asp-route-pageSize="@pageSize"
-                       asp-route-pageNumber="@(pageNumber - 1)"
-                       asp-route-Name="@filter.Name"
-                       asp-route-Level="@filter.Level">
+                       asp-route-pageNumber="@(pageNumber - 1)">
                         &lt;
                     </a>
                 }
@@ -148,8 +187,6 @@
                        asp-route-languageId="@languageId"
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@i"
-                       asp-route-Name="@filter.Name"
-                       asp-route-Level="@filter.Level"
                        class="@(i == pageNumber ? "active" : "")">
                         @i
                     </a>
@@ -161,9 +198,7 @@
                        asp-action="Index"
                        asp-route-languageId="@languageId"
                        asp-route-pageSize="@pageSize"
-                       asp-route-pageNumber="@(pageNumber + 1)"
-                       asp-route-Name="@filter.Name"
-                       asp-route-Level="@filter.Level">
+                       asp-route-pageNumber="@(pageNumber + 1)">
                         &gt;
                     </a>
                 }
@@ -171,3 +206,64 @@
         }
     </div>
 </section>
+
+@section Scripts{
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const languageSelect = document.getElementById('languageSelect');
+            const levelSelect = document.getElementById('levelSelect');
+
+            if (!languageSelect || !levelSelect) {
+                return;
+            }
+
+            languageSelect.addEventListener('change', async () => {
+                const languageId = languageSelect.value;
+
+                // Chưa chọn Language
+                if (languageId === "0") {
+                    levelSelect.innerHTML = '<option value="">-- Chọn ngôn ngữ trước --</option>';
+                    levelSelect.disabled = true;
+                    return;
+                }
+                // Disable trong lúc load
+                levelSelect.disabled = true;
+                levelSelect.innerHTML = '<option value="">Đang tải...</option>';
+
+                try {
+                    const response = await fetch(`/Admin/Topic/GetLevelsByLanguageId?languageId=${languageId}`);
+
+                    if (!response.ok) {
+                        throw new Error('Không thể tải Level');
+                    }
+                    const levels = await response.json();
+
+                    // Tạo toàn bộ option trong bộ nhớ
+                    const fragment = document.createDocumentFragment();
+                    const allOption = document.createElement('option');
+
+                    allOption.value = "";
+                    allOption.textContent = "-- Cấp độ: Tất cả --";
+                    fragment.appendChild(allOption);
+
+                    levels.forEach(level => {
+                        const option = document.createElement('option');
+                        option.value = level;
+                        option.textContent = level;
+                        fragment.appendChild(option);
+                    });
+
+                    // Chỉ cập nhật DOM một lần
+                    levelSelect.replaceChildren(fragment);
+                    levelSelect.disabled = false;
+                }
+                catch (error) {
+                    console.error(error);
+                    levelSelect.innerHTML = '<option value="">Không thể tải cấp độ</option>';
+                    levelSelect.disabled = true;
+                }
+            });
+        });
+    </script>
+}

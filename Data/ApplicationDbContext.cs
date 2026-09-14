@@ -1,4 +1,5 @@
-﻿using HeThongHocNgoaiNguTrucTuyen.Models;
+﻿using HeThongHocNgoaiNguTrucTuyen.Data.Configurations;
+using HeThongHocNgoaiNguTrucTuyen.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HeThongHocNgoaiNguTrucTuyen.Data
@@ -46,15 +47,15 @@ namespace HeThongHocNgoaiNguTrucTuyen.Data
 
             // Password Bich1234
             modelBuilder.Entity<User>().HasData(
-                    new User
-                    {
-                        UserId = 5,
-                        FullName = "Pham Van Ngoc",
-                        Email = "NgocBich@gmail.com",
-                        RoleId = 1,
-                        PasswordHash = "$2a$11$TaR3tZiGkRlqKEk.aKh5IuEgOjjKkRfF9T./LQf685xRaVwTOQ0y6"
-                    }
-                );
+                new User
+                {
+                    UserId = 5,
+                    FullName = "Pham Van Ngoc",
+                    Email = "NgocBich@gmail.com",
+                    RoleId = 1,
+                    PasswordHash = "$2a$11$TaR3tZiGkRlqKEk.aKh5IuEgOjjKkRfF9T./LQf685xRaVwTOQ0y6"
+                }
+            );
         }
     }
 }

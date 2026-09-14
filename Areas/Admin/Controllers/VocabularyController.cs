@@ -1,4 +1,4 @@
-using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Vocabulary;
+using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
 using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,200 +9,120 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
     [Authorize(Roles = "ADMIN")]
     public class VocabularyController : Controller
     {
-        private readonly IVocabularyService _vocabularyService;
+        private readonly ILanguageService _languageService;
         private readonly ILessonService _lessonService;
+        private readonly IVocabularyService _vocabularyService;
 
-        public VocabularyController(IVocabularyService vocabularyService, ILessonService lessonService)
+        public VocabularyController(ILanguageService languageService, ILessonService lessonService, IVocabularyService vocabularyService)
         {
-            _vocabularyService = vocabularyService;
+            _languageService = languageService;
             _lessonService = lessonService;
+            _vocabularyService = vocabularyService;
         }
-
         [HttpGet]
-        public async Task<IActionResult> Index(int lessonId, VocabularyFilterRequest? request = null, int pageNumber = 1, int pageSize = 10, CancellationToken ct = default)
+        public async Task<IActionResult> Index(VocabularyFilterRequest request, int pageNumber = 1, int pageSize = 10, CancellationToken ct = default)
         {
-            if (lessonId <= 0)
-            {
-                return RedirectToAction("Index", "Language");
-            }
+            pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+            pageSize = pageSize <= 0 ? 10 : Math.Min(pageSize, 10);
 
-            request ??= new VocabularyFilterRequest();
+            var vocabularies = await _vocabularyService.GetVocabulariesAsync(request, pageNumber, pageSize, ct);
 
-            var lesson = await _lessonService.GetLessonByIdAsync(lessonId, ct);
-            if (lesson == null)
-            {
-                TempData["NotFound"] = "Không tìm thấy bài học.";
-                return RedirectToAction("Index", "Language");
-            }
+            var totalItems = await _vocabularyService.CountVocabulariesAsync(request, ct);
 
-            var totalItems = await _vocabularyService.CountVocabulariesAsync(lessonId, request, ct);
-            var totalPages = Math.Max(1, (int)Math.Ceiling((double)totalItems / (double)pageSize));
-            if (pageNumber > totalPages)
-            {
-                pageNumber = totalPages;
-            }
+            var totalPages = (int)Math.Ceiling(
+                totalItems / (double)pageSize
+            );
 
-            var vocabularies = await _vocabularyService.GetVocabulariesAsync(lessonId, request, pageNumber, pageSize, ct);
+            // Lấy danh sách bài học để đổ vào dropdown
+            var lessons = await _lessonService.GetAllLessonsAsync(ct);
 
-            ViewBag.LessonId = lessonId;
-            ViewBag.LessonTitle = lesson.Title;
-            ViewBag.TopicId = lesson.TopicId;
-            ViewBag.TopicName = lesson.TopicName;
-            ViewBag.LanguageName = lesson.LanguageName;
+            ViewBag.Lessons = lessons;
+            ViewBag.LessonId = request.LessonId;
+            ViewBag.Word = request.Word;
             ViewBag.PageNumber = pageNumber;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = totalPages;
-            ViewBag.Filter = request;
 
             return View(vocabularies);
         }
-
         [HttpGet]
-        public async Task<IActionResult> Create(int lessonId, CancellationToken ct = default)
+        public async Task<IActionResult> Create(CancellationToken ct = default)
         {
-            if (lessonId <= 0)
-            {
-                return RedirectToAction("Index", "Language");
-            }
+            var languages = await _languageService.GetAllLanguagesAsync(ct);
 
-            var lesson = await _lessonService.GetLessonByIdAsync(lessonId, ct);
-            if (lesson == null)
-            {
-                TempData["NotFound"] = "Không tìm thấy bài học.";
-                return RedirectToAction("Index", "Language");
-            }
-
-            ViewBag.LessonId = lessonId;
-            ViewBag.LessonTitle = lesson.Title;
-            ViewBag.TopicId = lesson.TopicId;
-            ViewBag.TopicName = lesson.TopicName;
-            ViewBag.LanguageName = lesson.LanguageName;
-
-            return View(new CreateVocabularyRequest
-            {
-                LessonId = lessonId
-            });
+            ViewBag.Languages = languages;
+            return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int lessonId, CreateVocabularyRequest request, CancellationToken ct = default)
+        public async Task<IActionResult> Create(
+            CreateVocabularyRequest request,
+            CancellationToken ct = default)
         {
-            if (lessonId <= 0)
-            {
-                return RedirectToAction("Index", "Language");
-            }
-
-            var lesson = await _lessonService.GetLessonByIdAsync(lessonId, ct);
-            if (lesson == null)
-            {
-                TempData["NotFound"] = "Không tìm thấy bài học.";
-                return RedirectToAction("Index", "Language");
-            }
-
             if (!ModelState.IsValid)
             {
-                ViewBag.LessonId = lessonId;
-                ViewBag.LessonTitle = lesson.Title;
-                ViewBag.TopicId = lesson.TopicId;
-                ViewBag.TopicName = lesson.TopicName;
-                ViewBag.LanguageName = lesson.LanguageName;
+                var languages = await _languageService.GetAllLanguagesAsync(ct);
+                ViewBag.Languages = languages;
                 return View(request);
             }
 
-            request.LessonId = lessonId;
-            await _vocabularyService.CreateVocabularyAsync(request, ct);
-            return RedirectToAction(nameof(Index), new { lessonId = request.LessonId });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id, int lessonId, CancellationToken ct = default)
-        {
-            if (lessonId <= 0)
+            try
             {
-                return RedirectToAction("Index", "Language");
+                await _vocabularyService.CreateVocabularyAsync(request.LessonId, request, ct);
+                TempData["Success"] = "Thêm từ vựng thành công.";
+                return RedirectToAction(nameof(Index));
             }
-
-            var response = await _vocabularyService.GetVocabularyByIdAsync(id, ct);
-            if (response == null || response.LessonId != lessonId)
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                var languages = await _languageService.GetAllLanguagesAsync(ct);
+                ViewBag.Languages = languages;
+                return View(request);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id, CancellationToken ct = default)
+        {
+            var vocabulary = await _vocabularyService.GetVocabularyByIdAsync(id, ct);
+            var languages = await _languageService.GetAllLanguagesAsync(ct);
+            if (vocabulary == null)
             {
                 TempData["NotFound"] = "Không tìm thấy từ vựng.";
-                return RedirectToAction(nameof(Index), new { lessonId });
+                return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.LessonId = lessonId;
-            ViewBag.LessonTitle = response.LessonTitle;
             ViewBag.VocabularyId = id;
-
             var request = new UpdateVocabularyRequest
             {
-                LessonId = response.LessonId,
-                Word = response.Word,
-                Meaning = response.Meaning,
-                Phoenic = response.Phoenic ?? string.Empty,
-                Example = response.Example
+                Word = vocabulary.Word,
+                Meaning = vocabulary.Meaning,
+                Phoenic = vocabulary.Phoenic,
+                Example = vocabulary.Example
             };
 
             return View(request);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, int lessonId, UpdateVocabularyRequest request, CancellationToken ct = default)
+        public async Task<IActionResult> Edit(int id, UpdateVocabularyRequest request, CancellationToken ct = default)
         {
-            if (lessonId <= 0)
-            {
-                return RedirectToAction("Index", "Language");
-            }
-
-            var response = await _vocabularyService.GetVocabularyByIdAsync(id, ct);
-            if (response == null || response.LessonId != lessonId)
-            {
-                TempData["NotFound"] = "Từ vựng không thuộc bài học này.";
-                return RedirectToAction(nameof(Index), new { lessonId });
-            }
-
-            if (!ModelState.IsValid)
-            {
-                ViewBag.LessonId = lessonId;
-                ViewBag.LessonTitle = response.LessonTitle;
-                ViewBag.VocabularyId = id;
-                return View(request);
-            }
-
-            request.LessonId = lessonId;
             var updated = await _vocabularyService.UpdateVocabularyAsync(id, request, ct);
             if (!updated)
             {
                 TempData["NotFound"] = "Không tìm thấy từ vựng.";
+                return RedirectToAction(nameof(Index));
             }
-
-            return RedirectToAction(nameof(Index), new { lessonId = request.LessonId });
+            return RedirectToAction(nameof(Index));
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, int lessonId, CancellationToken ct = default)
         {
-            if (lessonId <= 0)
-            {
-                return RedirectToAction("Index", "Language");
-            }
-
-            var response = await _vocabularyService.GetVocabularyByIdAsync(id, ct);
-            if (response == null || response.LessonId != lessonId)
-            {
-                TempData["NotFound"] = "Từ vựng không thuộc bài học này.";
-                return RedirectToAction(nameof(Index), new { lessonId });
-            }
-
             var deleted = await _vocabularyService.DeleteVocabularyAsync(id, ct);
             if (!deleted)
             {
                 TempData["NotFound"] = "Không tìm thấy từ vựng.";
             }
-
-            return RedirectToAction(nameof(Index), new { lessonId });
+            return RedirectToAction(nameof(Index));
         }
     }
 }

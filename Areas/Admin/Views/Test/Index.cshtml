@@ -1,6 +1,5 @@
-﻿@using System.Text.RegularExpressions
-@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
-
+﻿@using System.Text.RegularExpressions;
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 
 @model List<TestInfoResponse>
 
@@ -22,122 +21,96 @@
 }
 
 @{
-    int pageNumber = ViewBag.PageNumber ?? 1;
-    int pageSize = ViewBag.PageSize ?? 10;
-    int totalPages = ViewBag.TotalPages ?? 1;
+    var pageSize = ViewBag.PageSize ?? 10;
+    var pageNumber = ViewBag.PageNumber ?? 1;
+    int totalPages = ViewBag.TotalPages;
+    string title = ViewBag.Title;
 }
 
 <section class="page-section">
-
     <div class="content-card">
-
         <div class="section-head">
-
+            <h1>Quản lý bài kiểm tra</h1>
+            <div><a 
+                    asp-area="Admin" 
+                    asp-controller="Test" 
+                    asp-action="Create" class="btn btn-dark">
+                    + Thêm bài kiểm tra
+                </a>
+            </div>
+        </div>
+        <div>
             <div>
-                <h2>Danh sách bài kiểm tra</h2>
+                <p>Danh sách bài kiểm tra hiện tại</p>
             </div>
 
-            <a class="btn btn-purple"
-               asp-area="Admin"
-               asp-controller="Test"
-               asp-action="Create">
-
-                + Thêm bài kiểm tra
-
-            </a>
-
-        </div>
-
-        <div class="toolbar">
-
-            <form asp-area="Admin"
-                  asp-controller="Test"
-                  asp-action="Index"
-                  method="get">
-                <div class="search-control">
-                    <span>⌕</span>
-                    <input type="text" name="Title" value="@Context.Request.Query["Title"]" placeholder="Tìm kiếm tên bài kiểm tra..." />
+            @if(TempData["Error"] != null)
+            {
+                <div class="text-danger notification">@TempData["Error"]</div>
+            }else if(TempData["NotFound"] != null)
+            {
+                <div class="text-danger notification">@TempData["NotFound"]</div>
+            }
+            @if(TempData["Success"] != null)
+            {
+                <div class="notification" style="color: green;">@TempData["Success"]</div>
+            }
+            <div class="toolbar" style="justify-content: right;">
+                    <form asp-area="Admin"
+                          asp-controller="Test"
+                          asp-action="Index"
+                          method="get">
+                        <div class="search-control">
+                            <span><i class="fa fa-search" aria-hidden="true"></i></span>
+                            <input type="search" name="Title" placeholder="Tìm kiếm bài kiểm tra..."/>
+                            <button class="btn-small" type="submit">Tìm kiếm</button>
+                        </div>
+                    </form>
                 </div>
-                <select name="PartNumber">
-                    <option value="">
-                        Tất cả Part
-                    </option>
-                    @for (int i = 1; i <= 7; i++)
-                    {
-                        <option value="@i">
-                            Part @i
-                        </option>
-                    }
-                </select>
-                <input type="hidden" name="pageSize" value="@pageSize" />
-                <button type="submit" class="btn btn-dark">
-                    Tìm kiếm
-                </button>
-            </form>
         </div>
         <div class="table-wrap">
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>STT</th>
+                        <th>Id</th>
                         <th>Tên bài kiểm tra</th>
                         <th>Mô tả</th>
-                        <th>Loại</th>
-                        <th>Part</th>
                         <th>Số câu hỏi</th>
-                        <th>Thời gian</th>
+                        <th>Thời gian (phút)</th>
                         <th>Thao tác</th>
                     </tr>
-
                 </thead>
-
                 <tbody>
-
                     @if (Model != null && Model.Any())
                     {
-                        var index = (pageNumber - 1) * pageSize + 1;
+                        var index = ((pageNumber - 1) * pageSize) + 1;
                         foreach (var test in Model)
                         {
                             <tr>
                                 <td>@index</td>
-                                <td><strong>@test.Title</strong></td>
-                                <td>@Html.Raw(GetPreview(test.Description, 60))</td>
-                                <td>@test.TestModeDisplay</td>
-                                <td>
-                                    @if (test.TestMode == 0)
-                                    {
-                                        <span>
-                                            Part @test.PartNumber
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span>
-                                            Part 1 - 7
-                                        </span>
-                                    }
-                                </td>
+                                <td>@Html.Raw(GetPreview(test.Title, 20))</td>
+                                <td>@Html.Raw(GetPreview(test.Description, 20))</td>
                                 <td>@test.QuestionCount</td>
-                                <td>@test.DurationMinutes phút</td>
-                                <td class="action-cell">
-                                    <a class="btn-small"
-                                       asp-area="Admin"
-                                       asp-controller="Test"
-                                       asp-action="Edit"
-                                       asp-route-id="@test.TestId">
-                                        Sửa
-                                    </a>
-                                    <form asp-area="Admin"
-                                          asp-controller="Test"
-                                          asp-action="Delete"
-                                          asp-route-id="@test.TestId"
-                                          method="post"
-                                          style="display:inline;">
+                                <td>@test.DurationMinutes</td>
+                                <td style="display: flex; align-items: center; gap: 4px;">
+                                <a class="btn-small"
+                                    asp-area="Admin"
+                                    asp-controller="Test"
+                                    asp-action="Edit"
+                                    asp-route-id="@test.TestId">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                </a>
+
+                                <form asp-area="Admin"
+                                        asp-controller="Test"
+                                        asp-action="Delete"
+                                        asp-route-id="@test.TestId"
+                                        method="post">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn-small danger" onclick="return confirm('Bạn có chắc muốn xóa bài kiểm tra này không?');">
-                                            Xóa
+                                        <button class="btn-small danger" onclick="return confirm('Xác nhận xóa bài thi')" type="submit">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
                                         </button>
-                                    </form>
+                                </form>
                                 </td>
                             </tr>
                             index++;
@@ -145,55 +118,50 @@
                     }
                     else
                     {
-                        <tr>
-                            <td colspan="7">
-                                Không có bài kiểm tra nào.
-                            </td>
-                        </tr>
+                        <tr><td colspan="6">Không có dữ liệu bài kiểm tra</td></tr>
                     }
                 </tbody>
             </table>
         </div>
-        @if (totalPages > 1)
-        {
-            <div class="pagination">
-
-                @if (pageNumber > 1)
-                {
-                    <a asp-action="Index"
-                       asp-route-Title="@Context.Request.Query["Title"]"
-                       asp-route-PartNumber="@Context.Request.Query["PartNumber"]"
-                       asp-route-pageSize="@pageSize"
-                       asp-route-pageNumber="@(pageNumber - 1)"
-                       class="pagination-btn">
-                        &lt;
-                    </a>
-                }
-                @for (int i = 1; i <= totalPages; i++)
-                {
-                    <a asp-action="Index"
-                       asp-route-Title="@Context.Request.Query["Title"]"
-                       asp-route-PartNumber="@Context.Request.Query["PartNumber"]"
-                       asp-route-pageSize="@pageSize"
-                       asp-route-pageNumber="@i"
-                       class="pagination-btn @(i == pageNumber ? "disabled" : "")">
-                        @i
-                    </a>
-                }
-                @if (pageNumber < totalPages)
-                {
-                    <a asp-action="Index"
-                       asp-route-Title="@Context.Request.Query["Title"]"
-                       asp-route-PartNumber="@Context.Request.Query["PartNumber"]"
-                       asp-route-pageSize="@pageSize"
-                       asp-route-pageNumber="@(pageNumber + 1)"
-                       class="pagination-btn">
-                        &gt;
-                    </a>
-                }
-            </div>
-        }
+        <!-- Phân trang -->
+        <div class="pagination">
+            @if(pageNumber > 1)
+            {
+                <a 
+                    asp-area="Admin"
+                    asp-controller="Test"
+                    asp-action="Index"
+                    asp-route-pageNumber="@(pageNumber - 1)"
+                    asp-route-pageSize="@pageSize"
+                    asp-route-Title="@title"
+                    class="pagination-btn">
+                    &lt;
+                </a>
+            }
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <a asp-area="Admin"
+                   asp-controller="Test"
+                   asp-action="Index"
+                   asp-route-pageNumber="@i"
+                   asp-route-pageSize="@pageSize"
+                   asp-route-Title="@title"
+                   class="pagination-btn">
+                    @(i)
+                </a>
+            }
+            @if(pageNumber < totalPages)
+            {
+                <a asp-area="Admin"
+                   asp-controller="Test"
+                   asp-action="Index"
+                   asp-route-pageNumber="@(pageNumber + 1)"
+                   asp-route-pageSize="@pageSize"
+                   asp-route-Title="@title"
+                   class="pagination-btn">
+                    &gt;
+                </a>
+            }
+        </div>
     </div>
 </section>
-
-

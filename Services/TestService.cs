@@ -1,5 +1,5 @@
 ﻿using HeThongHocNgoaiNguTrucTuyen.Data;
-using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Test;
+using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
 using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 using HeThongHocNgoaiNguTrucTuyen.Models;
 using HeThongHocNgoaiNguTrucTuyen.Models.Enums;
@@ -16,335 +16,116 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
         {
             _context = context;
         }
-
-        // =====================================================
-        // GET LIST
-        // =====================================================
-
-        public async Task<List<TestInfoResponse>> GetTestsAsync(
-            int pageSize,
-            int pageNumber,
-            TestRequest? request,
-            CancellationToken ct)
+        public async Task<List<TestInfoResponse>> GetTestsAsync(int pageSize, int pageNumber, TestFilterRequest request, CancellationToken ct)
         {
-            request ??= new TestRequest();
+            pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+            pageSize = pageSize <= 0 ? 10 : pageSize;
 
-            var query = _context.Tests
-                .AsNoTracking()
-                .AsQueryable();
+            var query = _context
+                .Tests
+                .Include(t => t.Questions)
+                .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(request.Title))
             {
-                query = query.Where(x =>
-                    x.Title.Contains(request.Title));
+                query = query.Where(t => t.Title.Contains(request.Title));
             }
 
-            if (request.PartNumber.HasValue)
-            {
-                query = query.Where(x =>
-                    x.PartNumber == request.PartNumber);
-            }
-
-            var tests = await query
-                .OrderByDescending(x => x.TestId)
+            return await query
+                .OrderBy(t => t.TestId)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(x => new TestInfoResponse
+                .Select(t => new TestInfoResponse
                 {
-                    TestId = x.TestId,
-                    Title = x.Title,
-                    Description = x.Description,
-                    TestMode = (int)x.TestMode,
-                    TestModeDisplay =
-                        x.TestMode == TestMode.PART
-                            ? "Part Test"
-                            : "Full Test",
-                    PartNumber = x.PartNumber,
-                    DurationMinutes = x.DurationMinutes,
-                    QuestionCount = x.Questions.Count
-                })
-                .ToListAsync(ct);
-
-            return tests;
+                    TestId = t.TestId,
+                    Title = t.Title,
+                    Description = t.Description,
+                    DurationMinutes = t.DurationMinutes,
+                    TestMode = t.TestMode.ToString(),
+                    QuestionCount = t.Questions.Count,
+                }).ToListAsync(ct);
         }
-
-        // =====================================================
-        // GET ALL - dùng riêng cho dropdown/option list, KHÔNG phân trang
-        // =====================================================
-
-        public async Task<List<TestInfoResponse>> GetAllTestsAsync(
-            CancellationToken ct)
+        public async Task<int> CountTestsAsync(TestFilterRequest request, CancellationToken ct)
         {
-            return await _context.Tests
-                .AsNoTracking()
-                .OrderBy(x => x.Title)
-                .Select(x => new TestInfoResponse
-                {
-                    TestId = x.TestId,
-                    Title = x.Title,
-                    Description = x.Description,
-                    TestMode = (int)x.TestMode,
-                    TestModeDisplay =
-                        x.TestMode == TestMode.PART
-                            ? "Part Test"
-                            : "Full Test",
-                    PartNumber = x.PartNumber,
-                    DurationMinutes = x.DurationMinutes,
-                    QuestionCount = x.Questions.Count
-                })
-                .ToListAsync(ct);
-        }
-
-        // =====================================================
-        // COUNT
-        // =====================================================
-
-        public async Task<int> CountTestsAsync(
-            TestRequest? request,
-            CancellationToken ct)
-        {
-            request ??= new TestRequest();
-
-            var query = _context.Tests
-                .AsNoTracking()
-                .AsQueryable();
+            var query = _context
+                .Tests
+                .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(request.Title))
             {
-                query = query.Where(x =>
-                    x.Title.Contains(request.Title));
-            }
-
-            if (request.PartNumber.HasValue)
-            {
-                query = query.Where(x =>
-                    x.PartNumber == request.PartNumber);
+                query = query.Where(t => t.Title.Contains(request.Title));
             }
 
             return await query.CountAsync(ct);
         }
-
-        // =====================================================
-        // GET BY ID
-        // =====================================================
-
-        public async Task<TestInfoResponse?> GetTestByIdAsync(
-            int id,
-            CancellationToken ct)
+        public async Task<TestInfoResponse?> GetTestByIdAsync(int id, CancellationToken ct)
         {
-            return await _context.Tests
+            return await _context
+                .Tests
+                .Include(t => t.Questions)
                 .AsNoTracking()
-                .Where(x => x.TestId == id)
-                .Select(x => new TestInfoResponse
+                .Where(t => t.TestId == id)
+                .Select(t => new TestInfoResponse
                 {
-                    TestId = x.TestId,
-
-                    Title = x.Title,
-
-                    Description = x.Description,
-
-                    TestMode = (int)x.TestMode,
-
-                    TestModeDisplay =
-                        x.TestMode == TestMode.PART
-                            ? "Part Test"
-                            : "Full Test",
-
-                    PartNumber = x.PartNumber,
-
-                    DurationMinutes = x.DurationMinutes,
-
-                    QuestionCount = x.Questions.Count
+                    TestId = t.TestId,
+                    Title = t.Title,
+                    Description = t.Description,
+                    DurationMinutes = t.DurationMinutes,
+                    TestMode = t.TestMode.ToString(),
+                    QuestionCount = t.Questions.Count,
                 })
                 .FirstOrDefaultAsync(ct);
         }
-
-        // =====================================================
-        // CREATE
-        // =====================================================
-
-        public async Task CreateTestAsync(
-            TestRequest request,
-            CancellationToken ct)
+        public async Task CreateTestAsync(CreateTestRequest request, CancellationToken ct)
         {
-            ValidateTestRequest(request);
 
-            var test = new Test
+            var newTest = new Test
             {
-                Title = request.Title.Trim(),
-
-                Description =
-                    string.IsNullOrWhiteSpace(request.Description)
-                        ? null
-                        : request.Description.Trim(),
-
-                TestMode = request.TestMode,
-
-                PartNumber =
-                    request.TestMode == TestMode.PART
-                        ? request.PartNumber
-                        : null,
-
-                DurationMinutes =
-                    request.DurationMinutes
+                Title = request.Title,
+                Description = request.Description,
+                DurationMinutes = request.DurationMinutes,
+                TestMode = Enum.Parse<TestMode>(request.TestMode)
             };
 
-            _context.Tests.Add(test);
-
+            await _context.Tests.AddAsync(newTest);
             await _context.SaveChangesAsync(ct);
+
         }
-
-        // =====================================================
-        // UPDATE
-        // =====================================================
-
-        public async Task<bool> UpdateTestAsync(
-            int id,
-            TestRequest request,
-            CancellationToken ct)
+        public async Task<bool> UpdateTestAsync(int id, UpdateTestRequest request, CancellationToken ct)
         {
-            ValidateTestRequest(request);
+            var query = _context.Tests.Where(t => t.TestId == id);
+            var testExist = await _context
+                .Tests
+                .Where(t => t.TestId == id)
+                .FirstOrDefaultAsync(ct);
 
-            var test = await _context.Tests
-                .FirstOrDefaultAsync(
-                    x => x.TestId == id,
-                    ct);
+            if (testExist == null)
+            {
+                throw new Exception("Không tìm thấy bài kiểm tra");
+            }
 
+            return await query
+                .ExecuteUpdateAsync(settle =>
+                    settle.SetProperty(t => t.Title, request.Title)
+                          .SetProperty(t => t.Description, request.Description)
+                          .SetProperty(t => t.DurationMinutes, request.DurationMinutes)
+                          .SetProperty(t => t.TestMode, Enum.Parse<TestMode>(request.TestMode))) > 0 ? true : false;
+        }
+        public async Task<bool> DeleteTestAsync(int id, CancellationToken ct)
+        {
+            var test = await _context.Tests.FirstOrDefaultAsync(x => x.TestId == id, ct);
             if (test == null)
             {
                 return false;
             }
-
-            // Kiểm tra xem Test đã có Question chưa
-            var hasQuestions = await _context.Questions
-                .AnyAsync(
-                    x => x.TestId == id,
-                    ct);
-
-            /*
-             * Nếu Test đã có Question
-             * thì không cho thay đổi Mode
-             */
-            if (hasQuestions &&
-                test.TestMode != request.TestMode)
-            {
-                throw new InvalidOperationException(
-                    "Không thể thay đổi loại bài kiểm tra khi đã có câu hỏi.");
-            }
-
-            /*
-             * Nếu là PART TEST và đã có Question
-             * thì không cho đổi Part
-             */
-            if (hasQuestions &&
-                test.TestMode == TestMode.PART &&
-                test.PartNumber != request.PartNumber)
-            {
-                throw new InvalidOperationException(
-                    "Không thể thay đổi Part khi bài kiểm tra đã có câu hỏi.");
-            }
-
-            test.Title = request.Title.Trim();
-
-            test.Description =
-                string.IsNullOrWhiteSpace(request.Description)
-                    ? null
-                    : request.Description.Trim();
-
-            test.TestMode = request.TestMode;
-
-            test.PartNumber =
-                request.TestMode == TestMode.PART
-                    ? request.PartNumber
-                    : null;
-
-            test.DurationMinutes =
-                request.DurationMinutes;
-
-            await _context.SaveChangesAsync(ct);
-
-            return true;
-        }
-
-        // =====================================================
-        // DELETE
-        // =====================================================
-
-        public async Task<bool> DeleteTestAsync(
-            int id,
-            CancellationToken ct)
-        {
-            var test = await _context.Tests
-                .FirstOrDefaultAsync(
-                    x => x.TestId == id,
-                    ct);
-
-            if (test == null)
-            {
-                return false;
-            }
-
-            var hasQuestions = await _context.Questions
-                .AnyAsync(
-                    x => x.TestId == id,
-                    ct);
-
+            var hasQuestions = await _context.Questions.AnyAsync(x => x.TestId == id, ct);
             if (hasQuestions)
             {
-                throw new InvalidOperationException(
-                    "Không thể xóa bài kiểm tra vì bài kiểm tra đã có câu hỏi.");
+                throw new InvalidOperationException("Không thể xóa bài kiểm tra vì bài kiểm tra đã có câu hỏi.");
             }
-
             _context.Tests.Remove(test);
-
             await _context.SaveChangesAsync(ct);
-
             return true;
-        }
-
-        // =====================================================
-        // VALIDATE
-        // =====================================================
-
-        private static void ValidateTestRequest(
-            TestRequest request)
-        {
-            if (string.IsNullOrWhiteSpace(request.Title))
-            {
-                throw new ArgumentException(
-                    "Tên bài kiểm tra không được để trống.");
-            }
-
-            if (request.DurationMinutes <= 0)
-            {
-                throw new ArgumentException(
-                    "Thời gian làm bài phải lớn hơn 0.");
-            }
-
-            // PART TEST
-            if (request.TestMode == TestMode.PART)
-            {
-                if (!request.PartNumber.HasValue)
-                {
-                    throw new ArgumentException(
-                        "Part Test bắt buộc phải chọn Part.");
-                }
-
-                if (request.PartNumber < 1 ||
-                    request.PartNumber > 7)
-                {
-                    throw new ArgumentException(
-                        "Part phải nằm trong khoảng từ 1 đến 7.");
-                }
-            }
-
-            // FULL TEST
-            if (request.TestMode == TestMode.FULL)
-            {
-                request.PartNumber = null;
-            }
         }
     }
 }
-
-

@@ -15,8 +15,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Models
 
         public TestMode TestMode { get; set; }
 
-        public int? PartNumber { get; set; }
-
         // 1 Test - N Questions
         public ICollection<Question> Questions { get; set; } = new List<Question>();
 

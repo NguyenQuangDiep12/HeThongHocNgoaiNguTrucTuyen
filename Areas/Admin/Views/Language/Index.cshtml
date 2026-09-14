@@ -12,6 +12,7 @@
     <div class="content-card">
         <div class="section-head">
             <h2>Danh sách ngôn ngữ</h2>
+            <div asp-validation-summary="ModelOnly" class="text-danger notification"></div>
             <div class="toolbar">
                 <form asp-area="Admin"
                       asp-controller="Language"
@@ -19,8 +20,9 @@
                       method="get">
                     <div class="search-control">
                         <input type="text" name="name" value="@name" placeholder="Tìm kiếm ngôn ngữ..." />
+                        <i class="fa fa-search" aria-hidden="true"></i>
                         <input type="hidden" name="pageSize" value="@pageSize" />
-                        <button type="submit" class="btn">Tìm kiếm</button>
+                        <button type="submit" class="btn-small">Tìm kiếm</button>
                     </div>
                 </form>
                 <a asp-area="Admin"
@@ -55,18 +57,11 @@
                                 <td>@language.Description</td>
                                 <td class="action-cell">
                                     <a asp-area="Admin"
-                                       asp-controller="Topic"
-                                       asp-action="Index"
-                                       asp-route-languageId="@language.LanguageId"
-                                       class="btn-small">
-                                        Xem chủ đề
-                                    </a>
-                                    <a asp-area="Admin"
                                        asp-controller="Language"
                                        asp-action="Edit"
                                        asp-route-id="@language.LanguageId"
                                        class="btn-small">
-                                        Sửa
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                     </a>
                                     <form asp-area="Admin"
                                           asp-controller="Language"
@@ -76,7 +71,7 @@
                                           style="display: inline;">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn-small danger" onclick="return confirm('Bạn có chắc muốn xóa ngôn ngữ này không?');">
-                                            Xóa
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -101,7 +96,8 @@
                        asp-action="Index"
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@(pageNumber - 1)"
-                       asp-route-name="@name">
+                       asp-route-name="@name"
+                       class="pagination-btn">
                         &lt;
                     </a>
                 }
@@ -113,7 +109,7 @@
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@i"
                        asp-route-name="@name"
-                       class="@(i == pageNumber ? "active" : "")">
+                       class="pagination-btn @(i == pageNumber ? "active" : "")">
                         @i
                     </a>
                 }
@@ -124,7 +120,8 @@
                        asp-action="Index"
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@(pageNumber + 1)"
-                       asp-route-name="@name">
+                       asp-route-name="@name"
+                       class="pagination-btn">
                         &gt;
                     </a>
                 }
@@ -132,5 +129,3 @@
         }
     </div>
 </section>
-
-

@@ -1,25 +1,49 @@
-@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Vocabulary
-@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
-@model CreateVocabularyRequest
+@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.CreateVocabularyRequest
+
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 
 @{
-    var lessons = ViewBag.Lessons as List<LessonInfoResponse>;
+    var languages = ViewBag.Languages as List<LanguageInfoResponse> ?? new List<LanguageInfoResponse>();
 }
+
 <section class="page-section">
     <div class="content-card">
         <div class="section-head"><h2>Thêm từ vựng</h2></div>
         <form asp-area="Admin"
               asp-controller="Vocabulary"
               asp-action="Create"
-              asp-route-lessonId="@Model.LessonId"
               method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="LessonId" />
-
             <div class="form-group">
-                <label>Bài học</label>
-                <input type="text" value="@ViewBag.LessonTitle" class="form-control" disabled readonly />
+                <div>
+                    <div>
+                        <label for="languageId">Ngôn ngữ</label>
+                        <select id="languageId" class="form-control">
+                            <option value="0">-- Chọn ngôn ngữ --</option>
+                            @if (languages != null)
+                            {
+                                foreach (var language in languages)
+                                {
+                                    <option value="@language.LanguageId">@language.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label for="topicId">Chủ đề</label>
+                        <select id="topicId" class="form-control">
+                            <option value="0" disabled>-- Chọn chủ đề --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="lessonId">Bài học</label>
+                        <select id="lessonId" name="LessonId" class="form-control">
+                            <option value="0">-- Chọn bài học --</option>
+                        </select>
+                    </div>
+                </div>
+                @* <span asp-validation-for="LessonId" class="text-danger"></span> *@
             </div>
             <div class="form-group">
                 <label asp-for="Word">Từ vựng</label>
@@ -46,7 +70,6 @@
                 <a asp-area="Admin"
                    asp-controller="Vocabulary"
                    asp-action="Index"
-                   asp-route-lessonId="@Model.LessonId"
                    class="btn">
                     Quay lại
                 </a>
@@ -58,14 +81,89 @@
 @section Scripts {
     <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
-            document.querySelectorAll('.ckeditor').forEach(element => {
-
+        document.querySelectorAll('.ckeditor').forEach(element => {
             ClassicEditor.create(element, {
                     toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        });
+
+            document.addEventListener('DOMContentLoaded', () => {
+
+            const languageSelect = document.getElementById('languageId');
+            const topicSelect = document.getElementById('topicId');
+            const lessonSelect = document.getElementById('lessonId');
+
+            topicSelect.disabled = true;
+            lessonSelect.disabled = true;
+
+            languageSelect.addEventListener('change', async () => {
+
+                const languageId = languageSelect.value;
+                if (languageId === '0') {
+                    return;
+                }
+
+
+                try {
+                    const response = await fetch(`/Admin/Topic/GetTopicsByLanguageDropdown?languageId=${languageId}`);
+                    if (!response.ok) {
+                        throw new Error('Không thể lấy danh sách chủ đề');
+                    }
+                    const topics = await response.json();
+                    if (topics.length === 0) {
+                        topicSelect.innerHTML = '<option value="0">-- Không có chủ đề --</option>';
+                        return;
+                    }
+
+                    let options = '<option value="0">-- Chọn chủ đề --</option>';
+                    topics.forEach(t => {
+                        options += `<option value="${t.topicId}">${t.name}</option>`;
+                    });
+
+                    topicSelect.innerHTML = options;
+                    topicSelect.disabled = false;
+
+                }
+                catch (error) {
+                    console.error(`Lỗi: ${error}`);
+
+                }
+            });
+
+            topicSelect.addEventListener('change', async () => {
+                const topicId = topicSelect.value;
+                lessonSelect.innerHTML = '<option value="0">-- Chọn bài học --</option>';
+                lessonSelect.disabled = true;
+
+                if (topicId === '0') {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/Admin/Lesson/GetLessonsByTopicIdDropdown?topicId=${topicId}`);
+                    if (!response.ok) {
+                        throw new Error('Không thể lấy danh sách bài học');
+                    }
+                    const lessons = await response.json();
+
+                    if (lessons.length === 0) {
+                        lessonSelect.innerHTML = '<option value="0">-- Không có bài học --</option>';
+                        return;
+                    }
+                    let options = '<option value="0">-- Chọn bài học --</option>';
+                    lessons.forEach(l => {
+                        options += `<option value="${l.lessonId}">${l.title}</option>`;
+                    });
+                    lessonSelect.innerHTML = options;
+                    lessonSelect.disabled = false;
+                }
+                catch (error) {
+                    console.error(`Lỗi: ${error}`);
+                }
+            });
         });
     </script>
 }

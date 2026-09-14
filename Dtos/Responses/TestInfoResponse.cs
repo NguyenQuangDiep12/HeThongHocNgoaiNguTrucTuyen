@@ -7,10 +7,8 @@
         public string? Description { get; set; }
         // 0 = PART
         // 1 = FULL
-        public int TestMode { get; set; }
-        public string TestModeDisplay { get; set; }
-            = string.Empty;
-        public int? PartNumber { get; set; }
+        public string TestMode { get; set; } = string.Empty;
+
         public int DurationMinutes { get; set; }
         public int QuestionCount { get; set; }
     }

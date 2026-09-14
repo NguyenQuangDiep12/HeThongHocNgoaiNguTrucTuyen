@@ -1,4 +1,4 @@
-﻿using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Language;
+﻿using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
 using HeThongHocNgoaiNguTrucTuyen.Services;
 using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -16,11 +16,14 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
         {
             _languageService = languageService;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index(LanguageFilterRequest request, int pageSize = 10, int pageNumber = 1, CancellationToken ct = default)
         {
             var response = await _languageService.GetLanguagesAsync(request, pageSize, pageNumber, ct);
+
             int languageCount = await _languageService.CountLanguagesAsync(request, ct);
+
             ViewBag.PageNumber = pageNumber;
             ViewBag.PageSize = pageSize;
             ViewBag.Name = request.Name ?? string.Empty;
@@ -44,6 +47,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
             await _languageService.CreateLanguagesAsync(request, ct);
             return RedirectToAction(nameof(Index));
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
@@ -62,6 +66,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
             };
             return View(request);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UpdateLanguageRequest request, CancellationToken ct)
@@ -79,6 +84,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id, CancellationToken ct)

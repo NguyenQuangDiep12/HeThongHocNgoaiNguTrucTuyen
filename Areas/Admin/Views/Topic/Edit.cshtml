@@ -1,6 +1,5 @@
+@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.UpdateTopicRequest
 @using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
-@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Topic.UpdateTopicRequest
-
 @{
     var topicId = ViewBag.TopicId;
     var languages = ViewBag.Languages as List<LanguageInfoResponse> ?? new List<LanguageInfoResponse>();
@@ -8,9 +7,7 @@
 
 <section class="page-section">
     <div class="content-card">
-        <div class="section-head">
-            <h2>Cập nhật chủ đề</h2>
-        </div>
+        <div class="section-head"><h2>Cập nhật chủ đề</h2></div>
         <form asp-area="Admin"
               asp-controller="Topic"
               asp-action="Edit"
@@ -20,16 +17,21 @@
               class="topic-form">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="LanguageId" />
-
-            <div class="topic-form-group">
-                <label>Ngôn ngữ</label>
-                <input type="text" value="@ViewBag.LanguageName" disabled readonly />
-            </div>
             <div class="topic-form-group">
                 <label asp-for="Name">Tên chủ đề</label>
                 <input asp-for="Name" placeholder="Nhập tên chủ đề..." />
                 <span class="text-danger" asp-validation-for="Name"></span>
+            </div>
+            <div class="topic-form-group">
+                <label asp-for="LanguageId">Ngôn ngữ</label>
+                <select asp-for="LanguageId">
+                    <option value="0">-- Chọn ngôn ngữ --</option>
+                    @foreach (var language in languages)
+                    {
+                        <option value="@language.LanguageId">@language.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="LanguageId"></span>
             </div>
             <div class="topic-form-group">
                 <label asp-for="Level">Cấp độ</label>
@@ -38,8 +40,8 @@
             </div>
             <div class="topic-form-group">
                 <label asp-for="Description">Mô tả</label>
-                <textarea asp-for="Description" class="ckeditor" placeholder="Nhập mô tả chủ đề..."></textarea>
-                <span class="text-danger" asp-validation-for="Description"></span>
+                <textarea class="ckeditor" asp-for="Description" placeholder="Nhập mô tả chủ đề..."></textarea>
+                <span asp-validation-for="Description"></span>
             </div>
             <div class="topic-form-group">
                 <label asp-for="ImageUrl">Đường dẫn hình ảnh</label>
@@ -65,11 +67,11 @@
             document.querySelectorAll('.ckeditor').forEach(element => {
 
             ClassicEditor.create(element, {
-                    toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+            })
+            .catch(error => {
+                console.error(error);
+            });
         });
     </script>
 }

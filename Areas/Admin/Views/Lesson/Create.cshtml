@@ -1,9 +1,8 @@
-@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Lesson
-@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
-@model CreateLessonRequest
+@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.CreateLessonRequest
 @{
-    var topics = ViewBag.Topics as List<TopicInfoResponse>;
+    var languages = ViewBag.Languages as List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LanguageInfoResponse>;
 }
+
 <section class="page-section">
     <div class="content-card">
         <div class="section-head"><h2>Thêm bài học</h2></div>
@@ -14,11 +13,26 @@
               method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="TopicId" />
-
             <div class="form-group">
-                <label>Chủ đề</label>
-                <input type="text" value="@ViewBag.TopicName (@ViewBag.LanguageName)" class="form-control" disabled readonly />
+                <label asp-for="LanguageId">Ngôn ngữ</label>
+                <select asp-for="LanguageId" id="languageId" class="form-control">
+                    <option value="0">-- Chọn ngôn ngữ --</option>
+                    @if (languages != null)
+                    {
+                        foreach (var language in languages)
+                        {
+                            <option value="@language.LanguageId">@language.Name</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="LanguageId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TopicId">Chủ đề</label>
+                <select asp-for="TopicId" id="topicId" class="form-control">
+                    <option value="0" disabled>-- Chọn chủ đề --</option>
+                </select>
+                <span asp-validation-for="TopicId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Title">Tiêu đề bài học</label>
@@ -26,7 +40,7 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description">Mô tả</label>
+                <label asp-for="Description"> Mô tả </label>
                 <textarea asp-for="Description" id="description-editor" class="form-control ckeditor"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
@@ -46,18 +60,56 @@
         </form>
     </div>
 </section>
+
 @section Scripts {
     <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
+        // 1. KHỞI TẠO CKEDITOR
         document.querySelectorAll('.ckeditor').forEach(element => {
-
-        ClassicEditor.create(element, {
+            ClassicEditor.create(element, {
                 toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
             })
             .catch(error => {
-                console.error(error);
+                console.error("Lỗi khởi tạo CKEditor: ", error);
             });
-    });
+        });
+
+        // 2. CASCADE DROPDOWN
+        document.addEventListener('DOMContentLoaded', function(){
+            const languageSelect = document.getElementById('languageId');
+            const topicSelect = document.getElementById('topicId');
+
+            topicSelect.disabled = true;
+            languageSelect.addEventListener('change', async function() {
+                const languageId = languageSelect.value;
+                // chưa chọn ngôn ngữ
+                if(languageId === '0'){
+                    return;
+                }
+                try{
+                    const response = await fetch(`/Admin/Topic/GetTopicsByLanguageDropdown?languageId=${languageId}`);
+                    if(!response.ok){
+                        throw new Error("Không thể lấy danh sách chủ đề");
+                    }
+                    const topics = await response.json();
+                    if(topics.length === 0){
+                        topicSelect.innerHTML = '<option value="0">-- Không có chủ đề --</option>';
+
+                        return;
+                    }
+                    // Tạo danh sách option
+                    let options = '<option value="0">-- Chọn chủ đề --</option>';
+                    topics.forEach(t => {
+                        options += `<option value="${t.topicId}">${t.name}</option>`;
+                    });
+                    // Đổ các thẻ option vào Select
+                    topicSelect.innerHTML = options;
+                    topicSelect.disabled = false;
+                }catch(error){
+                    console.error(`Lỗi: ${error}`);
+                }
+            });
+        });
     </script>
 }
 

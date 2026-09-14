@@ -1,8 +1,10 @@
-@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Vocabulary
+@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.UpdateVocabularyRequest
 @using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
-@model UpdateVocabularyRequest
+
+
 @{
     var vocabularyId = ViewBag.VocabularyId;
+    var languages = ViewBag.Languages as List<LanguageInfoResponse> ?? new List<LanguageInfoResponse>();
 }
 <section class="page-section">
     <div class="content-card">
@@ -11,16 +13,9 @@
               asp-controller="Vocabulary"
               asp-action="Edit"
               asp-route-id="@vocabularyId"
-              asp-route-lessonId="@Model.LessonId"
               method="post">
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="LessonId" />
-
-            <div class="form-group">
-                <label>Bài học</label>
-                <input type="text" value="@ViewBag.LessonTitle" class="form-control" disabled readonly />
-            </div>
             <div class="form-group">
                 <label asp-for="Word">Từ vựng</label>
                 <input asp-for="Word" class="form-control" />
@@ -46,7 +41,6 @@
                 <a asp-area="Admin"
                    asp-controller="Vocabulary"
                    asp-action="Index"
-                   asp-route-lessonId="@Model.LessonId"
                    class="btn">
                     Quay lại
                 </a>
@@ -61,10 +55,10 @@
 
             ClassicEditor.create(element, {
                     toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
         });
     </script>
 }

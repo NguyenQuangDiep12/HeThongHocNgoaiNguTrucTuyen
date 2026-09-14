@@ -1,38 +1,24 @@
-﻿@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Test
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.CreateTestRequest
+
 @using HeThongHocNgoaiNguTrucTuyen.Models.Enums
 
-@model TestRequest
-
 <section class="page-section">
-
     <div class="content-card">
-
-        <div class="section-head">
-
-            <h2>Tạo bài kiểm tra</h2>
-        </div>
-
+        <div class="section-head"><h2>Tạo bài kiểm tra</h2></div>
         <form asp-area="Admin"
               asp-controller="Test"
               asp-action="Create"
               method="post">
-
             @Html.AntiForgeryToken()
-
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger">
-            </div>
-
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-
                 <label asp-for="Title">
                     Tên bài kiểm tra
                 </label>
 
-                <input asp-for="Title"
-                       placeholder="Ví dụ: TOEIC Full Test 01" />
+                <input asp-for="Title" placeholder="Ví dụ: TOEIC Full Test 01" />
 
-                <span asp-validation-for="Title"></span>
+                <span class="text-danger" asp-validation-for="Title"></span>
 
             </div>
 
@@ -56,33 +42,6 @@
                 </select>
 
             </div>
-
-            <div class="form-group"
-                 id="part-container">
-
-                <label asp-for="PartNumber">
-                    Chọn Part
-                </label>
-
-                <select asp-for="PartNumber">
-
-                    <option value="">
-                        -- Chọn Part --
-                    </option>
-
-                    @for (int i = 1; i <= 7; i++)
-                    {
-                        <option value="@i">
-                            Part @i
-                        </option>
-                    }
-
-                </select>
-
-                <span asp-validation-for="PartNumber"></span>
-
-            </div>
-
             <div class="form-group">
 
                 <label asp-for="DurationMinutes">
@@ -94,7 +53,7 @@
                        min="1"
                        placeholder="Ví dụ: 30" />
 
-                <span asp-validation-for="DurationMinutes"></span>
+                <span class="text-danger" asp-validation-for="DurationMinutes"></span>
 
             </div>
 
@@ -104,29 +63,27 @@
                     Mô tả
                 </label>
 
-                <textarea asp-for="Description" class="ckeditor" rows="5" placeholder="Nhập mô tả bài kiểm tra..."></textarea>
+                <textarea class="ckeditor" asp-for="Description"
+                          rows="5"
+                          placeholder="Nhập mô tả bài kiểm tra..."></textarea>
 
-                <span asp-validation-for="Description"></span>
+                <span class="text-danger" asp-validation-for="Description"></span>
 
             </div>
 
             <div class="form-actions">
-
-                <a asp-area="Admin"
-                   asp-controller="Test"
-                   asp-action="Index"
-                   class="btn">
-
-                    Quay lại
-
-                </a>
-
-                <button type="submit" class="btn btn-dark">
+                <button type="submit"
+                        class="btn btn-dark">
 
                     Tạo bài kiểm tra
 
                 </button>
-
+                <a asp-area="Admin"
+                   asp-controller="Test"
+                   asp-action="Index"
+                   class="btn btn-light">
+                    Quay lại
+                </a>
             </div>
 
         </form>
@@ -147,24 +104,8 @@
                 .catch(error => {
                     console.error(error);
                 });
+
         });
-    </script>
-    <script>
-        const testMode = document.getElementById("TestMode");
-        const partContainer = document.getElementById("part-container");
-        const partSelect = document.querySelector('[name="PartNumber"]');
-        function updatePartVisibility() {
-            // FULL = 1
-            if (testMode.value === "1") {
-                partContainer.style.display = "none";
-                partSelect.value = "";
-            }
-            else {
-                partContainer.style.display = "block";
-            }
-        }
-        testMode.addEventListener("change", updatePartVisibility);
-        updatePartVisibility();
     </script>
 }
 
