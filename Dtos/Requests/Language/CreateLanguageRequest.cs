@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests
+namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Language
 {
-    public class LanguageRequest
+    public class CreateLanguageRequest
     {
         [Required(ErrorMessage = "Yeu cau nhap vao ten ngon ngu")]
         [MaxLength(20)]
@@ -13,3 +13,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests
         public string? Description { get; set; } = string.Empty;
     }
 }
+
+
+

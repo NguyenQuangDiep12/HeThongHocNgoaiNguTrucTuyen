@@ -108,6 +108,7 @@ textarea {
 }
 
 .admin-user {
+    position: relative;
     border: 1px solid #e0e4ea;
     background: #fff;
     border-radius: 6px;
@@ -116,7 +117,37 @@ textarea {
     gap: 6px;
     align-items: center;
     color: #344054;
+    cursor: pointer;
 }
+
+.user-info {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 150px;
+    background: #fff;
+    border: 1px solid #e0e4ea;
+    border-radius: 6px;
+    padding: 6px;
+    z-index: 1000;
+}
+
+    .user-info.show {
+        display: block;
+    }
+
+    .user-info a,
+    .user-info button {
+        display: block;
+        width: 100%;
+        padding: 8px 12px;
+        border: 0;
+        background: #fff;
+        color: #333;
+        text-align: left;
+        cursor: pointer;
+    }
 
 .admin-content {
     padding: 18px;
@@ -273,4 +304,14 @@ textarea {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+}
+
+/* Theo doi phan trang nut bam */
+.active {
+    background-color: aliceblue;
+}
+
+/* Doan text nem loi */
+.text-danger {
+    color: red;
 }

@@ -1,4 +1,4 @@
-﻿using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
+﻿using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Question;
 using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 
 namespace HeThongHocNgoaiNguTrucTuyen.Services.Interfaces
@@ -33,3 +33,5 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services.Interfaces
             CancellationToken ct);
     }
 }
+
+

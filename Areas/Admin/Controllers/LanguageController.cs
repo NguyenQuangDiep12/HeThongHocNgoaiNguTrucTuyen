@@ -1,4 +1,4 @@
-﻿using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
+﻿using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Language;
 using HeThongHocNgoaiNguTrucTuyen.Services;
 using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,34 +17,30 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
             _languageService = languageService;
         }
         [HttpGet]
-        public async Task<IActionResult> Index(int pageSize = 10, int pageNumber = 1, string? name = null, CancellationToken ct = default)
+        public async Task<IActionResult> Index(LanguageFilterRequest request, int pageSize = 10, int pageNumber = 1, CancellationToken ct = default)
         {
-            var response = await _languageService.GetLanguagesAsync(pageSize, pageNumber, name ?? string.Empty, ct);
-
-            int languageCount = await _languageService.CountLanguagesAsync(name, ct);
-
+            var response = await _languageService.GetLanguagesAsync(request, pageSize, pageNumber, ct);
+            int languageCount = await _languageService.CountLanguagesAsync(request, ct);
             ViewBag.PageNumber = pageNumber;
             ViewBag.PageSize = pageSize;
-            ViewBag.Name = name ?? string.Empty;
+            ViewBag.Name = request.Name ?? string.Empty;
             ViewBag.TotalPages = (int)Math.Ceiling((decimal)languageCount / (decimal)pageSize);
-
             return View(response);
         }
+
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(LanguageRequest request, CancellationToken ct)
+        public async Task<IActionResult> Create(CreateLanguageRequest request, CancellationToken ct)
         {
             if (!ModelState.IsValid)
             {
                 return View(request);
             }
-
             await _languageService.CreateLanguagesAsync(request, ct);
             return RedirectToAction(nameof(Index));
         }
@@ -52,19 +48,23 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
             var response = await _languageService.GetLanguageByIdAsync(id, ct);
-
             if (response == null)
             {
                 TempData["NotFound"] = "Ngon ngu khong duoc tim thay";
-
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.LanguageId = id;
-            return View(response);
+            var request = new UpdateLanguageRequest
+            {
+                Name = response.Name,
+                Code = response.Code,
+                Description = response.Description,
+            };
+            return View(request);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, LanguageRequest request, CancellationToken ct)
+        public async Task<IActionResult> Edit(int id, UpdateLanguageRequest request, CancellationToken ct)
         {
             if (!ModelState.IsValid)
             {
@@ -92,3 +92,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
         }
     }
 }
+
+
+

@@ -1,6 +1,9 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.VocabularyRequest
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Vocabulary
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+@model CreateVocabularyRequest
+
 @{
-    var lessons = ViewBag.Lessons as List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LessonInfoResponse>;
+    var lessons = ViewBag.Lessons as List<LessonInfoResponse>;
 }
 <section class="page-section">
     <div class="content-card">
@@ -8,21 +11,15 @@
         <form asp-area="Admin"
               asp-controller="Vocabulary"
               asp-action="Create"
+              asp-route-lessonId="@Model.LessonId"
               method="post">
             @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="LessonId" />
+
             <div class="form-group">
-                <label asp-for="LessonId">Bài học</label>
-                <select asp-for="LessonId" class="form-control">
-                    <option value="0"> -- Chọn bài học -- </option>
-                    @if (lessons != null)
-                    {
-                        foreach (var lesson in lessons)
-                        {
-                            <option value="@lesson.LessonId">@lesson.Title</option>
-                        }
-                    }
-                </select>
-                <span asp-validation-for="LessonId" class="text-danger"></span>
+                <label>Bài học</label>
+                <input type="text" value="@ViewBag.LessonTitle" class="form-control" disabled readonly />
             </div>
             <div class="form-group">
                 <label asp-for="Word">Từ vựng</label>
@@ -41,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Example">Ví dụ</label>
-                <textarea asp-for="Example" class="form-control" id="editor" rows="4" placeholder="Ví dụ: Hello, nice to meet you."></textarea>
+                <textarea asp-for="Example" class="form-control ckeditor" rows="4" placeholder="Ví dụ: Hello, nice to meet you."></textarea>
                 <span asp-validation-for="Example" class="text-danger"></span>
             </div>
             <div class="form-actions">
@@ -59,7 +56,7 @@
 </section>
 
 @section Scripts {
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
             document.querySelectorAll('.ckeditor').forEach(element => {
 
@@ -69,7 +66,8 @@
                 .catch(error => {
                     console.error(error);
                 });
-
         });
     </script>
 }
+
+

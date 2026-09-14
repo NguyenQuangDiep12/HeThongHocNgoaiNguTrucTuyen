@@ -1,5 +1,5 @@
 ﻿using HeThongHocNgoaiNguTrucTuyen.Data;
-using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
+using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Question;
 using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 using HeThongHocNgoaiNguTrucTuyen.Models;
 using HeThongHocNgoaiNguTrucTuyen.Models.Enums;
@@ -380,3 +380,5 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
         }
     }
 }
+
+

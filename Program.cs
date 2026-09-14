@@ -42,16 +42,6 @@ namespace HeThongHocNgoaiNguTrucTuyen
                     options.Cookie.SameSite = SameSiteMode.Lax;
                     
                 });
-
-            // Session
-            builder.Services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-            });
             #endregion
 
 

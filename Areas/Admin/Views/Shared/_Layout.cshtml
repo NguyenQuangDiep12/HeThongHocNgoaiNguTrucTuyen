@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
@@ -36,26 +36,8 @@
                     Quản lý ngôn ngữ
                 </a>
 
-                <a class="admin-nav-item"
-                   asp-area="Admin"
-                   asp-controller="Topic"
-                   asp-action="Index">
-                    Quản lý chủ đề
-                </a>
-
-                <a class="admin-nav-item"
-                   asp-area="Admin"
-                   asp-controller="Lesson"
-                   asp-action="Index">
-                    Quản lý bài học
-                </a>
-
-                <a class="admin-nav-item"
-                   asp-area="Admin"
-                   asp-controller="Vocabulary"
-                   asp-action="Index">
-                    Quản lý từ vựng
-                </a>
+                <span class="admin-nav-group-label">Nội dung học</span>
+                <span class="admin-nav-hint">Ngôn ngữ → Chủ đề → Bài học → Từ vựng</span>
 
                 <a class="admin-nav-item"
                    asp-area="Admin"
@@ -83,14 +65,28 @@
                     <span>@ViewData["Title"]</span>
                 </div>
 
-                <div class="admin-user">
+                <div class="admin-user" id="userMenuButton">
                     <span class="admin-user-dot"></span>
                     <span>Admin</span>
-                    
+                    <div class="user-info" id="userDropdown">
+                        <a asp-area=""
+                           asp-controller="Home"
+                           asp-action="Index">
+                            Về trang chủ
+                        </a>
+                        <form class="form-logout"
+                              asp-area=""
+                              asp-controller="Auth"
+                              asp-action="Logout"
+                              method="post">
+                            @Html.AntiForgeryToken()
+                            <button type="submit">
+                                Đăng xuất
+                            </button>
+                        </form>
+                    </div>
                 </div>
-
             </header>
-
             <main id="admin-main-content" class="admin-content">
                 @RenderBody()
             </main>

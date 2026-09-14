@@ -1,7 +1,10 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.LessonRequest
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Lesson
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+@model UpdateLessonRequest
 
 @{
-    var topics = ViewBag.Topics as List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.TopicInfoResponse>;
+    var lessonId = ViewBag.LessonId;
+    var topics = ViewBag.Topics as List<TopicInfoResponse>;
 }
 
 <section class="page-section">
@@ -10,41 +13,37 @@
         <form asp-area="Admin"
               asp-controller="Lesson"
               asp-action="Edit"
+              asp-route-id="@lessonId"
+              asp-route-topicId="@Model.TopicId"
               method="post">
             @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TopicId" />
+
             <div class="form-group">
-                <label asp-for="TopicId">Chủ đề</label>
-                <select asp-for="TopicId" class="form-control">
-                    <option value="">-- Chọn chủ đề --</option>
-                    @if (topics != null)
-                    {
-                        foreach (var topic in topics)
-                        {
-                            <option value="@topic.TopicId">@topic.Name</option>
-                        }
-                    }
-                </select>
-                <span asp-validation-for="TopicId" class="text-danger"></span>
+                <label>Chủ đề</label>
+                <input type="text" value="@ViewBag.TopicName (@ViewBag.LanguageName)" class="form-control" disabled readonly />
             </div>
             <div class="form-group">
-                <label asp-for="Title"> Tiêu đề bài học </label>
-                <input asp-for="Title" class="form-control" />
+                <label for="topicTitle" asp-for="Title"> Tiêu đề bài học </label>
+                <input id="topicTitle" asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description">Mô tả</label>
-                <textarea asp-for="Description" class="form-control ckeditor" rows="3"></textarea>
+                <label for="topicDescription" asp-for="Description">Mô tả</label>
+                <textarea id="topicDescription" asp-for="Description" class="form-control ckeditor" rows="3"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Content">Nội dung bài học</label>
-                <textarea asp-for="Content"class="form-control ckeditor"></textarea>
-                <span asp-validation-for="Content"class="text-danger"></span>
+                <label for="topicContent" asp-for="Content">Nội dung bài học</label>
+                <textarea id="topicContent" asp-for="Content" class="form-control ckeditor"></textarea>
+                <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <button type="submit" class="btn btn-dark">Cập nhật</button>
             <a asp-area="Admin"
                asp-controller="Lesson"
                asp-action="Index"
+               asp-route-topicId="@Model.TopicId"
                class="btn">
                 Quay lại
             </a>
@@ -52,7 +51,7 @@
     </div>
 </section>
 @section Scripts {
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
             document.querySelectorAll('.ckeditor').forEach(element => {
 
@@ -62,7 +61,9 @@
                 .catch(error => {
                     console.error(error);
                 });
-
         });
     </script>
 }
+
+
+

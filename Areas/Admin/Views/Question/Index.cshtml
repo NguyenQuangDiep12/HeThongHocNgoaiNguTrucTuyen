@@ -1,233 +1,144 @@
-﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.QuestionInfoResponse>
-
+﻿@using System.Text.RegularExpressions
 @using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
 
+@model List<QuestionInfoResponse>
+
+@functions {
+    public string GetPreview(string? content, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return "";
+        }
+        var text = Regex.Replace(content, "<.*?>", string.Empty);
+        text = Regex.Replace(text, @"\s+", " ").Trim();
+        if (text.Length > maxLength)
+        {
+            return text.Substring(0, maxLength) + "...";
+        }
+        return text;
+    }
+}
 @{
-    var tests =
-        ViewBag.Tests as List<TestInfoResponse>
-        ?? new List<TestInfoResponse>();
-
-    int pageNumber =
-        ViewBag.PageNumber ?? 1;
-
-    int pageSize =
-        ViewBag.PageSize ?? 10;
-
-    int totalPages =
-        ViewBag.TotalPages ?? 1;
-
-    int filterTestId =
-        ViewBag.FilterTestId ?? 0;
-
-    int? filterPartNumber =
-        ViewBag.FilterPartNumber;
+    var tests = ViewBag.Tests as List<TestInfoResponse> ?? new List<TestInfoResponse>();
+    int pageNumber = ViewBag.PageNumber ?? 1;
+    int pageSize = ViewBag.PageSize ?? 10;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int filterTestId = ViewBag.FilterTestId ?? 0;
+    int? filterPartNumber = ViewBag.FilterPartNumber;
 }
 
 <section class="page-section">
-
     <div class="content-card">
-
         <div class="section-head">
-
             <div>
                 <h2>Danh sách câu hỏi</h2>
             </div>
-
             <a class="btn btn-dark"
                asp-area="Admin"
                asp-controller="Question"
                asp-action="Create">
-
                 + Thêm câu hỏi
-
             </a>
-
         </div>
-
         <div class="toolbar">
-
             <form asp-area="Admin"
                   asp-controller="Question"
                   asp-action="Index"
                   method="get">
-
                 <select name="TestId">
-
                     <option value="0">
                         -- Tất cả bài kiểm tra --
                     </option>
-
                     @foreach (var test in tests)
                     {
-                        <option value="@test.TestId"
-                                selected="@(filterTestId == test.TestId)">
-
+                        <option value="@test.TestId" selected="@(filterTestId == test.TestId)">
                             @test.Title
-
                         </option>
                     }
-
                 </select>
-
                 <select name="PartNumber">
-
                     <option value="">
                         -- Tất cả Part --
                     </option>
-
                     @for (int i = 1; i <= 7; i++)
                     {
                         <option value="@i"
                                 selected="@(filterPartNumber == i)">
-
                             Part @i
-
                         </option>
                     }
-
                 </select>
-
-                <input type="hidden"
-                       name="pageSize"
-                       value="@pageSize" />
-
-                <button type="submit"
-                        class="btn btn-dark">
-
+                <input type="hidden" name="pageSize" value="@pageSize" />
+                <button type="submit" class="btn btn-dark">
                     Lọc
-
                 </button>
-
             </form>
-
         </div>
-
         <div class="table-wrap">
-
             <table class="data-table">
-
                 <thead>
-
                     <tr>
                         <th>STT</th>
-
                         <th>Bài kiểm tra</th>
-
                         <th>Part</th>
-
                         <th>Nội dung</th>
-
                         <th>Loại</th>
-
                         <th>Thứ tự</th>
-
                         <th>Số đáp án</th>
-
                         <th>Thao tác</th>
                     </tr>
-
                 </thead>
-
                 <tbody>
-
                     @if (Model != null && Model.Any())
                     {
-                        var index =
-                        (pageNumber - 1) * pageSize + 1;
-
+                        var index = (pageNumber - 1) * pageSize + 1;
                         foreach (var question in Model)
                         {
                             <tr>
-
-                                <td>
-                                    @index
-                                </td>
-
-                                <td>
-                                    @question.TestTitle
-                                </td>
-
-                                <td>
-                                    @(question.PartNumber.HasValue
-                                                                ? $"Part {question.PartNumber}"
-                                                                : "-")
-                        </td>
-
-                                <td>
-                                    @question.Content
-                                </td>
-
-                                <td>
-                                    @question.QuestionTypeDisplay
-                                </td>
-
-                                <td>
-                                    @question.QuestionOrder
-                                </td>
-
-                                <td>
-                                    @question.AnswerCount
-                                </td>
-
+                                <td>@index</td>
+                                <td> @question.TestTitle</td>
+                                <td>@(question.PartNumber.HasValue ? $"Part {question.PartNumber}" : "-")</td>
+                                <td> @Html.Raw(GetPreview(question.Content, 60))</td>
+                                <td>@question.QuestionTypeDisplay</td>
+                                <td>@question.QuestionOrder</td>
+                                <td>@question.AnswerCount</td>
                                 <td class="action-cell">
-
                                     <a class="btn-small"
                                        asp-area="Admin"
                                        asp-controller="Question"
                                        asp-action="Edit"
                                        asp-route-id="@question.QuestionId">
-
                                         Sửa
-
                                     </a>
-
                                     <form asp-area="Admin"
                                           asp-controller="Question"
                                           asp-action="Delete"
                                           asp-route-id="@question.QuestionId"
                                           method="post"
                                           style="display:inline;">
-
                                         @Html.AntiForgeryToken()
-
-                                        <button type="submit"
-                                                class="btn-small danger"
-                                                onclick="return confirm('Bạn có chắc muốn xóa câu hỏi này không?');">
-
+                                        <button type="submit"class="btn-small danger"onclick="return confirm('Bạn có chắc muốn xóa câu hỏi này không?');">
                                             Xóa
-
                                         </button>
-
                                     </form>
-
                                 </td>
-
                             </tr>
-
-                                        index++;
+                            index++;
                         }
                     }
                     else
                     {
                         <tr>
-
-                            <td colspan="8">
-                                Không có dữ liệu.
-                            </td>
-
+                            <td colspan="8">Không có dữ liệu.</td>
                         </tr>
                     }
-
                 </tbody>
-
             </table>
-
         </div>
-
         @if (totalPages > 1)
         {
             <div class="pagination">
-
                 <a asp-area="Admin"
                    asp-controller="Question"
                    asp-action="Index"
@@ -236,11 +147,8 @@
                    asp-route-TestId="@filterTestId"
                    asp-route-PartNumber="@filterPartNumber"
                    class="pagination-btn @(pageNumber == 1 ? "disabled" : "")">
-
                     &lt;
-
                 </a>
-
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     <a asp-area="Admin"
@@ -251,12 +159,9 @@
                        asp-route-TestId="@filterTestId"
                        asp-route-PartNumber="@filterPartNumber"
                        class="pagination-btn @(i == pageNumber ? "disabled" : "")">
-
                         @i
-
                     </a>
                 }
-
                 <a asp-area="Admin"
                    asp-controller="Question"
                    asp-action="Index"
@@ -265,14 +170,11 @@
                    asp-route-TestId="@filterTestId"
                    asp-route-PartNumber="@filterPartNumber"
                    class="pagination-btn @(pageNumber == totalPages ? "disabled" : "")">
-
                     &gt;
-
                 </a>
-
             </div>
         }
-
     </div>
-
 </section>
+
+

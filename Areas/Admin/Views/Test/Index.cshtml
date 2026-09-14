@@ -1,4 +1,25 @@
-﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.TestInfoResponse>
+﻿@using System.Text.RegularExpressions
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+
+
+@model List<TestInfoResponse>
+
+@functions {
+    public string GetPreview(string? content, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return "";
+        }
+        var text = Regex.Replace(content, "<.*?>", string.Empty);
+        text = Regex.Replace(text, @"\s+", " ").Trim();
+        if (text.Length > maxLength)
+        {
+            return text.Substring(0, maxLength) + "...";
+        }
+        return text;
+    }
+}
 
 @{
     int pageNumber = ViewBag.PageNumber ?? 1;
@@ -33,70 +54,39 @@
                   asp-controller="Test"
                   asp-action="Index"
                   method="get">
-
                 <div class="search-control">
-
                     <span>⌕</span>
-
-                    <input type="text"
-                           name="Title"
-                           value="@Context.Request.Query["Title"]"
-                           placeholder="Tìm kiếm tên bài kiểm tra..." />
-
+                    <input type="text" name="Title" value="@Context.Request.Query["Title"]" placeholder="Tìm kiếm tên bài kiểm tra..." />
                 </div>
-
                 <select name="PartNumber">
-
                     <option value="">
                         Tất cả Part
                     </option>
-
                     @for (int i = 1; i <= 7; i++)
                     {
                         <option value="@i">
                             Part @i
                         </option>
                     }
-
                 </select>
-
-                <input type="hidden"
-                       name="pageSize"
-                       value="@pageSize" />
-
-                <button type="submit"
-                        class="btn btn-dark">
-
+                <input type="hidden" name="pageSize" value="@pageSize" />
+                <button type="submit" class="btn btn-dark">
                     Tìm kiếm
-
                 </button>
-
             </form>
-
         </div>
-
         <div class="table-wrap">
-
             <table class="data-table">
-
                 <thead>
-
                     <tr>
-
                         <th>STT</th>
-
                         <th>Tên bài kiểm tra</th>
-
+                        <th>Mô tả</th>
                         <th>Loại</th>
-
                         <th>Part</th>
-
                         <th>Số câu hỏi</th>
-
                         <th>Thời gian</th>
-
                         <th>Thao tác</th>
-
                     </tr>
 
                 </thead>
@@ -105,29 +95,15 @@
 
                     @if (Model != null && Model.Any())
                     {
-                        var index =
-                        (pageNumber - 1) * pageSize + 1;
-
+                        var index = (pageNumber - 1) * pageSize + 1;
                         foreach (var test in Model)
                         {
                             <tr>
-
+                                <td>@index</td>
+                                <td><strong>@test.Title</strong></td>
+                                <td>@Html.Raw(GetPreview(test.Description, 60))</td>
+                                <td>@test.TestModeDisplay</td>
                                 <td>
-                                    @index
-                                </td>
-
-                                <td>
-                                    <strong>
-                                        @test.Title
-                                    </strong>
-                                </td>
-
-                                <td>
-                                    @test.TestModeDisplay
-                                </td>
-
-                                <td>
-
                                     @if (test.TestMode == 0)
                                     {
                                         <span>
@@ -140,72 +116,44 @@
                                             Part 1 - 7
                                         </span>
                                     }
-
                                 </td>
-
-                                <td>
-                                    @test.QuestionCount
-                                </td>
-
-                                <td>
-                                    @test.DurationMinutes phút
-                                </td>
-
+                                <td>@test.QuestionCount</td>
+                                <td>@test.DurationMinutes phút</td>
                                 <td class="action-cell">
-
                                     <a class="btn-small"
                                        asp-area="Admin"
                                        asp-controller="Test"
                                        asp-action="Edit"
                                        asp-route-id="@test.TestId">
-
                                         Sửa
-
                                     </a>
-
                                     <form asp-area="Admin"
                                           asp-controller="Test"
                                           asp-action="Delete"
                                           asp-route-id="@test.TestId"
                                           method="post"
                                           style="display:inline;">
-
                                         @Html.AntiForgeryToken()
-
-                                        <button type="submit"
-                                                class="btn-small danger"
-                                                onclick="return confirm('Bạn có chắc muốn xóa bài kiểm tra này không?');">
-
+                                        <button type="submit" class="btn-small danger" onclick="return confirm('Bạn có chắc muốn xóa bài kiểm tra này không?');">
                                             Xóa
-
                                         </button>
-
                                     </form>
-
                                 </td>
-
                             </tr>
-
                             index++;
                         }
                     }
                     else
                     {
                         <tr>
-
                             <td colspan="7">
                                 Không có bài kiểm tra nào.
                             </td>
-
                         </tr>
                     }
-
                 </tbody>
-
             </table>
-
         </div>
-
         @if (totalPages > 1)
         {
             <div class="pagination">
@@ -218,12 +166,9 @@
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@(pageNumber - 1)"
                        class="pagination-btn">
-
                         &lt;
-
                     </a>
                 }
-
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     <a asp-action="Index"
@@ -232,12 +177,9 @@
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@i"
                        class="pagination-btn @(i == pageNumber ? "disabled" : "")">
-
                         @i
-
                     </a>
                 }
-
                 @if (pageNumber < totalPages)
                 {
                     <a asp-action="Index"
@@ -246,15 +188,12 @@
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@(pageNumber + 1)"
                        class="pagination-btn">
-
                         &gt;
-
                     </a>
                 }
-
             </div>
         }
-
     </div>
-
 </section>
+
+

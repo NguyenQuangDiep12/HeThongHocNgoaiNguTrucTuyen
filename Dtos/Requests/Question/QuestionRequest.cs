@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests
+namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Question
 {
     public class QuestionRequest
     {
@@ -24,3 +24,5 @@ namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests
         public string? GroupCode { get; set; }
     }
 }
+
+

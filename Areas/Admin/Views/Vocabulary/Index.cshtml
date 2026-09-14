@@ -1,10 +1,21 @@
-﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.VocabularyInfoResponse>
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Vocabulary
+@model List<VocabularyInfoResponse>
+
 @{
+    int lessonId = ViewBag.LessonId ?? 0;
+    string lessonTitle = ViewBag.LessonTitle ?? string.Empty;
+    int topicId = ViewBag.TopicId ?? 0;
+    string topicName = ViewBag.TopicName ?? string.Empty;
+
     int pageNumber = ViewBag.PageNumber ?? 1;
     int pageSize = ViewBag.PageSize ?? 10;
     int totalPages = ViewBag.TotalPages ?? 1;
-    var lessons = ViewBag.Lessons as List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LessonInfoResponse>;
+
+    var filter = ViewBag.Filter as VocabularyFilterRequest ?? new VocabularyFilterRequest();
+    string word = filter.Word ?? ViewBag.Word ?? string.Empty;
 }
+
 @section Styles {
     <style>
         .muted {
@@ -28,9 +39,16 @@
     <div class="content-card">
         <div class="section-head">
             <div>
-                <h2>Quản lý từ vựng</h2>
-                <p class="muted">Quản lý từ vựng theo từng bài học</p>
+                <a asp-area="Admin" asp-controller="Lesson" asp-action="Index" asp-route-topicId="@topicId" class="btn-small">← Quay lại danh sách bài học (@lessonTitle)</a>
+                <h2 style="margin-top: 8px;">Quản lý từ vựng - @lessonTitle</h2>
+                <p class="muted">Bài học: @lessonTitle (Chủ đề: @topicName)</p>
             </div>
+            @if (TempData["NotFound"] != null)
+            {
+                <div class="text-danger">
+                    @TempData["NotFound"]
+                </div>
+            }
             <div class="toolbar">
                 <form asp-area="Admin"
                       asp-controller="Vocabulary"
@@ -38,21 +56,9 @@
                       method="get">
                     <div class="search-control">
                         <span>⌕</span>
-                        <input type="text" name="word" value="@ViewBag.Word" placeholder="Tìm kiếm từ vựng..." />
-                        <select name="lessonId" class="select-control">
-                            <option value="">
-                                -- Tất cả bài học --
-                            </option>
-                            @if (lessons != null)
-                            {
-                                foreach (var lesson in lessons)
-                                {
-                                    <option value="@lesson.LessonId" selected="@(ViewBag.LessonId != null && Convert.ToInt32(ViewBag.LessonId) == lesson.LessonId)">
-                                        @lesson.Title
-                                    </option>
-                                }
-                            }
-                        </select>
+                        <input type="hidden" name="lessonId" value="@lessonId" />
+                        <input type="text" name="Word" value="@word" placeholder="Tìm kiếm từ vựng..." />
+                        <input type="hidden" name="pageNumber" value="1"/>
                         <input type="hidden" name="pageSize" value="@pageSize" />
                         <button type="submit" class="btn-small">Tìm kiếm</button>
                     </div>
@@ -61,7 +67,7 @@
                    asp-area="Admin"
                    asp-controller="Vocabulary"
                    asp-action="Create"
-                   asp-route-lessonId="@ViewBag.LessonId">
+                   asp-route-lessonId="@lessonId">
                     + Thêm
                 </a>
             </div>
@@ -97,17 +103,18 @@
                                        asp-area="Admin"
                                        asp-controller="Vocabulary"
                                        asp-action="Edit"
-                                       asp-route-id="@vocabulary.VocabularyId">
+                                       asp-route-id="@vocabulary.VocabularyId"
+                                       asp-route-lessonId="@lessonId">
                                         Sửa
                                     </a>
                                     <form asp-area="Admin"
                                           asp-controller="Vocabulary"
                                           asp-action="Delete"
+                                          asp-route-id="@vocabulary.VocabularyId"
+                                          asp-route-lessonId="@lessonId"
                                           method="post"
                                           style="display:inline;">
                                         @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@vocabulary.VocabularyId" />
-                                        <input type="hidden" name="lessonId" value="@vocabulary.LessonId" />
                                         <button type="submit" class="btn-small danger" onclick="return confirm('Bạn có chắc muốn xóa từ vựng này không?');">
                                             Xóa
                                         </button>
@@ -124,8 +131,6 @@
                 </tbody>
             </table>
         </div>
-
-
         @if (totalPages > 1)
         {
             <div class="pagination">
@@ -134,28 +139,23 @@
                     <a asp-area="Admin"
                        asp-controller="Vocabulary"
                        asp-action="Index"
+                       asp-route-lessonId="@lessonId"
                        asp-route-pageNumber="@(pageNumber - 1)"
                        asp-route-pageSize="@pageSize"
-                       asp-route-word="@ViewBag.Word"
-                       asp-route-lessonId="@ViewBag.LessonId"
-                       class="pagination-btn">
+                       asp-route-Word="@word">
                         &lt;
                     </a>
-                }
-                else
-                {
-                    <span class="pagination-btn disabled">&lt;</span>
                 }
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     <a asp-area="Admin"
                        asp-controller="Vocabulary"
                        asp-action="Index"
+                       asp-route-lessonId="@lessonId"
                        asp-route-pageNumber="@i"
                        asp-route-pageSize="@pageSize"
-                       asp-route-word="@ViewBag.Word"
-                       asp-route-lessonId="@ViewBag.LessonId"
-                       class="pagination-btn @(i == pageNumber ? "active" : "")">
+                       asp-route-Word="@word"
+                       class="@(i == pageNumber ? "active" : "")">
                         @i
                     </a>
                 }
@@ -164,19 +164,16 @@
                     <a asp-area="Admin"
                        asp-controller="Vocabulary"
                        asp-action="Index"
+                       asp-route-lessonId="@lessonId"
                        asp-route-pageNumber="@(pageNumber + 1)"
                        asp-route-pageSize="@pageSize"
-                       asp-route-word="@ViewBag.Word"
-                       asp-route-lessonId="@ViewBag.LessonId"
-                       class="pagination-btn">
+                       asp-route-Word="@word">
                         &gt;
                     </a>
-                }
-                else
-                {
-                    <span class="pagination-btn disabled">&gt;</span>
                 }
             </div>
         }
     </div>
 </section>
+
+

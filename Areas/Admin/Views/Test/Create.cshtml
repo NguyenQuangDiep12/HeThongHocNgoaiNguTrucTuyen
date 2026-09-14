@@ -1,6 +1,7 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.TestRequest
-
+﻿@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Test
 @using HeThongHocNgoaiNguTrucTuyen.Models.Enums
+
+@model TestRequest
 
 <section class="page-section">
 
@@ -9,16 +10,6 @@
         <div class="section-head">
 
             <h2>Tạo bài kiểm tra</h2>
-
-            <a asp-area="Admin"
-               asp-controller="Test"
-               asp-action="Index"
-               class="btn btn-light">
-
-                ← Quay lại
-
-            </a>
-
         </div>
 
         <form asp-area="Admin"
@@ -113,9 +104,7 @@
                     Mô tả
                 </label>
 
-                <textarea asp-for="Description"
-                          rows="5"
-                          placeholder="Nhập mô tả bài kiểm tra..."></textarea>
+                <textarea asp-for="Description" class="ckeditor" rows="5" placeholder="Nhập mô tả bài kiểm tra..."></textarea>
 
                 <span asp-validation-for="Description"></span>
 
@@ -126,14 +115,13 @@
                 <a asp-area="Admin"
                    asp-controller="Test"
                    asp-action="Index"
-                   class="btn btn-light">
+                   class="btn">
 
                     Quay lại
 
                 </a>
 
-                <button type="submit"
-                        class="btn btn-dark">
+                <button type="submit" class="btn btn-dark">
 
                     Tạo bài kiểm tra
 
@@ -149,43 +137,35 @@
 
 @section Scripts
 {
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
+            document.querySelectorAll('.ckeditor').forEach(element => {
 
-        const testMode =
-            document.getElementById("TestMode");
-
-        const partContainer =
-            document.getElementById("part-container");
-
-        const partSelect =
-            document.querySelector(
-                '[name="PartNumber"]'
-            );
-
+            ClassicEditor.create(element, {
+                    toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    </script>
+    <script>
+        const testMode = document.getElementById("TestMode");
+        const partContainer = document.getElementById("part-container");
+        const partSelect = document.querySelector('[name="PartNumber"]');
         function updatePartVisibility() {
-
             // FULL = 1
             if (testMode.value === "1") {
-
-                partContainer.style.display =
-                    "none";
-
+                partContainer.style.display = "none";
                 partSelect.value = "";
-
             }
             else {
-
-                partContainer.style.display =
-                    "block";
+                partContainer.style.display = "block";
             }
         }
-
-        testMode.addEventListener(
-            "change",
-            updatePartVisibility
-        );
-
+        testMode.addEventListener("change", updatePartVisibility);
         updatePartVisibility();
-
     </script>
 }
+
+

@@ -1,49 +1,46 @@
-﻿@model List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.TopicInfoResponse>
 @using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Topic
+
+@model List<TopicInfoResponse>
 
 @{
+    int languageId = ViewBag.LanguageId ?? 0;
+    string languageName = ViewBag.LanguageName ?? string.Empty;
     int pageNumber = ViewBag.PageNumber ?? 1;
     int pageSize = ViewBag.PageSize ?? 10;
     int totalPages = ViewBag.TotalPages ?? 1;
-    string currentName = Context.Request.Query["Name"].ToString();
-    string currentLanguageId = Context.Request.Query["LanguageId"].ToString();
-    string currentLevel = Context.Request.Query["Level"].ToString();
-    var languages = ViewBag.Languages as List<LanguageInfoResponse> ?? new List<LanguageInfoResponse>();
+
     var levels = ViewBag.Levels as List<string> ?? new List<string>();
+    var filter = ViewBag.Filter as TopicFilterRequest ?? new TopicFilterRequest();
 }
+
 <section class="page-section">
     <div class="content-card">
         <div class="section-head">
-            <h2>Danh sách chủ đề</h2>
+            <div>
+                <a asp-area="Admin" asp-controller="Language" asp-action="Index" class="btn-small">← Quay lại danh sách ngôn ngữ</a>
+                <h2 style="margin-top: 8px;">Danh sách chủ đề - @languageName</h2>
+            </div>
+            @if (TempData["NotFound"] != null)
+            {
+                <div class="text-danger">
+                    @TempData["NotFound"]
+                </div>
+            }
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
             <div class="toolbar">
                 <form asp-area="Admin"
                       asp-controller="Topic"
                       asp-action="Index"
                       method="get"
                       class="topic-filter-form">
-                    <div class="search-control">
-                        <input type="text" name="Name" value="@currentName" placeholder="Tìm kiếm chủ đề..." />
-                    </div>
-                    <select class="select-control" name="LanguageId">
-                        <option value="0">
-                            Ngôn ngữ: Tất cả
-                        </option>
-                        @foreach (var language in languages)
-                        {
-                            <option value="@language.LanguageId" selected="@(currentLanguageId == language.LanguageId.ToString())">
-                                @language.Name
-                            </option>
-                        }
-                    </select>
+                    <input type="hidden" name="languageId" value="@languageId" />
+                    <input type="text" name="Name" value="@filter.Name" placeholder="Tìm kiếm tên chủ đề..." class="input-control" />
                     <select class="select-control" name="Level">
-                        <option value="">
-                            Cấp độ: Tất cả
-                        </option>
+                        <option value="">-- Cấp độ: Tất cả --</option>
                         @foreach (var level in levels)
                         {
-                            <option value="@level" selected="@(currentLevel == level)">
-                                @level
-                            </option>
+                            <option value="@level" selected="@(filter.Level == level)">@level</option>
                         }
                     </select>
                     <input type="hidden" name="pageSize" value="@pageSize" />
@@ -53,6 +50,7 @@
                 <a asp-area="Admin"
                    asp-controller="Topic"
                    asp-action="Create"
+                   asp-route-languageId="@languageId"
                    class="btn btn-dark">
                     + Thêm mới
                 </a>
@@ -77,30 +75,38 @@
                         foreach (var topic in Model)
                         {
                             <tr>
-                            <td>@index</td>
-                            <td>@topic.Name</td>
-                            <td>@topic.LanguageName</td>
-                            <td>@topic.Level</td>
-                            <td>@topic.Description</td>
+                                <td>@index</td>
+                                <td>@topic.Name</td>
+                                <td>@topic.LanguageName</td>
+                                <td>@topic.Level</td>
+                                <td>@Html.Raw(topic.Description)</td>
                                 <td class="action-cell">
+                                    <a asp-area="Admin"
+                                       asp-controller="Lesson"
+                                       asp-action="Index"
+                                       asp-route-topicId="@topic.TopicId"
+                                       class="btn-small">
+                                        Xem bài học
+                                    </a>
                                     <a asp-area="Admin"
                                        asp-controller="Topic"
                                        asp-action="Edit"
                                        asp-route-id="@topic.TopicId"
+                                       asp-route-languageId="@languageId"
                                        class="btn-small">
                                         Sửa
-
                                     </a>
                                     <form asp-area="Admin"
                                           asp-controller="Topic"
                                           asp-action="Delete"
                                           asp-route-id="@topic.TopicId"
+                                          asp-route-languageId="@languageId"
                                           method="post"
                                           style="display: inline;">
                                         @Html.AntiForgeryToken()
                                         <button type="submit"
                                                 class="btn-small danger"
-                                                onclick="return confirm('Bạn có chắc muốn xóa chủ đề này không?');">
+                                                onclick="return confirm('Bạn có chắc chắn muốn xóa chủ đề này?');">
                                             Xóa
                                         </button>
                                     </form>
@@ -126,12 +132,11 @@
                     <a asp-area="Admin"
                        asp-controller="Topic"
                        asp-action="Index"
+                       asp-route-languageId="@languageId"
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@(pageNumber - 1)"
-                       asp-route-Name="@currentName"
-                       asp-route-LanguageId="@currentLanguageId"
-                       asp-route-Level="@currentLevel"
-                       class="pagination-btn">
+                       asp-route-Name="@filter.Name"
+                       asp-route-Level="@filter.Level">
                         &lt;
                     </a>
                 }
@@ -140,12 +145,12 @@
                     <a asp-area="Admin"
                        asp-controller="Topic"
                        asp-action="Index"
+                       asp-route-languageId="@languageId"
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@i"
-                       asp-route-Name="@currentName"
-                       asp-route-LanguageId="@currentLanguageId"
-                       asp-route-Level="@currentLevel"
-                       class="pagination-btn @(i == pageNumber ? "active" : "")">
+                       asp-route-Name="@filter.Name"
+                       asp-route-Level="@filter.Level"
+                       class="@(i == pageNumber ? "active" : "")">
                         @i
                     </a>
                 }
@@ -154,12 +159,11 @@
                     <a asp-area="Admin"
                        asp-controller="Topic"
                        asp-action="Index"
+                       asp-route-languageId="@languageId"
                        asp-route-pageSize="@pageSize"
                        asp-route-pageNumber="@(pageNumber + 1)"
-                       asp-route-Name="@currentName"
-                       asp-route-LanguageId="@currentLanguageId"
-                       asp-route-Level="@currentLevel"
-                       class="pagination-btn">
+                       asp-route-Name="@filter.Name"
+                       asp-route-Level="@filter.Level">
                         &gt;
                     </a>
                 }

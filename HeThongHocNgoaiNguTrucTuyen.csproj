@@ -13,6 +13,7 @@
     <Folder Include="Models\Enums\" />
     <Folder Include="Views\Home\" />
     <Folder Include="Views\Progress\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
   <ItemGroup>

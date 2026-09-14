@@ -1,11 +1,11 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.TopicRequest
 @using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Topic.UpdateTopicRequest
 
 @{
-    var languages = ViewBag.Languages as List<LanguageInfoResponse> ?? new List<LanguageInfoResponse>();
     var topicId = ViewBag.TopicId;
-
+    var languages = ViewBag.Languages as List<LanguageInfoResponse> ?? new List<LanguageInfoResponse>();
 }
+
 <section class="page-section">
     <div class="content-card">
         <div class="section-head">
@@ -15,65 +15,43 @@
               asp-controller="Topic"
               asp-action="Edit"
               asp-route-id="@topicId"
+              asp-route-languageId="@Model.LanguageId"
               method="post"
               class="topic-form">
             @Html.AntiForgeryToken()
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="LanguageId" />
+
+            <div class="topic-form-group">
+                <label>Ngôn ngữ</label>
+                <input type="text" value="@ViewBag.LanguageName" disabled readonly />
             </div>
             <div class="topic-form-group">
-                <label asp-for="Name">
-                    Tên chủ đề
-                </label>
+                <label asp-for="Name">Tên chủ đề</label>
                 <input asp-for="Name" placeholder="Nhập tên chủ đề..." />
-                <span asp-validation-for="Name"></span>
+                <span class="text-danger" asp-validation-for="Name"></span>
             </div>
             <div class="topic-form-group">
-                <label asp-for="LanguageId">
-                    Ngôn ngữ
-                </label>
-                <select asp-for="LanguageId">
-                    <option value="0">
-                        -- Chọn ngôn ngữ --
-                    </option>
-                    @foreach (var language in languages)
-                    {
-                        <option value="@language.LanguageId">
-                            @language.Name
-                        </option>
-                    }
-                </select>
-                <span asp-validation-for="LanguageId"></span>
-            </div>
-            <div class="topic-form-group">
-                <label asp-for="Level">
-                    Cấp độ
-                </label>
+                <label asp-for="Level">Cấp độ</label>
                 <input asp-for="Level" placeholder="Ví dụ: A1, A2, B1..." />
-                <span asp-validation-for="Level"></span>
+                <span class="text-danger" asp-validation-for="Level"></span>
             </div>
             <div class="topic-form-group">
-                <label asp-for="Description">
-                    Mô tả
-                </label>
-                <textarea asp-for="Description" placeholder="Nhập mô tả chủ đề...">
-                </textarea>
-                <span asp-validation-for="Description"></span>
+                <label asp-for="Description">Mô tả</label>
+                <textarea asp-for="Description" class="ckeditor" placeholder="Nhập mô tả chủ đề..."></textarea>
+                <span class="text-danger" asp-validation-for="Description"></span>
             </div>
             <div class="topic-form-group">
-                <label asp-for="ImageUrl">
-                    Đường dẫn hình ảnh
-                </label>
+                <label asp-for="ImageUrl">Đường dẫn hình ảnh</label>
                 <input asp-for="ImageUrl" placeholder="https://..." />
-                <span asp-validation-for="ImageUrl"></span>
+                <span class="text-danger" asp-validation-for="ImageUrl"></span>
             </div>
             <div class="form-actions">
-                <button type="submit" class="btn btn-dark">
-                    Cập nhật
-                </button>
+                <button type="submit" class="btn btn-dark">Cập nhật</button>
                 <a asp-area="Admin"
                    asp-controller="Topic"
                    asp-action="Index"
+                   asp-route-languageId="@Model.LanguageId"
                    class="btn">
                     Quay lại
                 </a>
@@ -81,3 +59,17 @@
         </form>
     </div>
 </section>
+@section Scripts {
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
+    <script>
+            document.querySelectorAll('.ckeditor').forEach(element => {
+
+            ClassicEditor.create(element, {
+                    toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+    </script>
+}

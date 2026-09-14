@@ -1,5 +1,5 @@
 ﻿using HeThongHocNgoaiNguTrucTuyen.Data;
-using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
+using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Test;
 using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 using HeThongHocNgoaiNguTrucTuyen.Models;
 using HeThongHocNgoaiNguTrucTuyen.Models.Enums;
@@ -66,6 +66,33 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
                 .ToListAsync(ct);
 
             return tests;
+        }
+
+        // =====================================================
+        // GET ALL - dùng riêng cho dropdown/option list, KHÔNG phân trang
+        // =====================================================
+
+        public async Task<List<TestInfoResponse>> GetAllTestsAsync(
+            CancellationToken ct)
+        {
+            return await _context.Tests
+                .AsNoTracking()
+                .OrderBy(x => x.Title)
+                .Select(x => new TestInfoResponse
+                {
+                    TestId = x.TestId,
+                    Title = x.Title,
+                    Description = x.Description,
+                    TestMode = (int)x.TestMode,
+                    TestModeDisplay =
+                        x.TestMode == TestMode.PART
+                            ? "Part Test"
+                            : "Full Test",
+                    PartNumber = x.PartNumber,
+                    DurationMinutes = x.DurationMinutes,
+                    QuestionCount = x.Questions.Count
+                })
+                .ToListAsync(ct);
         }
 
         // =====================================================
@@ -319,3 +346,5 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
         }
     }
 }
+
+

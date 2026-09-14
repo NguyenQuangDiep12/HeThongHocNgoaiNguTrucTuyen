@@ -1,7 +1,8 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.LessonRequest
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Lesson
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+@model CreateLessonRequest
 @{
-    var topics =
-        ViewBag.Topics as List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.TopicInfoResponse>;
+    var topics = ViewBag.Topics as List<TopicInfoResponse>;
 }
 <section class="page-section">
     <div class="content-card">
@@ -9,23 +10,15 @@
         <form asp-area="Admin"
               asp-controller="Lesson"
               asp-action="Create"
+              asp-route-topicId="@Model.TopicId"
               method="post">
             @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TopicId" />
+
             <div class="form-group">
-                <label asp-for="TopicId">Chủ đề</label>
-                <select asp-for="TopicId" class="form-control">
-                    <option value=""> -- Chọn chủ đề -- </option>
-                    @if (topics != null)
-                    {
-                        foreach (var topic in topics)
-                        {
-                            <option value="@topic.TopicId">
-                                @topic.Name
-                            </option>
-                        }
-                    }
-                </select>
-                <span asp-validation-for="TopicId"class="text-danger"></span>
+                <label>Chủ đề</label>
+                <input type="text" value="@ViewBag.TopicName (@ViewBag.LanguageName)" class="form-control" disabled readonly />
             </div>
             <div class="form-group">
                 <label asp-for="Title">Tiêu đề bài học</label>
@@ -46,6 +39,7 @@
             <a asp-area="Admin"
                asp-controller="Lesson"
                asp-action="Index"
+               asp-route-topicId="@Model.TopicId"
                class="btn">
                 Quay lại
             </a>
@@ -53,7 +47,7 @@
     </div>
 </section>
 @section Scripts {
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
         document.querySelectorAll('.ckeditor').forEach(element => {
 
@@ -63,7 +57,8 @@
             .catch(error => {
                 console.error(error);
             });
-
     });
     </script>
 }
+
+

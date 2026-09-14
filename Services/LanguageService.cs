@@ -1,5 +1,5 @@
 ﻿using HeThongHocNgoaiNguTrucTuyen.Data;
-using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
+using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Language;
 using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 using HeThongHocNgoaiNguTrucTuyen.Models;
 using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
@@ -14,17 +14,17 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
         {
             _context = context;
         }
-        public async Task<List<LanguageInfoResponse>> GetLanguagesAsync(int pageSize, int pageNumber, string? name ,CancellationToken ct)
+        public async Task<List<LanguageInfoResponse>> GetLanguagesAsync(LanguageFilterRequest request, int pageSize, int pageNumber, CancellationToken ct)
         {
             var listLanguage = _context.Languages.AsNoTracking();
 
-            if (!string.IsNullOrWhiteSpace(name))
+            if (!string.IsNullOrWhiteSpace(request.Name))
             {
-                listLanguage = listLanguage.Where(l => l.Name.Contains(name));
+                listLanguage = listLanguage.Where(l => l.Name.Contains(request.Name));
             }
 
             pageNumber = pageNumber <= 0 ? 1 : pageNumber;
-            pageSize = pageSize <= 0 ? 10 : Math.Min(pageSize, 10); 
+            pageSize = pageSize <= 0 ? 10 : Math.Min(pageSize, 10);
 
             return await listLanguage
                 .OrderBy(l => l.LanguageId)
@@ -38,32 +38,29 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
                     LanguageId = l.LanguageId,
                 }).ToListAsync(ct);
         }
-
         public async Task<List<LanguageInfoResponse>> GetAllLanguagesAsync(CancellationToken ct)
         {
-            return await _context.Languages
+            return await _context
+                .Languages
                 .AsNoTracking()
                 .OrderBy(l => l.Name)
                 .Select(l => new LanguageInfoResponse
                 {
                     LanguageId = l.LanguageId,
                     Name = l.Name,
+                    Description = l.Description,
                     Code = l.Code,
-                    Description = l.Description
-                })
-                .ToListAsync(ct);
+                }).ToListAsync(ct);
         }
-        public async Task<int> CountLanguagesAsync(string? name, CancellationToken ct)
+        public async Task<int> CountLanguagesAsync(LanguageFilterRequest request, CancellationToken ct)
         {
             var query = _context.Languages.AsNoTracking();
-            if (!string.IsNullOrWhiteSpace(name))
+            if (!string.IsNullOrWhiteSpace(request.Name))
             {
-                query = query.Where(l => l.Name.Contains(name));
+                query = query.Where(l => l.Name.Contains(request.Name));
             }
-
             return await query.CountAsync(ct);
         }
-
         public async Task<LanguageInfoResponse> GetLanguageByIdAsync(int Id, CancellationToken ct)
         {
             return await _context
@@ -78,8 +75,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
                     Code = l.Code,
                 }).FirstOrDefaultAsync(ct);
         }
-
-        public async Task CreateLanguagesAsync(LanguageRequest request, CancellationToken ct)
+        public async Task CreateLanguagesAsync(CreateLanguageRequest request, CancellationToken ct)
         {
             var language = new Language();
             if (!string.IsNullOrWhiteSpace(request.Name))
@@ -94,11 +90,10 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
             {
                 language.Code = request.Code;
             }
-
             await _context.Languages.AddAsync(language);
             await _context.SaveChangesAsync(ct);
         }
-        public async Task<bool> UpdateLanguagesAsync(int id, LanguageRequest request, CancellationToken ct)
+        public async Task<bool> UpdateLanguagesAsync(int id, UpdateLanguageRequest request, CancellationToken ct)
         {
             return await _context
                 .Languages
@@ -112,16 +107,16 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
         public async Task<bool> DeleteLanguagesAsync(int id, CancellationToken ct)
         {
             var languageItem = await _context.Languages.FirstOrDefaultAsync(l => l.LanguageId == id, ct);
-
-            if(languageItem == null)
+            if (languageItem == null)
             {
                 return false;
             }
-
             _context.Languages.Remove(languageItem);
             await _context.SaveChangesAsync(ct);
-
             return true;
         }
     }
 }
+
+
+

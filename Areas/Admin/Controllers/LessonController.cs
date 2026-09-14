@@ -1,10 +1,12 @@
-﻿using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
+using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Lesson;
 using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "ADMIN")]
     public class LessonController : Controller
     {
         private readonly ILessonService _lessonService;
@@ -17,140 +19,139 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? title, int? topicId, int pageNumber = 1, int pageSize = 10, CancellationToken ct = default)
+        public async Task<IActionResult> Index(int topicId, LessonFilterRequest? request = null, int pageNumber = 1, int pageSize = 10, CancellationToken ct = default)
         {
-            if (pageNumber < 1)
+            if (topicId <= 0)
             {
-                pageNumber = 1;
+                return RedirectToAction("Index", "Language");
             }
 
-            if (pageSize < 1)
+            request ??= new LessonFilterRequest();
+
+            var topic = await _topicService.GetTopicByIdAsync(topicId, ct);
+            if (topic == null)
             {
-                pageSize = 10;
+                TempData["NotFound"] = "Không tìm thấy chủ đề.";
+                return RedirectToAction("Index", "Language");
             }
 
-            // Lấy tổng số Lesson
-            var totalItems = await _lessonService.CountLessonsAsync(title, topicId, ct);
-            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-
-            // Nếu page hiện tại vượt quá tổng số trang
-            if (totalPages > 0 && pageNumber > totalPages)
+            var totalItems = await _lessonService.CountLessonsAsync(topicId, request, ct);
+            var totalPages = Math.Max(1, (int)Math.Ceiling(totalItems / (double)pageSize));
+            if (pageNumber > totalPages)
             {
                 pageNumber = totalPages;
             }
 
-            // Lấy Lesson
-            var lessons = await _lessonService.GetLessonsAsync(title, topicId, pageNumber, pageSize, ct);
+            var lessons = await _lessonService.GetLessonsAsync(topicId, request, pageNumber, pageSize, ct);
 
-            ViewBag.Title = title;
             ViewBag.TopicId = topicId;
+            ViewBag.TopicName = topic.Name;
+            ViewBag.LanguageId = topic.LanguageId;
+            ViewBag.LanguageName = topic.LanguageName;
             ViewBag.PageNumber = pageNumber;
             ViewBag.PageSize = pageSize;
             ViewBag.TotalPages = totalPages;
+            ViewBag.Filter = request;
 
             return View(lessons);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(
-            int id,
-            CancellationToken ct = default)
+        public async Task<IActionResult> Details(int id, int topicId, CancellationToken ct = default)
         {
-            var lesson = await _lessonService.GetLessonByIdAsync(
-                id,
-                ct);
-
-            if (lesson == null)
+            if (topicId <= 0)
             {
-                TempData["NotFound"] = "Không tìm thấy bài học.";
-
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Language");
             }
 
+            var lesson = await _lessonService.GetLessonByIdAsync(id, ct);
+            if (lesson == null || lesson.TopicId != topicId)
+            {
+                TempData["NotFound"] = "Không tìm thấy bài học.";
+                return RedirectToAction(nameof(Index), new { topicId });
+            }
+
+            ViewBag.TopicId = topicId;
             return View(lesson);
         }
 
-
-        // =========================
-        // CREATE - GET
-        // =========================
-
         [HttpGet]
-        public async Task<IActionResult> Create(
-            CancellationToken ct = default)
+        public async Task<IActionResult> Create(int topicId, CancellationToken ct = default)
         {
-            var topics = await _topicService.GetTopicsAsync(
-                100,
-                1,
-                new TopicRequest(),
-                ct);
+            if (topicId <= 0)
+            {
+                return RedirectToAction("Index", "Language");
+            }
 
-            ViewBag.Topics = topics;
+            var topic = await _topicService.GetTopicByIdAsync(topicId, ct);
+            if (topic == null)
+            {
+                TempData["NotFound"] = "Không tìm thấy chủ đề.";
+                return RedirectToAction("Index", "Language");
+            }
 
-            return View();
+            ViewBag.TopicId = topicId;
+            ViewBag.TopicName = topic.Name;
+            ViewBag.LanguageId = topic.LanguageId;
+            ViewBag.LanguageName = topic.LanguageName;
+
+            return View(new CreateLessonRequest
+            {
+                TopicId = topicId
+            });
         }
-
-
-        // =========================
-        // CREATE - POST
-        // =========================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            LessonRequest request,
-            CancellationToken ct = default)
+        public async Task<IActionResult> Create(int topicId, CreateLessonRequest request, CancellationToken ct = default)
         {
+            if (topicId <= 0)
+            {
+                return RedirectToAction("Index", "Language");
+            }
+
+            var topic = await _topicService.GetTopicByIdAsync(topicId, ct);
+            if (topic == null)
+            {
+                TempData["NotFound"] = "Không tìm thấy chủ đề.";
+                return RedirectToAction("Index", "Language");
+            }
+
             if (!ModelState.IsValid)
             {
-                var topics = await _topicService.GetTopicsAsync(
-                    100,
-                    1,
-                    new TopicRequest(),
-                    ct);
-
-                ViewBag.Topics = topics;
-
+                ViewBag.TopicId = topicId;
+                ViewBag.TopicName = topic.Name;
+                ViewBag.LanguageId = topic.LanguageId;
+                ViewBag.LanguageName = topic.LanguageName;
                 return View(request);
             }
 
-            await _lessonService.CreateLessonAsync(
-                request,
-                ct);
-
-            return RedirectToAction(nameof(Index));
+            request.TopicId = topicId;
+            await _lessonService.CreateLessonAsync(request, ct);
+            return RedirectToAction(nameof(Index), new { topicId = request.TopicId });
         }
 
-
-        // =========================
-        // EDIT - GET
-        // =========================
-
         [HttpGet]
-        public async Task<IActionResult> Edit(
-            int id,
-            CancellationToken ct = default)
+        public async Task<IActionResult> Edit(int id, int topicId, CancellationToken ct = default)
         {
-            var lesson = await _lessonService.GetLessonByIdAsync(
-                id,
-                ct);
-
-            if (lesson == null)
+            if (topicId <= 0)
             {
-                TempData["NotFound"] = "Không tìm thấy bài học.";
-
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Language");
             }
 
-            var topics = await _topicService.GetTopicsAsync(
-                100,
-                1,
-                new TopicRequest(),
-                ct);
+            var lesson = await _lessonService.GetLessonByIdAsync(id, ct);
+            if (lesson == null || lesson.TopicId != topicId)
+            {
+                TempData["NotFound"] = "Không tìm thấy bài học.";
+                return RedirectToAction(nameof(Index), new { topicId });
+            }
 
-            ViewBag.Topics = topics;
+            ViewBag.TopicId = topicId;
+            ViewBag.TopicName = lesson.TopicName;
+            ViewBag.LanguageName = lesson.LanguageName;
+            ViewBag.LessonId = id;
 
-            var request = new LessonRequest
+            var request = new UpdateLessonRequest
             {
                 TopicId = lesson.TopicId,
                 Title = lesson.Title,
@@ -161,67 +162,66 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
             return View(request);
         }
 
-
-        // =========================
-        // EDIT - POST
-        // =========================
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            int id,
-            LessonRequest request,
-            CancellationToken ct = default)
+        public async Task<IActionResult> Edit(int id, int topicId, UpdateLessonRequest request, CancellationToken ct = default)
         {
+            if (topicId <= 0)
+            {
+                return RedirectToAction("Index", "Language");
+            }
+
+            var lesson = await _lessonService.GetLessonByIdAsync(id, ct);
+            if (lesson == null || lesson.TopicId != topicId)
+            {
+                TempData["NotFound"] = "Bài học không thuộc chủ đề này.";
+                return RedirectToAction(nameof(Index), new { topicId });
+            }
+
             if (!ModelState.IsValid)
             {
-                var topics = await _topicService.GetTopicsAsync(
-                    100,
-                    1,
-                    new TopicRequest(),
-                    ct);
-
-                ViewBag.Topics = topics;
-
+                ViewBag.TopicId = topicId;
+                ViewBag.TopicName = lesson.TopicName;
+                ViewBag.LanguageName = lesson.LanguageName;
+                ViewBag.LessonId = id;
                 return View(request);
             }
 
-            var updated = await _lessonService.UpdateLessonAsync(
-                id,
-                request,
-                ct);
-
+            request.TopicId = topicId;
+            var updated = await _lessonService.UpdateLessonAsync(id, request, ct);
             if (!updated)
             {
                 TempData["NotFound"] = "Không tìm thấy bài học.";
-
-                return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { topicId = request.TopicId });
         }
-
-
-        // =========================
-        // DELETE
-        // =========================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(
-            int id,
-            CancellationToken ct = default)
+        public async Task<IActionResult> Delete(int id, int topicId, CancellationToken ct = default)
         {
-            var deleted = await _lessonService.DeleteLessonAsync(
-                id,
-                ct);
+            if (topicId <= 0)
+            {
+                return RedirectToAction("Index", "Language");
+            }
 
+            var lesson = await _lessonService.GetLessonByIdAsync(id, ct);
+            if (lesson == null || lesson.TopicId != topicId)
+            {
+                TempData["NotFound"] = "Bài học không thuộc chủ đề này.";
+                return RedirectToAction(nameof(Index), new { topicId });
+            }
+
+            var deleted = await _lessonService.DeleteLessonAsync(id, ct);
             if (!deleted)
             {
                 TempData["NotFound"] = "Không tìm thấy bài học.";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { topicId });
         }
     }
 }
+
+

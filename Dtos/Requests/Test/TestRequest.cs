@@ -1,7 +1,7 @@
 ﻿using HeThongHocNgoaiNguTrucTuyen.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests
+namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Test
 {
     public class TestRequest
     {
@@ -20,3 +20,5 @@ namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests
         public int DurationMinutes { get; set; }
     }
 }
+
+

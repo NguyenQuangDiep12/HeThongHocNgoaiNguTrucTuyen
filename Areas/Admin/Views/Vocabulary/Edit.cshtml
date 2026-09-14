@@ -1,33 +1,25 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.VocabularyRequest
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Vocabulary
+@using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses
+@model UpdateVocabularyRequest
 @{
-    var lessons = ViewBag.Lessons as List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LessonInfoResponse>;
+    var vocabularyId = ViewBag.VocabularyId;
 }
-
-@section Styles{
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/48.4.0/ckeditor5.css" />
-}
-
 <section class="page-section">
     <div class="content-card">
         <div class="section-head"><h2>Chỉnh sửa từ vựng</h2></div>
         <form asp-area="Admin"
               asp-controller="Vocabulary"
               asp-action="Edit"
+              asp-route-id="@vocabularyId"
+              asp-route-lessonId="@Model.LessonId"
               method="post">
             @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="LessonId" />
+
             <div class="form-group">
-                <label asp-for="LessonId">Bài học</label>
-                <select asp-for="LessonId" class="form-control">
-                    <option value=""> -- Chọn bài học -- </option>
-                    @if (lessons != null)
-                    {
-                        foreach (var lesson in lessons)
-                        {
-                            <option value="@lesson.LessonId">@lesson.Title</option>
-                        }
-                    }
-                </select>
-                <span asp-validation-for="LessonId" class="text-danger"></span>
+                <label>Bài học</label>
+                <input type="text" value="@ViewBag.LessonTitle" class="form-control" disabled readonly />
             </div>
             <div class="form-group">
                 <label asp-for="Word">Từ vựng</label>
@@ -46,7 +38,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Example">Ví dụ</label>
-                <textarea asp-for="Example" id="editor" class="form-control" rows="4"></textarea>
+                <textarea asp-for="Example" class="form-control ckeditor" rows="4"></textarea>
                 <span asp-validation-for="Example" class="text-danger"></span>
             </div>
             <div class="form-actions">
@@ -63,7 +55,7 @@
     </div>
 </section>
 @section Scripts {
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
             document.querySelectorAll('.ckeditor').forEach(element => {
 
@@ -73,7 +65,8 @@
                 .catch(error => {
                     console.error(error);
                 });
-
         });
     </script>
 }
+
+

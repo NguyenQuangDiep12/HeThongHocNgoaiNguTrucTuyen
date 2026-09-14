@@ -1,5 +1,5 @@
-﻿using HeThongHocNgoaiNguTrucTuyen.Data;
-using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests;
+using HeThongHocNgoaiNguTrucTuyen.Data;
+using HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.Lesson;
 using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 using HeThongHocNgoaiNguTrucTuyen.Models;
 using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
@@ -15,125 +15,93 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
         {
             _context = context;
         }
-        public async Task<List<LessonInfoResponse>> GetLessonsAsync(
-            string? title,
-            int? topicId,
-            int pageNumber,
-            int pageSize,
-            CancellationToken ct = default)
+
+        public async Task<List<LessonInfoResponse>> GetLessonsAsync(int topicId, LessonFilterRequest request, int pageNumber, int pageSize, CancellationToken ct)
         {
+            pageNumber = pageNumber <= 0 ? 1 : pageNumber;
+            pageSize = pageSize <= 0 ? 10 : Math.Min(pageSize, 10);
+
             var query = _context.Lessons
                 .AsNoTracking()
-                .AsQueryable();
+                .Where(l => l.TopicId == topicId);
 
-            if (!string.IsNullOrWhiteSpace(title))
+            if (!string.IsNullOrWhiteSpace(request.Title))
             {
-                query = query.Where(x =>
-                    x.Title.Contains(title));
+                query = query.Where(l => l.Title.Contains(request.Title));
             }
 
-            if (topicId.HasValue)
-            {
-                query = query.Where(x =>
-                    x.TopicId == topicId.Value);
-            }
-
-            pageNumber = pageNumber <= 0 ? 1 : pageNumber;
-            pageSize = pageSize <= 0 ? 10 : pageSize;
-
-            return await query
-                .OrderByDescending(x => x.LessonId)
+            return await query.OrderByDescending(l => l.LessonId)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .Select(x => new LessonInfoResponse
-                {
-                    LessonId = x.LessonId,
-                    TopicId = x.TopicId,
-                    Title = x.Title,
-                    Description = x.Description,
-                    Content = x.Content,
-
-                    TopicName = x.Topic != null
-                        ? x.Topic.Name
-                        : "",
-
-                    LanguageName =
-                        x.Topic != null &&
-                        x.Topic.Language != null
-                            ? x.Topic.Language.Name
-                            : ""
-                })
-                .ToListAsync(ct);
-        }
-        public async Task<List<LessonInfoResponse>> GetAllLessonsAsync(int? TopicId, CancellationToken ct)
-        {
-            return await _context
-                .Lessons
-                .Include(l => l.Topic)
-                .AsNoTracking()
-                .OrderBy(l => l.Title)
                 .Select(l => new LessonInfoResponse
                 {
+                    LessonId = l.LessonId,
+                    TopicId = l.TopicId,
                     Title = l.Title,
                     Description = l.Description,
                     Content = l.Content,
-                    LanguageName = l.Topic.Description
+                    TopicName = l.Topic.Name,
+                    LanguageName = l.Topic.Language.Name
                 }).ToListAsync(ct);
         }
-        public async Task<int> CountLessonsAsync(
-            string? title,
-            int? topicId,
-            CancellationToken ct = default)
+
+        public async Task<List<LessonInfoResponse>> GetAllLessonsAsync(int topicId, CancellationToken ct)
+        {
+            return await _context.Lessons
+                .AsNoTracking()
+                .Where(l => l.TopicId == topicId)
+                .OrderBy(l => l.Title)
+                .Select(l => new LessonInfoResponse
+                {
+                    LessonId = l.LessonId,
+                    TopicId = l.TopicId,
+                    Title = l.Title,
+                    Description = l.Description,
+                    Content = l.Content,
+                    TopicName = l.Topic.Name,
+                    LanguageName = l.Topic.Language.Name
+                }).ToListAsync(ct);
+        }
+
+        public async Task<int> CountLessonsAsync(int topicId, LessonFilterRequest request, CancellationToken ct)
         {
             var query = _context.Lessons
                 .AsNoTracking()
-                .AsQueryable();
+                .Where(l => l.TopicId == topicId);
 
-            if (!string.IsNullOrWhiteSpace(title))
+            if (!string.IsNullOrWhiteSpace(request.Title))
             {
-                query = query.Where(x =>
-                    x.Title.Contains(title));
-            }
-
-            if (topicId.HasValue)
-            {
-                query = query.Where(x =>
-                    x.TopicId == topicId.Value);
+                query = query.Where(l => l.Title.Contains(request.Title));
             }
 
             return await query.CountAsync(ct);
         }
-        public async Task<LessonInfoResponse?> GetLessonByIdAsync(
-            int id,
-            CancellationToken ct = default)
+
+        public async Task<LessonInfoResponse?> GetLessonByIdAsync(int id, CancellationToken ct)
         {
             return await _context.Lessons
                 .AsNoTracking()
-                .Where(x => x.LessonId == id)
-                .Select(x => new LessonInfoResponse
+                .Where(l => l.LessonId == id)
+                .Select(l => new LessonInfoResponse
                 {
-                    LessonId = x.LessonId,
-                    TopicId = x.TopicId,
-                    Title = x.Title,
-                    Description = x.Description,
-                    Content = x.Content,
-
-                    TopicName = x.Topic != null
-                        ? x.Topic.Name
-                        : "",
-
-                    LanguageName =
-                        x.Topic != null &&
-                        x.Topic.Language != null
-                            ? x.Topic.Language.Name
-                            : ""
-                })
-                .FirstOrDefaultAsync(ct);
+                    LessonId = l.LessonId,
+                    TopicId = l.TopicId,
+                    Title = l.Title,
+                    Description = l.Description,
+                    Content = l.Content,
+                    TopicName = l.Topic.Name,
+                    LanguageName = l.Topic.Language.Name
+                }).FirstOrDefaultAsync(ct);
         }
-        public async Task CreateLessonAsync(
-            LessonRequest request,
-            CancellationToken ct = default)
+
+        public async Task CreateLessonAsync(CreateLessonRequest request, CancellationToken ct)
         {
+            var topicExists = await _context.Topics.AnyAsync(x => x.TopicId == request.TopicId, ct);
+            if (!topicExists)
+            {
+                throw new ArgumentException("Chủ đề không tồn tại.");
+            }
+
             var lesson = new Lesson
             {
                 TopicId = request.TopicId,
@@ -142,44 +110,30 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
                 Content = request.Content
             };
 
-            await _context.Lessons.AddAsync(
-                lesson,
-                ct);
-
+            await _context.Lessons.AddAsync(lesson, ct);
             await _context.SaveChangesAsync(ct);
         }
-        public async Task<bool> UpdateLessonAsync(
-            int id,
-            LessonRequest request,
-            CancellationToken ct = default)
+
+        public async Task<bool> UpdateLessonAsync(int id, UpdateLessonRequest request, CancellationToken ct)
         {
-            var lesson = await _context.Lessons
-                .FirstOrDefaultAsync(
-                    x => x.LessonId == id,
-                    ct);
+            var lesson = await _context.Lessons.FirstOrDefaultAsync(l => l.LessonId == id, ct);
 
             if (lesson == null)
             {
                 return false;
             }
 
-            lesson.TopicId = request.TopicId;
             lesson.Title = request.Title;
             lesson.Description = request.Description;
             lesson.Content = request.Content;
 
             await _context.SaveChangesAsync(ct);
-
             return true;
         }
-        public async Task<bool> DeleteLessonAsync(
-            int id,
-            CancellationToken ct = default)
+
+        public async Task<bool> DeleteLessonAsync(int id, CancellationToken ct)
         {
-            var lesson = await _context.Lessons
-                .FirstOrDefaultAsync(
-                    x => x.LessonId == id,
-                    ct);
+            var lesson = await _context.Lessons.FirstOrDefaultAsync(l => l.LessonId == id, ct);
 
             if (lesson == null)
             {
@@ -187,11 +141,9 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services
             }
 
             _context.Lessons.Remove(lesson);
-
             await _context.SaveChangesAsync(ct);
 
             return true;
         }
     }
 }
-

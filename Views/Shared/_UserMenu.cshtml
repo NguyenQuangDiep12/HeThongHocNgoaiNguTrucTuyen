@@ -16,6 +16,10 @@
                 <span id="user-info-name">@Context.User.FindFirst(ClaimTypes.Name).Value</span>
             </div>
 
+            @if(User.FindFirst(ClaimTypes.Role).Value == "ADMIN")
+            {
+                <a asp-area="Admin" asp-controller="Language" asp-action="Index">Trang quản trị</a>
+            }
             <form class="form-logout"
                   asp-controller="Auth"
                   asp-action="Logout"
