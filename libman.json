@@ -8,6 +8,14 @@
       "files": [
         "ckeditor.js"
       ]
+    },
+    {
+      "library": "font-awesome@4.7.0",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/font-awesome.min.css",
+        "fonts/fontawesome-webfont.woff2"
+      ]
     }
   ]
 }

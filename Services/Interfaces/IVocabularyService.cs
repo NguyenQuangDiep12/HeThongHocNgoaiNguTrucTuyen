@@ -5,11 +5,12 @@ namespace HeThongHocNgoaiNguTrucTuyen.Services.Interfaces
 {
     public interface IVocabularyService
     {
-        Task<List<VocabularyInfoResponse>> GetVocabulariesAsync(string? word, int? lessonId, int pageNumber, int pageSize, CancellationToken ct);
-        Task<int> CountVocabulariesAsync(string? word, int? lessonId, CancellationToken ct);
-        Task<VocabularyInfoResponse?> GetVocabularyByIdAsync(int id, CancellationToken ct);
-        Task CreateVocabularyAsync(VocabularyRequest request, CancellationToken ct);
-        Task<bool> UpdateVocabularyAsync(int id, VocabularyRequest request, CancellationToken ct);
-        Task<bool> DeleteVocabularyAsync(int id, CancellationToken ct);
+        Task<List<VocabularyInfoResponse>> GetVocabulariesAsync(VocabularyFilterRequest request, int pageNumber, int pageSize, CancellationToken ct = default);
+        Task<int> CountVocabulariesAsync(VocabularyFilterRequest request, CancellationToken ct = default);
+        Task<VocabularyInfoResponse?> GetVocabularyByIdAsync(int vocabularyId, CancellationToken ct = default);
+        Task<List<VocabularyInfoResponse>> GetVocabulariesByLessonIdAsync(int lessonId, CancellationToken ct = default);
+        Task CreateVocabularyAsync(int lessonId, CreateVocabularyRequest request, CancellationToken ct = default);
+        Task<bool> UpdateVocabularyAsync(int vocabularyId, UpdateVocabularyRequest request, CancellationToken ct = default);
+        Task<bool> DeleteVocabularyAsync(int vocabularyId, CancellationToken ct = default);
     }
 }

@@ -7,12 +7,17 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Views\Progress\**" />
+    <Content Remove="Views\Progress\**" />
+    <EmbeddedResource Remove="Views\Progress\**" />
+    <None Remove="Views\Progress\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="Models\Enums\" />
     <Folder Include="Views\Home\" />
-    <Folder Include="Views\Progress\" />
   </ItemGroup>
 
   <ItemGroup>

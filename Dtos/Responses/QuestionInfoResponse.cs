@@ -16,8 +16,7 @@
 
         public string QuestionType { get; set; } = string.Empty;
 
-        public string QuestionTypeDisplay { get; set; }
-            = string.Empty;
+        public string QuestionTypeDisplay { get; set; } = string.Empty;
 
         public int QuestionOrder { get; set; }
 

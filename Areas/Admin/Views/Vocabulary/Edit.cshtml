@@ -1,4 +1,4 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.VocabularyRequest
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.UpdateVocabularyRequest
 @{
     var lessons = ViewBag.Lessons as List<HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.LessonInfoResponse>;
 }
@@ -16,8 +16,8 @@
               method="post">
             @Html.AntiForgeryToken()
             <div class="form-group">
-                <label asp-for="LessonId">Bài học</label>
-                <select asp-for="LessonId" class="form-control">
+                <label id="LessonId">Bài học</label>
+                <select id="LessonId" class="form-control">
                     <option value=""> -- Chọn bài học -- </option>
                     @if (lessons != null)
                     {
@@ -27,7 +27,7 @@
                         }
                     }
                 </select>
-                <span asp-validation-for="LessonId" class="text-danger"></span>
+                @* <span asp-validation-for="LessonId" class="text-danger"></span> *@
             </div>
             <div class="form-group">
                 <label asp-for="Word">Từ vựng</label>
@@ -54,7 +54,6 @@
                 <a asp-area="Admin"
                    asp-controller="Vocabulary"
                    asp-action="Index"
-                   asp-route-lessonId="@Model.LessonId"
                    class="btn">
                     Quay lại
                 </a>
@@ -63,7 +62,7 @@
     </div>
 </section>
 @section Scripts {
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
             document.querySelectorAll('.ckeditor').forEach(element => {
 

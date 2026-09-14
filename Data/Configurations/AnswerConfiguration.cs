@@ -28,7 +28,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Data.Configurations
 
             // IsCorrect
             builder.Property(a => a.IsCorrect)
-                .IsRequired();
+                .IsRequired();// Tao ra ma SQL tuong ung IsCorrect NOT NUll
 
             // Answer N - 1 Question
             builder.HasOne(a => a.Question)

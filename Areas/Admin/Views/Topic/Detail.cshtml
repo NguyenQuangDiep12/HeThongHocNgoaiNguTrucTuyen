@@ -1,0 +1,47 @@
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Responses.TopicInfoResponse
+
+<section class="page-section">
+    <div class="content-card">
+        <div class="section-head">Chi tiết chủ đề</div>
+        <div class="topic-detail-row">
+            <span class="topic-detail-label">Ngôn ngữ</span>
+            <div>@Model.LanguageName</div>
+        </div>
+        <div class="topic-detail-row">
+            <span class="topic-detail-label">Tên chủ đề</span>
+            <div>@Model.Name</div>
+        </div>
+        <div class="topic-detail-row">
+            <span class="topic-detail-row">Cấp độ</span>
+            <div>@Model.Level</div>
+        </div>
+        <div class="topic-detail-row">
+            <span class="topic-detail-label">Mô tả</span>
+            <div>@Html.Raw(Model.Description)</div>
+        </div>
+        <div class="topic-detail-row">
+            <span class="topic-detail-label">Hình ảnh</span>
+            @if(Model.ImageUrl == null)
+            {
+                <div><img src="~/image/NoImage.jpg" alt="Hình ảnh mô tả chủ đề" /></div>
+            }
+            else
+            {
+                <div><img src="@Model.ImageUrl" alt="Hình ảnh mô tả chủ đề" /></div>
+            }
+        </div>
+    </div>
+    <div class="topic-detail-actions">
+        <a asp-area="Admin"
+           asp-controller="Topic"
+           asp-action="Edit"
+           asp-route-id="@Model.TopicId">
+            Sửa chủ đề
+       </a>
+        <a asp-area="Admin"
+           asp-controller="Topic"
+           asp-action="Index">
+            Quay lại
+       </a>
+    </div>
+</section>

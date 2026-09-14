@@ -1,28 +1,17 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.TestRequest
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.CreateTestRequest
 
 @using HeThongHocNgoaiNguTrucTuyen.Models.Enums
 
 <section class="page-section">
-
     <div class="content-card">
-
-        <div class="section-head">
-            <h2>Tạo bài kiểm tra</h2>
-        </div>
-
+        <div class="section-head"><h2>Tạo bài kiểm tra</h2></div>
         <form asp-area="Admin"
               asp-controller="Test"
               asp-action="Create"
               method="post">
-
             @Html.AntiForgeryToken()
-
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger">
-            </div>
-
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-
                 <label asp-for="Title">
                     Tên bài kiểm tra
                 </label>
@@ -30,7 +19,7 @@
                 <input asp-for="Title"
                        placeholder="Ví dụ: TOEIC Full Test 01" />
 
-                <span asp-validation-for="Title"></span>
+                <span class="text-danger" asp-validation-for="Title"></span>
 
             </div>
 
@@ -54,33 +43,6 @@
                 </select>
 
             </div>
-
-            <div class="form-group"
-                 id="part-container">
-
-                <label asp-for="PartNumber">
-                    Chọn Part
-                </label>
-
-                <select asp-for="PartNumber">
-
-                    <option value="">
-                        -- Chọn Part --
-                    </option>
-
-                    @for (int i = 1; i <= 7; i++)
-                    {
-                        <option value="@i">
-                            Part @i
-                        </option>
-                    }
-
-                </select>
-
-                <span asp-validation-for="PartNumber"></span>
-
-            </div>
-
             <div class="form-group">
 
                 <label asp-for="DurationMinutes">
@@ -92,7 +54,7 @@
                        min="1"
                        placeholder="Ví dụ: 30" />
 
-                <span asp-validation-for="DurationMinutes"></span>
+                <span class="text-danger" asp-validation-for="DurationMinutes"></span>
 
             </div>
 
@@ -106,7 +68,7 @@
                           rows="5"
                           placeholder="Nhập mô tả bài kiểm tra..."></textarea>
 
-                <span asp-validation-for="Description"></span>
+                <span class="text-danger" asp-validation-for="Description"></span>
 
             </div>
 
@@ -133,7 +95,7 @@
 
 @section Scripts
 {
-    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
             document.querySelectorAll('.ckeditor').forEach(element => {
 

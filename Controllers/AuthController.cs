@@ -2,6 +2,7 @@
 using HeThongHocNgoaiNguTrucTuyen.Dtos.Responses;
 using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -74,10 +75,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Controllers
                     new Claim(ClaimTypes.Role, user.RoleName)
                 };
 
-                var claimIdentity = new ClaimsIdentity(
-                    claims, 
-                    "cookie");
-
+                var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 // neu nhu nhan RememberMe tang thoi gian het han cua cookie
                 var authProperties = new AuthenticationProperties
@@ -88,7 +86,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Controllers
 
                 await HttpContext
                     .SignInAsync(
-                    "cookie",
+                    CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimIdentity),
                     authProperties);
 
@@ -105,7 +103,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync("cookie");
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Index", "Home");
         }

@@ -8,60 +8,33 @@
 }
 
 <section class="page-section">
-
     <div class="content-card">
-
         <div class="section-head">
-
             <h2>Danh sách ngôn ngữ</h2>
-
+            <div asp-validation-summary="ModelOnly" class="text-danger notification"></div>
             <div class="toolbar">
-
                 <form asp-area="Admin"
                       asp-controller="Language"
                       asp-action="Index"
                       method="get">
-
                     <div class="search-control">
-
-                        <input type="text"
-                               name="name"
-                               value="@name"
-                               placeholder="Tìm kiếm ngôn ngữ..." />
-
-                        <input type="hidden"
-                               name="pageSize"
-                               value="@pageSize" />
-
-                        <button type="submit"
-                                class="btn">
-                            Tìm kiếm
-                        </button>
-
+                        <input type="text" name="name" value="@name" placeholder="Tìm kiếm ngôn ngữ..." />
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                        <input type="hidden" name="pageSize" value="@pageSize" />
+                        <button type="submit" class="btn-small">Tìm kiếm</button>
                     </div>
-
                 </form>
-
                 <a asp-area="Admin"
                    asp-controller="Language"
                    asp-action="Create"
                    class="btn btn-dark">
-
                     + Thêm mới
-
                 </a>
-
             </div>
-
         </div>
-
-
         <div class="table-wrap">
-
             <table class="data-table">
-
                 <thead>
-
                     <tr>
                         <th>STT</th>
                         <th>Tên ngôn ngữ</th>
@@ -69,92 +42,49 @@
                         <th>Mô tả</th>
                         <th>Hành động</th>
                     </tr>
-
                 </thead>
-
                 <tbody>
-
                     @if (Model != null && Model.Any())
                     {
                         var index = (pageNumber - 1) * pageSize + 1;
-
                         foreach (var language in Model)
                         {
                             <tr>
-
-                                <td>
-                                    @index
-                                </td>
-
-                                <td>
-                                    @language.Name
-                                </td>
-
-                                <td>
-                                    @language.Code
-                                </td>
-
-                                <td>
-                                    @language.Description
-                                </td>
-
+                                <td>@index</td>
+                                <td>@language.Name</td>
+                                <td>@language.Code</td>
+                                <td>@language.Description</td>
                                 <td class="action-cell">
-
                                     <a asp-area="Admin"
                                        asp-controller="Language"
                                        asp-action="Edit"
                                        asp-route-id="@language.LanguageId"
                                        class="btn-small">
-
-                                        Sửa
-
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                     </a>
-
-
                                     <form asp-area="Admin"
                                           asp-controller="Language"
                                           asp-action="Delete"
                                           asp-route-id="@language.LanguageId"
                                           method="post"
                                           style="display: inline;">
-
                                         @Html.AntiForgeryToken()
-
-                                        <button type="submit"
-                                                class="btn-small danger"
-                                                onclick="return confirm('Bạn có chắc muốn xóa ngôn ngữ này không?');">
-
-                                            Xóa
-
+                                        <button type="submit" class="btn-small danger" onclick="return confirm('Bạn có chắc muốn xóa ngôn ngữ này không?');">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
                                         </button>
-
                                     </form>
-
                                 </td>
-
                             </tr>
-
                             index++;
                         }
                     }
                     else
                     {
-                        <tr>
-
-                            <td colspan="5">
-                                Không có dữ liệu.
-                            </td>
-
-                        </tr>
+                        <tr><td colspan="5">Không có dữ liệu.</td></tr>
                     }
-
                 </tbody>
-
             </table>
-
         </div>
-
-
         @if (totalPages > 1)
         {
             <div class="pagination">
@@ -168,13 +98,9 @@
                        asp-route-pageNumber="@(pageNumber - 1)"
                        asp-route-name="@name"
                        class="pagination-btn">
-
                         &lt;
-
                     </a>
                 }
-
-
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     <a asp-area="Admin"
@@ -184,13 +110,9 @@
                        asp-route-pageNumber="@i"
                        asp-route-name="@name"
                        class="pagination-btn @(i == pageNumber ? "active" : "")">
-
                         @i
-
                     </a>
                 }
-
-
                 @if (pageNumber < totalPages)
                 {
                     <a asp-area="Admin"
@@ -200,15 +122,10 @@
                        asp-route-pageNumber="@(pageNumber + 1)"
                        asp-route-name="@name"
                        class="pagination-btn">
-
                         &gt;
-
                     </a>
                 }
-
             </div>
         }
-
     </div>
-
 </section>

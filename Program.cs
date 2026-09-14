@@ -1,5 +1,6 @@
 ﻿using HeThongHocNgoaiNguTrucTuyen.Data;
 using HeThongHocNgoaiNguTrucTuyen.Services;
+using HeThongHocNgoaiNguTrucTuyen.Services.Implementations;
 using HeThongHocNgoaiNguTrucTuyen.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -29,8 +30,8 @@ namespace HeThongHocNgoaiNguTrucTuyen
 
 
             #region Cau hinh Cookie Authentication
-            builder.Services.AddAuthentication("cookie")
-                .AddCookie("cookie", options =>
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                 {
                     options.Cookie.Name = "ELearning.Auth.Cookie";
                     options.LoginPath = "/Auth/Login";
@@ -42,19 +43,7 @@ namespace HeThongHocNgoaiNguTrucTuyen
                     options.Cookie.SameSite = SameSiteMode.Lax;
                     
                 });
-
-            // Session
-            builder.Services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.IsEssential = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.Lax;
-            });
             #endregion
-
-
 
             #region DI
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -63,7 +52,6 @@ namespace HeThongHocNgoaiNguTrucTuyen
             builder.Services.AddScoped<ILessonService, LessonService>();
             builder.Services.AddScoped<IVocabularyService, VocabularyService>();
             builder.Services.AddScoped<ITestService, TestService>();
-            builder.Services.AddScoped<IQuestionService, QuestionService>();
             #endregion
 
             var app = builder.Build();

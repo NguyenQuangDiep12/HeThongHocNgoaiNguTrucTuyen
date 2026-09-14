@@ -17,237 +17,90 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
         {
             _testService = testService;
         }
-
-        // =====================================================
-        // INDEX
-        // =====================================================
-
         [HttpGet]
-        public async Task<IActionResult> Index(
-            [FromQuery] TestRequest request,
-            int pageSize = 10,
-            int pageNumber = 1,
-            CancellationToken ct = default)
+        public async Task<IActionResult> Index(TestFilterRequest request, int pageSize = 10, int pageNumber = 1, CancellationToken ct = default)
         {
-            pageNumber =
-                pageNumber <= 0
-                    ? 1
-                    : pageNumber;
-
-            pageSize =
-                pageSize <= 0
-                    ? 10
-                    : Math.Min(pageSize, 10);
-
-            var tests =
-                await _testService.GetTestsAsync(
-                    pageSize,
-                    pageNumber,
-                    request,
-                    ct);
-
-            var totalCount =
-                await _testService.CountTestsAsync(
-                    request,
-                    ct);
-
+            var tests = await _testService.GetTestsAsync(pageSize, pageNumber, request, ct);
+            var totalCount = await _testService.CountTestsAsync(request, ct);
             ViewBag.PageNumber = pageNumber;
-
             ViewBag.PageSize = pageSize;
-
-            ViewBag.TotalPages =
-                Math.Max(
-                    1,
-                    (int)Math.Ceiling(
-                        (decimal)totalCount / pageSize));
-
+            ViewBag.TotalPages = Math.Max(1, (int)Math.Ceiling((decimal)totalCount / pageSize));
+            ViewBag.Title = request.Title;
             return View(tests);
         }
-
-        // =====================================================
-        // CREATE GET
-        // =====================================================
-
         [HttpGet]
         public IActionResult Create()
         {
-            return View(new TestRequest
-            {
-                TestMode = TestMode.PART
-            });
+            return View();
         }
-
-        // =====================================================
-        // CREATE POST
-        // =====================================================
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(
-            TestRequest request,
-            CancellationToken ct)
+        public async Task<IActionResult> Create(CreateTestRequest request, CancellationToken ct)
         {
             if (!ModelState.IsValid)
             {
                 return View(request);
             }
 
-            try
-            {
-                await _testService.CreateTestAsync(
-                    request,
-                    ct);
-
-                TempData["Success"] =
-                    "Tạo bài kiểm tra thành công.";
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch (ArgumentException ex)
-            {
-                ModelState.AddModelError(
-                    string.Empty,
-                    ex.Message);
-
-                return View(request);
-            }
+            await _testService.CreateTestAsync(request, ct);
+            TempData["Success"] = "Tạo bài kiểm tra thành công.";
+            return RedirectToAction(nameof(Index));
         }
-
-        // =====================================================
-        // EDIT GET
-        // =====================================================
-
         [HttpGet]
-        public async Task<IActionResult> Edit(
-            int id,
-            CancellationToken ct)
+        public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
-            var test =
-                await _testService.GetTestByIdAsync(
-                    id,
-                    ct);
-
+            var test = await _testService.GetTestByIdAsync(id, ct);
             if (test == null)
             {
-                TempData["NotFound"] =
-                    "Không tìm thấy bài kiểm tra.";
-
+                TempData["NotFound"] = "Không tìm thấy bài kiểm tra.";
                 return RedirectToAction(nameof(Index));
             }
-
             ViewBag.TestId = id;
-
-            return View(new TestRequest
+            return View(new UpdateTestRequest
             {
                 Title = test.Title,
-
                 Description = test.Description,
-
-                TestMode =
-                    (TestMode)test.TestMode,
-
-                PartNumber =
-                    test.PartNumber,
-
-                DurationMinutes =
-                    test.DurationMinutes
+                TestMode = test.TestMode,
+                DurationMinutes = test.DurationMinutes
             });
         }
-
-        // =====================================================
-        // EDIT POST
-        // =====================================================
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(
-            int id,
-            TestRequest request,
-            CancellationToken ct)
+        public async Task<IActionResult> Edit(int id, UpdateTestRequest request, CancellationToken ct)
         {
             if (!ModelState.IsValid)
             {
                 ViewBag.TestId = id;
-
                 return View(request);
             }
-
+           
             try
             {
-                var result =
-                    await _testService.UpdateTestAsync(
-                        id,
-                        request,
-                        ct);
-
-                if (!result)
-                {
-                    TempData["NotFound"] =
-                        "Không tìm thấy bài kiểm tra.";
-                }
-                else
-                {
-                    TempData["Success"] =
-                        "Cập nhật bài kiểm tra thành công.";
-                }
+                var updated = await _testService.UpdateTestAsync(id, request, ct);
 
                 return RedirectToAction(nameof(Index));
-            }
-            catch (ArgumentException ex)
+            }catch(Exception ex)
             {
-                ModelState.AddModelError(
-                    string.Empty,
-                    ex.Message);
-
-                ViewBag.TestId = id;
-
-                return View(request);
-            }
-            catch (InvalidOperationException ex)
-            {
-                ModelState.AddModelError(
-                    string.Empty,
-                    ex.Message);
-
-                ViewBag.TestId = id;
-
-                return View(request);
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
             }
         }
-
-        // =====================================================
-        // DELETE
-        // =====================================================
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(
-            int id,
-            CancellationToken ct)
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
             try
             {
-                var result =
-                    await _testService.DeleteTestAsync(
-                        id,
-                        ct);
-
+                var result = await _testService.DeleteTestAsync(id, ct);
                 if (!result)
                 {
-                    TempData["NotFound"] =
-                        "Không tìm thấy bài kiểm tra cần xóa.";
-                }
-                else
-                {
-                    TempData["Success"] =
-                        "Xóa bài kiểm tra thành công.";
+                    TempData["NotFound"] = "Không tìm thấy bài kiểm tra cần xóa.";
                 }
             }
             catch (InvalidOperationException ex)
             {
                 TempData["Error"] = ex.Message;
             }
-
             return RedirectToAction(nameof(Index));
         }
     }

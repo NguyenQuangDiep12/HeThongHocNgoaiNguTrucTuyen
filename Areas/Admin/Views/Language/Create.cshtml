@@ -1,4 +1,4 @@
-﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.LanguageRequest
+﻿@model HeThongHocNgoaiNguTrucTuyen.Dtos.Requests.CreateLanguageRequest
 
 <section class="page-section">
     <div class="content-card">
@@ -11,56 +11,25 @@
               asp-controller="Language"
               asp-action="Create"
               method="post">
-
             @Html.AntiForgeryToken()
-
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger">
-            </div>
-
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name">Tên ngôn ngữ</label>
-
-                <input asp-for="Name"
-                       class="form-control" />
-
-                <span asp-validation-for="Name"
-                      class="text-danger">
-                </span>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="Code">Mã ngôn ngữ</label>
-
-                <input asp-for="Code"
-                       class="form-control" />
-
-                <span asp-validation-for="Code"
-                      class="text-danger">
-                </span>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="Description">Mô tả</label>
-
-                <input asp-for="Description"
-                       class="form-control" />
-
-                <span asp-validation-for="Description"
-                      class="text-danger">
-                </span>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-actions">
-                <a asp-area="Admin"
-                   asp-controller="Language"
-                   asp-action="Index"
-                   class="btn">
-                    Quay lại
-                </a>
-                <button type="submit"
-                        class="btn btn-dark">
-                    Tạo ngôn ngữ
-                </button>
+                <button type="submit" class="btn btn-dark"> Tạo ngôn ngữ </button>
                 <a asp-area="Admin"
                    asp-controller="Language"
                    asp-action="Index"

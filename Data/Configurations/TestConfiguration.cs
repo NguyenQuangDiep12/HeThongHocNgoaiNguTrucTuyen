@@ -36,10 +36,6 @@ namespace HeThongHocNgoaiNguTrucTuyen.Data.Configurations
                 .IsRequired()
                 .HasConversion<int>();
 
-            // PartNumber
-            builder.Property(t => t.PartNumber)
-                .IsRequired(false);
-
             // Test 1 - N Question
             builder.HasMany(t => t.Questions)
                 .WithOne(q => q.Test)

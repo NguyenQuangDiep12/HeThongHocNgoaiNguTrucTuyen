@@ -59,13 +59,17 @@
 <div class="content-card">
     <div class="section-head">
         <h2>Danh sách bài học</h2>
-        <div class="toolbar">
+            @if(TempData["Error"] != null)
+            {
+                <span class="text-danger notification">@TempData["Error"]</span>
+            }
+            <div class="toolbar">
             <form asp-area="Admin"
                     asp-controller="Lesson"
                     asp-action="Index"
                     method="get">
                 <div class="search-control">
-                    <span>⌕</span>
+                    <span><i class="fa fa-search" aria-hidden="true"></i></span>
                     <input type="text" name="title" value="@ViewBag.Title" placeholder="Tìm kiếm bài học..." />
                     <input type="hidden" name="pageSize" value="@pageSize" />
                     <input type="hidden" name="pageNumber" value="1" />
@@ -94,7 +98,6 @@
                 </tr>
             </thead>
             <tbody>
-
             @if (Model != null && Model.Any())
             {
                 var index = (pageNumber - 1) * pageSize + 1;
@@ -108,7 +111,7 @@
                         <td>
                             @if (!string.IsNullOrWhiteSpace(lesson.Description))
                             {
-                                <div class="lesson-description"> @GetPreview(lesson.Description, 60) </div>
+                                <div class="lesson-description">@Html.Raw(GetPreview(lesson.Description, 60))</div>
                             }else{
                                 <span class="lesson-content-empty">Chưa có mô tả</span>
                             }
@@ -117,7 +120,7 @@
 
                             @if (!string.IsNullOrWhiteSpace(lesson.Content))
                             {
-                                <div class="lesson-content-preview">@GetPreview(lesson.Content,100)</div>
+                                <div class="lesson-content-preview">@Html.Raw(GetPreview(lesson.Content,100))</div>
                             }
                             else
                             {
@@ -128,16 +131,16 @@
                             <a class="btn-small"
                                 asp-area="Admin"
                                 asp-controller="Lesson"
-                                asp-action="Details"
+                                asp-action="Detail"
                                 asp-route-id="@lesson.LessonId">
-                                Xem
+                                <i class="fa fa-eye" aria-hidden="true"></i>
                             </a>
                             <a class="btn-small"
                                 asp-area="Admin"
                                 asp-controller="Lesson"
                                 asp-action="Edit"
                                 asp-route-id="@lesson.LessonId">
-                                Sửa
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                             </a>
                             <a class="btn-small"
                                 asp-area="Admin"
@@ -153,7 +156,9 @@
                                     method="post"
                                     style="display:inline">
                                 @Html.AntiForgeryToken()
-                                <button type="submit" class="btn-small danger" onclick="return confirm('Bạn có chắc muốn xóa bài học này không?')"> Xóa </button>
+                                <button type="submit" class="btn-small danger" onclick="return confirm('Bạn có chắc muốn xóa bài học này không?')">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
                             </form>
                         </td>
                     </tr>
@@ -183,29 +188,18 @@
                     &lt;
                 </a>
             }
-            else
-            {
-                <span class="pagination-btn disabled">&lt;</span>
-            }
             @for (int i = 1; i <= totalPages; i++)
             {
-                if (i == pageNumber)
-                {
-                    <span class="pagination-btn disabled">@i</span>
-                }
-                else
-                {
-                    <a asp-area="Admin"
-                        asp-controller="Lesson"
-                        asp-action="Index"
-                        asp-route-pageNumber="@i"
-                        asp-route-pageSize="@pageSize"
-                        asp-route-title="@ViewBag.Title"
-                        asp-route-topicId="@ViewBag.TopicId"
-                        class="pagination-btn">
-                        @i
-                    </a>
-                }
+                <a asp-area="Admin"
+                    asp-controller="Lesson"
+                    asp-action="Index"
+                    asp-route-pageNumber="@i"
+                    asp-route-pageSize="@pageSize"
+                    asp-route-title="@ViewBag.Title"
+                    asp-route-topicId="@ViewBag.TopicId"
+                    class="pagination-btn">
+                    @i
+                </a>
             }
             @if (pageNumber < totalPages)
             {
@@ -219,10 +213,6 @@
                     class="pagination-btn">
                     &gt;
                 </a>
-            }
-            else
-            {
-                <span class="pagination-btn disabled">&gt;</span>
             }
         </div>
     }
