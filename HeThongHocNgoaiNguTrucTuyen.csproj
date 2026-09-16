@@ -18,6 +18,8 @@
     <Folder Include="Data\Migrations\" />
     <Folder Include="Models\Enums\" />
     <Folder Include="Views\Home\" />
+    <Folder Include="wwwroot\MediaUpload\Images\" />
+    <Folder Include="wwwroot\MediaUpload\Audio\" />
   </ItemGroup>
 
   <ItemGroup>

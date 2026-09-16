@@ -25,4 +25,24 @@ namespace HeThongHocNgoaiNguTrucTuyen.Dtos.Requests
         public int DurationMinutes { get; set; }
         public string TestMode { get; set; } = string.Empty;
     }
+    public class QuestionFilterRequest
+    {
+        public string? Content { get; set; }
+    }
+    public class CreateQuestionRequest
+    {
+        public string Content { get; set; } = string.Empty;
+        public string PartNumber { get; set; } = string.Empty;
+        public string QuestionType { get; set; } = string.Empty;
+        public int QuestionOrder { get; set; }
+        public string GroupCode { get; set; } = string.Empty;
+    }
+    public class UpdateQuestionRequest
+    {
+        public string Content { get; set; } = string.Empty;
+        public string PartNumber { get; set; } = string.Empty;
+        public string QuestionType { get; set; } = string.Empty;
+        public int QuestionOrder { get; set; }
+        public string GroupCode { get; set; } = string.Empty;
+    }
 }

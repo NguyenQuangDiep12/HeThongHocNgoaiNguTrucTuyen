@@ -76,6 +76,7 @@
                         <th>Tên bài kiểm tra</th>
                         <th>Mô tả</th>
                         <th>Số câu hỏi</th>
+                        <th>Danh sách câu hỏi</th>
                         <th>Thời gian (phút)</th>
                         <th>Thao tác</th>
                     </tr>
@@ -91,6 +92,13 @@
                                 <td>@Html.Raw(GetPreview(test.Title, 20))</td>
                                 <td>@Html.Raw(GetPreview(test.Description, 20))</td>
                                 <td>@test.QuestionCount</td>
+                                <td>
+                                    <a asp-area="Admin"
+                                       asp-controller="Test"
+                                       asp-action="Question"
+                                       asp-route-testId="@test.TestId">
+                                        Quản lý câu hỏi
+                                    </a>
                                 <td>@test.DurationMinutes</td>
                                 <td style="display: flex; align-items: center; gap: 4px;">
                                 <a class="btn-small"

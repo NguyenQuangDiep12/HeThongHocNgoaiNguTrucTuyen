@@ -7,51 +7,54 @@
 
 <section class="page-section">
     <div class="content-card">
-        <div class="section-head">
-            <h2>Cập nhật bài kiểm tra</h2>
-        </div>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <form asp-area="Admin"
-              asp-controller="Test"
-              asp-action="Edit"
-              asp-route-id="@testId"
-              method="post">
+        <div>
+            <div class="section-head">
+                <h2>Cập nhật bài kiểm tra</h2>
+                <a class="btn btn-purple" href="#">Xem danh sách câu hỏi</a>
+            </div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <form asp-area="Admin"
+                  asp-controller="Test"
+                  asp-action="Edit"
+                  asp-route-id="@testId"
+                  method="post">
 
-            @Html.AntiForgeryToken()
-            <div class="form-group">
-                <label asp-for="Title">Tên bài kiểm tra</label>
-                <input asp-for="Title" />
-                <span asp-validation-for="Title"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TestMode"> Loại bài kiểm tra </label>
-                <select asp-for="TestMode" id="TestMode">
-                    <option value="PART"> Part Test </option>
-                    <option value="FULL"> Full Test </option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DurationMinutes"> Thời gian làm bài (phút) </label>
-                <input asp-for="DurationMinutes" type="number" min="1" />
-                <span asp-validation-for="DurationMinutes"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description"> Mô tả </label>
-                <textarea class="ckeditor" asp-for="Description" rows="5"></textarea>
-                <span asp-validation-for="Description"></span>
-            </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-dark">
-                    Lưu thay đổi
-                </button>
-                <a asp-area="Admin"
-                   asp-controller="Test"
-                   asp-action="Index"
-                   class="btn btn-light">
-                    Quay lại
-                </a>
-            </div>
-        </form>
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label asp-for="Title">Tên bài kiểm tra</label>
+                    <input asp-for="Title" />
+                    <span asp-validation-for="Title"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TestMode"> Loại bài kiểm tra </label>
+                    <select asp-for="TestMode" id="TestMode">
+                        <option value="PART"> Part Test </option>
+                        <option value="FULL"> Full Test </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DurationMinutes"> Thời gian làm bài (phút) </label>
+                    <input asp-for="DurationMinutes" type="number" min="1" />
+                    <span asp-validation-for="DurationMinutes"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description"> Mô tả </label>
+                    <textarea class="ckeditor" asp-for="Description" rows="5"></textarea>
+                    <span asp-validation-for="Description"></span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-dark">
+                        Lưu thay đổi
+                    </button>
+                    <a asp-area="Admin"
+                       asp-controller="Test"
+                       asp-action="Index"
+                       class="btn btn-light">
+                        Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 </section>
 
@@ -60,16 +63,13 @@
     <script src="~/lib/ckeditor5/ckeditor.js"></script>
     <script>
         document.querySelectorAll('.ckeditor').forEach(element => {
-
         ClassicEditor.create(element, {
-                toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
+            toolbar: ["undo","redo","|","heading","|","bold","italic","|","fontSize","fontFamily","fontColor","fontBackgroundColor","|","bulletedList","numberedList"]
             })
             .catch(error => {
                 console.error(error);
             });
         });
-
-
     </script>
 }
 

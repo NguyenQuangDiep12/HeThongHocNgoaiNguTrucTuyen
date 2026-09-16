@@ -1,0 +1,132 @@
+﻿.test-question-page {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.test-info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #ddd;
+}
+
+.test-selected,
+.test-summary,
+.panel-header,
+.panel-title,
+.answer-header,
+.question-actions-bottom {
+    display: flex;
+    align-items: center;
+}
+
+.test-selected,
+.test-summary {
+    gap: 10px;
+}
+
+.test-workspace {
+    display: grid;
+    grid-template-columns: 58% 42%;
+    gap: 16px;
+    padding: 16px;
+}
+
+.question-panel,
+.question-detail-card {
+    border: 1px solid #ddd;
+    padding: 16px;
+}
+
+.panel-header,
+.answer-header,
+.question-actions-bottom {
+    justify-content: space-between;
+}
+
+.panel-title {
+    gap: 8px;
+}
+
+.question-search {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+}
+
+    .question-search input {
+        width: 100%;
+        padding: 8px;
+    }
+
+.question-row {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr) 100px 50px 70px;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-top: 1px solid #ddd;
+}
+
+.question-header {
+    font-weight: 600;
+}
+
+.question-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.question-meta {
+    display: grid;
+    grid-template-columns: 1fr 80px 120px;
+    gap: 10px;
+}
+
+.form-group,
+.detail-section {
+    margin-bottom: 12px;
+}
+
+    .form-group label,
+    .detail-section > label,
+    .answer-header label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .detail-section input,
+    .detail-section textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+    }
+
+.question-content-input {
+    min-height: 100px;
+}
+
+.answer-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #ddd;
+}
+
+.answer-row {
+    display: grid;
+    grid-template-columns: 30px 1fr 30px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.question-actions-bottom {
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #ddd;
+}

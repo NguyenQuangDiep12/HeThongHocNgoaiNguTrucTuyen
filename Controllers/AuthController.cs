@@ -84,11 +84,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Controllers
                     ExpiresUtc = request.RememberMe ? DateTimeOffset.UtcNow.AddDays(3) : null
                 };
 
-                await HttpContext
-                    .SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimIdentity),
-                    authProperties);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimIdentity), authProperties);
 
                 // redirect sang trang home mac dinh khi dang nhap thanh cong
                 return RedirectToAction("Index", "Home");
@@ -108,7 +104,7 @@ namespace HeThongHocNgoaiNguTrucTuyen.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        // Tra ve 2 trang 404 hoac 403 Forbidden khi nguoi dung ko co role hop le hoac ko truy cap dung endpoint
+        // Tra ve 403 Forbidden khi nguoi dung ko co role hop le hoac ko truy cap dung endpoint
         [HttpGet]
         public IActionResult Forbidden()
         {

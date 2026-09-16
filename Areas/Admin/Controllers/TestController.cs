@@ -102,6 +102,14 @@ namespace HeThongHocNgoaiNguTrucTuyen.Areas.Admin.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        // Question
+        [HttpGet("Question/{testId:int}")]
+        public IActionResult Question(int testId)
+        {
+            ViewBag.TestId = testId;
+            return View("Question/Index");
+        }
     }
 }
 

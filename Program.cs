@@ -28,15 +28,15 @@ namespace HeThongHocNgoaiNguTrucTuyen
             });
             #endregion
 
-
             #region Cau hinh Cookie Authentication
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                 {
                     options.Cookie.Name = "ELearning.Auth.Cookie";
                     options.LoginPath = "/Auth/Login";
-                    options.ExpireTimeSpan = TimeSpan.FromHours(1);
-                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = TimeSpan.FromHours(1); // thời điểm hết hạn của authentication ticket mà ASP.NET Core sử dụng để xác thực người dùng còn xác thực hay không
+                    options.SlidingExpiration = true; // Tham số SlidingExpiration được đặt thành true để hướng dẫn trình xử lý phát hành lại một cookie mới với thời gian hết hạn mới bất cứ khi nào nó xử lý một yêu cầu đã quá nửa thời gian hết hạn.
+                    options.Cookie.MaxAge = options.ExpireTimeSpan; // Thời gian trình duyệt giữ cookie 
                     options.AccessDeniedPath = "/Auth/Forbidden";
                     options.Cookie.HttpOnly = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;

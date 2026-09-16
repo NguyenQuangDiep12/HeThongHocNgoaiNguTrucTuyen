@@ -1,0 +1,177 @@
+﻿@section Styles {
+    <link rel="stylesheet" href="~/css/question.css"/>
+}
+
+<section class="test-question-page">
+    <div class="test-info-bar">
+        <div class="test-selected">
+            <span>Bài kiểm tra đang chọn:</span>
+            <select>
+                <option>Bài kiểm tra A1 - Chủ đề 1</option>
+            </select>
+        </div>
+
+        <div class="test-summary">
+            <span>Số câu hỏi: <strong>20</strong></span>
+            <span>Thời gian: <strong>30 phút</strong></span>
+        </div>
+    </div>
+
+    <div class="test-workspace">
+        <div class="question-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="page-badge">PAGE 2</span>
+                    <strong>Danh sách câu hỏi</strong>
+                </div>
+
+                <button type="button" class="btn-outline">
+                    Phân câu hỏi
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            </div>
+
+            <div class="question-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Tìm kiếm câu hỏi..." />
+            </div>
+
+            <div class="question-table">
+                <div class="question-row question-header">
+                    <div>Id</div>
+                    <div>Nội dung câu hỏi</div>
+                    <div>Loại câu hỏi</div>
+                    <div>Điểm</div>
+                    <div>Thao tác</div>
+                </div>
+
+                <div class="question-row">
+                    <div>1</div>
+                    <div>Chọn từ đúng để điền vào chỗ trống...</div>
+                    <div>Trắc nghiệm</div>
+                    <div>1</div>
+                    <div class="question-actions">
+                        <button type="button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                        <button type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-footer">
+                <button type="button">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <button type="button">
+                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="question-detail-card">
+            <div class="card-title">
+                <h2>Thông tin câu hỏi chi tiết</h2>
+            </div>
+
+            <div class="question-meta">
+                <div class="form-group">
+                    <label>Loại câu hỏi</label>
+                    <select>
+                        <option>Trắc nghiệm</option>
+                        <option>Nghe và chọn</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Điểm</label>
+                    <input type="number" value="1" />
+                </div>
+
+                <div class="form-group">
+                    <label>Phần câu hỏi</label>
+                    <select>
+                        <option>Phần 1</option>
+                        <option>Phần 2</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <label>Nội dung câu hỏi</label>
+                <textarea class="question-content-input ckeditor"></textarea>
+            </div>
+
+            <div class="detail-section">
+                <label>Audio (phát âm)</label>
+                <input type="file" />
+            </div>
+
+            <div class="detail-section">
+                <label>Hình ảnh (tùy chọn)</label>
+                <input type="file" />
+            </div>
+
+            <div class="answer-section">
+                <div class="answer-header">
+                    <label>Các lựa chọn đáp án</label>
+                    <span>Đáp án đúng</span>
+                </div>
+
+                <div class="answer-row">
+                    <span>A</span>
+                    <input type="text" value="go" />
+                    <input type="radio" name="correctAnswer" />
+                </div>
+
+                <div class="answer-row">
+                    <span>B</span>
+                    <input type="text" value="went" />
+                    <input type="radio" name="correctAnswer" checked />
+                </div>
+
+                <div class="answer-row">
+                    <span>C</span>
+                    <input type="text" value="gone" />
+                    <input type="radio" name="correctAnswer" />
+                </div>
+
+                <div class="answer-row">
+                    <span>D</span>
+                    <input type="text" value="goes" />
+                    <input type="radio" name="correctAnswer" />
+                </div>
+
+                <button type="button">
+                    <i class="fa-solid fa-plus"></i>
+                    Thêm lựa chọn đáp án
+                </button>
+            </div>
+
+            <div class="question-actions-bottom">
+                <button type="button">Hủy thay đổi</button>
+                <button type="button" class="btn-primary">Lưu câu hỏi</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/lib/ckeditor5/ckeditor.js"></script>
+    <script>
+        document.querySelectorAll('.ckeditor').forEach(element => {
+            ClassicEditor.create(element, {
+                toolbar: [
+                    "undo", "redo", "|",
+                    "heading", "|",
+                    "bold", "italic", "|",
+                    "fontSize", "fontFamily",
+                    "fontColor", "fontBackgroundColor", "|",
+                    "bulletedList", "numberedList"
+                ]
+            }).catch(error => {
+                console.error(error);
+            });
+        });
+
+        // Xu ly goi va render du lieu
+    </script>
+}

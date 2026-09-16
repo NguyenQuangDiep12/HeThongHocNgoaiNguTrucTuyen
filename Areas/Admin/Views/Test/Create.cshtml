@@ -4,7 +4,9 @@
 
 <section class="page-section">
     <div class="content-card">
-        <div class="section-head"><h2>Tạo bài kiểm tra</h2></div>
+        <div class="section-head">
+            <h2>Tạo bài kiểm tra</h2>
+        </div>
         <form asp-area="Admin"
               asp-controller="Test"
               asp-action="Create"
@@ -12,72 +14,29 @@
             @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Title">
-                    Tên bài kiểm tra
-                </label>
-
+                <label asp-for="Title">Tên bài kiểm tra</label>
                 <input asp-for="Title" placeholder="Ví dụ: TOEIC Full Test 01" />
-
                 <span class="text-danger" asp-validation-for="Title"></span>
-
             </div>
-
             <div class="form-group">
-
-                <label asp-for="TestMode">
-                    Loại bài kiểm tra
-                </label>
-
-                <select asp-for="TestMode"
-                        id="TestMode">
-
-                    <option value="@TestMode.PART">
-                        Part Test
-                    </option>
-
-                    <option value="@TestMode.FULL">
-                        Full Test
-                    </option>
-
+                <label asp-for="TestMode">Loại bài kiểm tra</label>
+                <select asp-for="TestMode" id="TestMode">
+                    <option value="@TestMode.PART"> Part Test </option>
+                    <option value="@TestMode.FULL"> Full Test </option>
                 </select>
-
             </div>
             <div class="form-group">
-
-                <label asp-for="DurationMinutes">
-                    Thời gian làm bài (phút)
-                </label>
-
-                <input asp-for="DurationMinutes"
-                       type="number"
-                       min="1"
-                       placeholder="Ví dụ: 30" />
-
+                <label asp-for="DurationMinutes">Thời gian làm bài (phút)</label>
+                <input asp-for="DurationMinutes" type="number" min="1" placeholder="Ví dụ: 30" />
                 <span class="text-danger" asp-validation-for="DurationMinutes"></span>
-
             </div>
-
             <div class="form-group">
-
-                <label asp-for="Description">
-                    Mô tả
-                </label>
-
-                <textarea class="ckeditor" asp-for="Description"
-                          rows="5"
-                          placeholder="Nhập mô tả bài kiểm tra..."></textarea>
-
+                <label asp-for="Description"> Mô tả </label>
+                <textarea class="ckeditor" asp-for="Description" rows="5" placeholder="Nhập mô tả bài kiểm tra..."></textarea>
                 <span class="text-danger" asp-validation-for="Description"></span>
-
             </div>
-
             <div class="form-actions">
-                <button type="submit"
-                        class="btn btn-dark">
-
-                    Tạo bài kiểm tra
-
-                </button>
+                <button type="submit" class="btn btn-dark">Tạo bài kiểm tra</button>
                 <a asp-area="Admin"
                    asp-controller="Test"
                    asp-action="Index"
@@ -85,11 +44,8 @@
                     Quay lại
                 </a>
             </div>
-
         </form>
-
     </div>
-
 </section>
 
 @section Scripts
@@ -104,7 +60,6 @@
                 .catch(error => {
                     console.error(error);
                 });
-
         });
     </script>
 }
